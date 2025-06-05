@@ -1,36 +1,98 @@
 .juez-crud {
-  max-width: 600px;
-  margin: auto;
-  padding: 1rem;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.juez-crud h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: rgb(0, 0, 0);
 }
 
 .juez-crud form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
 .juez-crud input {
-  padding: 0.5rem;
-  font-size: 1rem;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-.juez-crud button {
-  margin-left: 5px 10px;
-  padding: 0.5rem;
+.juez-crud button[type="submit"] {
+  grid-column: span 2;
+  padding: 12px;
+  background-color: rgb(#dc3545);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.juez-crud button[type="submit"]:hover {
+  background-color: #087;
 }
 
 .juez-crud ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .juez-crud li {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ccc;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.juez-crud li span {
+  flex: 1 1 100%;
+  margin-bottom: 5px;
+}
+
+.juez-crud li button {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.juez-crud li button:first-of-type {
+  background-color: #3498db;
+  color: white;
+}
+
+.juez-crud li button:first-of-type:hover {
+  background-color: #2980b9;
+}
+
+.juez-crud li button:last-of-type {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.juez-crud li button:last-of-type:hover {
+  background-color: #c0392b;
 }

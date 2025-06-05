@@ -82,7 +82,7 @@ const EstadisticaEquipoCrud = () => {
 
   return (
       <div className="estadistica-crud">
-        <h2>{editandoId ? "Editar Estadística" : "Nueva Estadística"}</h2>
+        <h2>{editandoId ? "Editar Estadística" : "Estadísticas"}</h2>
 
         <form onSubmit={manejarSubmit} className="formulario-estadistica">
   <label>Equipo ID

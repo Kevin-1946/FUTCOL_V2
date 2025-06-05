@@ -89,7 +89,7 @@
   opacity: 0.9;
 }
 
-/* 🌐 Responsive design para móviles */
+/* Responsive */
 @media (max-width: 768px) {
   .encuentro-crud {
     padding: 1.5rem;
