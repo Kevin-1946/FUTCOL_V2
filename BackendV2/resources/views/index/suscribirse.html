@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Formulario de Suscripción</title>
+        <link rel="stylesheet" href="futcolStyles.css">
+    </head>
+    <body id="suscripcion1">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="futcol.html">Inicio</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="suscripcion">
+            <h4>Suscripción</h4>
+            <form action="../../controlador/suscripcion.php" method="POST">
+                <label for="documento">Tipo de documento</label><br>
+                <select name="documento" id="documento" class="control">
+                    <option value="Cedula de ciudadania">Cédula de ciudadanía</option>
+                    <option value="Tarjeta de identidad">Tarjeta de identidad</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                </select>
+                <input class="control" type="text" name="documento_colombia" id="numero_documento" placeholder="Ingrese número de documento" required>
+                <label for="genero">Género</label><br>
+                <select name="genero" id="genero" class="control">
+                    <option value="hombre">Hombre</option>
+                    <option value="mujer">Mujer</option>
+                    <option value="otro">Otro</option>
+                </select>
+                <input class="control" type="text" name="nombres" id="nombres" placeholder="Ingrese nombre" required>
+                <input class="control" type="text" name="apellidos" id="apellidos" placeholder="Ingrese apellidos" required>
+                <input class="control" type="number" name="edad" id="edad" placeholder="Ingrese edad" required>
+                <label for="email">Correo electrónico:</label>
+                <input class="control" type="email" id="email" name="email" placeholder="example@domain.com" required><br>
+                <label for="password">Crear Contraseña:</label>
+                <input class="control" type="password" id="password" name="password" required><br>
+                <label for="confirmar_contraseña">Confirmar Contraseña:</label>
+                <input class="control" type="password" id="confirmar_contraseña" name="confirmar_contraseña" required>
+                <p>Estoy de acuerdo <a href="#">Términos y Condiciones</a></p>
+                <input class="boton" type="submit" value="Registrar">
+                <p><a href="login_participante.html">¿Ya tengo cuenta?</a></p>
+            </form>
+        </section>
+    </body>
+</html>

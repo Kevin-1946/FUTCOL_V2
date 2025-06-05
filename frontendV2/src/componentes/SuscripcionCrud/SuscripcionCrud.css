@@ -1,0 +1,69 @@
+.suscripciones-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: white; /* Mejora la visibilidad */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.suscripcion-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.suscripcion-form input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.suscripcion-form button {
+    padding: 8px 16px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.suscripcion-form button:hover {
+    background-color: #218838;
+}
+
+.suscripcion-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.suscripcion-table th,
+.suscripcion-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.suscripcion-table th {
+    background-color: #f8f9fa;
+}
+
+.suscripcion-table button {
+    margin: 0 5px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.suscripcion-table button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+.suscripcion-table button:last-child {
+    background-color: #dc3545;
+    color: white;
+}

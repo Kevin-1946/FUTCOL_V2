@@ -1,0 +1,44 @@
+.jugadores-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.jugadores-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.jugadores-form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.jugadores-form button {
+  padding: 10px;
+  background-color: #0a8;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #f0f0f0;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+button {
+  margin-right: 5px;
+}

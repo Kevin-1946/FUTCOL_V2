@@ -1,0 +1,84 @@
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* General */
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* evita scroll */
+  font-family: Arial, sans-serif;
+}
+
+/* Contenedor principal debajo del navbar */
+.futcol-container {
+  position: fixed; /* Se asegura que ocupe toda la ventana */
+  top: 60px; /* Ajusta si tu navbar tiene otro alto */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 60px); /* Resta el alto del navbar */
+  background-image: url("/assets/imagenes/fondo_inicio.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: -1; /* Detrás del contenido */
+}
+
+.futcol-container {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Overlay blanco translúcido */
+.futcol-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 0;
+}
+
+/* Contenido centrado */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1rem;
+  max-width: 90vw;
+}
+
+/* Estilos del título */
+.bienvenida {
+  font-size: 2.5rem;
+  color: #000;
+  text-shadow: 2px 2px 5px #fff;
+}
+
+/* Logo centrado */
+.logo-central {
+  width: 260px;
+  max-width: 90vw;
+  margin: 1.5rem 0;
+}
+
+/* Texto inferior */
+.descripcion {
+  font-size: 1.2rem;
+  color: #000;
+  text-shadow: 1px 1px 3px #fff;
+  max-width: 600px;
+  margin: 0 auto;
+}

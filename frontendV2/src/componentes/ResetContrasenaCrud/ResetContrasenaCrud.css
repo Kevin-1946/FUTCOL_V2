@@ -1,0 +1,61 @@
+.reset-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.formulario label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.formulario input {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.formulario button {
+  padding: 0.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.formulario button:hover {
+  background-color: #2980b9;
+}
+
+.verificado {
+  background-color: #dff0d8;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.mensaje {
+  color: green;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
