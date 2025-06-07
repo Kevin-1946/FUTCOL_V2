@@ -4,25 +4,35 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder
+class AdminUserSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // Ejecuta el seeder de roles
-        $this->call([
-            RolesTableSeeder::class,
-        ]);
+        $adminRole = Role::where('nombre', 'administrador')->first();
+        $capitanRole = Role::where('nombre', 'capitan')->first();
 
-        // Crea un usuario de prueba con rol de admin (role_id = 1)
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password123'), //Contraseña Password hasheado
-            'role_id' => 1, // Admin
-        ]);
+        // ✅ Solo crear si NO existe
+        if (!User::where('email', 'admin@torneo.com')->exists()) {
+            User::create([
+                'name' => 'Administrador',
+                'email' => 'admin@torneo.com',
+                'password' => Hash::make('admin123'),
+                'role_id' => $adminRole->id,
+                'email_verified_at' => now(),
+            ]);
+        }
+
+        if (!User::where('email', 'capitan@torneo.com')->exists()) {
+            User::create([
+                'name' => 'Capitán Prueba',
+                'email' => 'capitan@torneo.com', 
+                'password' => Hash::make('capitan123'),
+                'role_id' => $capitanRole->id,
+                'email_verified_at' => now(),
+            ]);
+        }
     }
 }
