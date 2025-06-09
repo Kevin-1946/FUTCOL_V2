@@ -13,9 +13,15 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('n_documento')->unique();
             $table->date('fecha_nacimiento');
-            $table->foreignId('equipo_id')->constrained('equipos')->onDelete('cascade');
             $table->string('email')->unique();
             $table->string('password');
+            
+            // ✅ OPCIONAL: Vincular con User si quieres conectar ambos sistemas
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            
+            // ✅ NULLABLE para evitar dependencia circular
+            $table->foreignId('equipo_id')->nullable()->constrained('equipos')->onDelete('set null');
+            
             $table->timestamps();
         });
     }

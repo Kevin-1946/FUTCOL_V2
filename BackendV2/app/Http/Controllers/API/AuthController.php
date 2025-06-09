@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Jugador;
 use App\Models\Equipo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,37 +17,61 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email|unique:jugadores,email',
             'password' => 'required|string|min:6|confirmed',
             'equipo_nombre' => 'required|string|max:255',
+            'n_documento' => 'required|string|unique:jugadores,n_documento',
+            'fecha_nacimiento' => 'required|date',
         ]);
 
-        // Crear usuario con rol de capitán (role_id = 2)
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => 2, // Capitán
-        ]);
+        try {
+            // 1. Crear usuario con rol de capitán (role_id = 2)
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id' => 2, // Capitán
+            ]);
 
-        // Crear equipo y asociar al capitán
-        $equipo = Equipo::create([
-            'nombre' => $request->equipo_nombre,
-            'capitan_id' => $user->id,
-        ]);
+            // 2. Crear jugador (el capitán también es jugador)
+            $jugador = Jugador::create([
+                'nombre' => $request->name,
+                'n_documento' => $request->n_documento,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        // Asignar equipo al usuario (si tienes `equipo_id` en `users`)
-        $user->equipo_id = $equipo->id;
-        $user->save();
+            // 3. Crear equipo con capitán correcto
+            $equipo = Equipo::create([
+                'nombre' => $request->equipo_nombre,
+                'capitan_id' => $jugador->id, // ✅ CORREGIDO: apunta al Jugador
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            // 4. Asignar equipo al jugador
+            $jugador->equipo_id = $equipo->id;
+            $jugador->save();
 
-        return response()->json([
-            'message' => 'Registro exitoso',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user->load('role', 'equipo'),
-        ], 201);
+            // 5. Asignar equipo al usuario
+            $user->equipo_id = $equipo->id;
+            $user->save();
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Registro exitoso',
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user->load('role', 'equipo'),
+                'jugador' => $jugador->load('equipo'),
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error en el registro',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // 🔐 Login
@@ -92,7 +117,7 @@ class AuthController extends Controller
         );
     }
 
-    // 🔁 Verificar sesión activa (opcional)
+    // 🔁 Verificar sesión activa
     public function refresh(Request $request)
     {
         return response()->json([
