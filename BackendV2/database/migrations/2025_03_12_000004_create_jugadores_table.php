@@ -15,6 +15,10 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->string('email')->unique();
             $table->string('password');
+
+            // Role como string (más legible)
+            $table->enum('role', ['administrador', 'capitan', 'participante'])->default('participante');
+            
             
             // ✅ OPCIONAL: Vincular con User si quieres conectar ambos sistemas
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');

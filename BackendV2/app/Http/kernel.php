@@ -43,8 +43,13 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // 👉 Aquí registras tu middleware personalizado:
-        'admin' => \App\Http\Middleware\IsAdmin::class,
-        'capitan' => \App\Http\Middleware\IsCapitan::class,
+
+        // === MIDDLEWARES PERSONALIZADOS PARA TU APLICACIÓN ===
+        'role' => \App\Http\Middleware\CheckRole::class,
+        'team.owner' => \App\Http\Middleware\CheckTeamOwner::class,
+
+        'check.administrador' => \App\Http\Middleware\CheckAdministrador::class,
+        'check.capitan' => \App\Http\Middleware\CheckCapitan::class,
+        'check.participante' => \App\Http\Middleware\CheckParticipante::class,
     ];
-}   
+}
