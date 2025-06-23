@@ -64,6 +64,7 @@ const EncuentrosCrud = () => {
   };
 
   return (
+    <div className="page-container">
       <div className="encuentro-crud">
         <h2>Encuentros</h2>
         <form onSubmit={handleSubmit}>
@@ -132,6 +133,7 @@ const EncuentrosCrud = () => {
           ))}
         </ul>
       </div>
+    </div>
   );
 };
 

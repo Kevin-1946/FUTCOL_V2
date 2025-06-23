@@ -50,6 +50,7 @@ const ResetContrasenaCrud = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="reset-container">
       <h2>Gestión de Reset de Contraseña</h2>
 
@@ -85,6 +86,7 @@ const ResetContrasenaCrud = () => {
       {mensaje && <p className="mensaje">{mensaje}</p>}
       {error && <p className="error">{error}</p>}
     </div>
+  </div>
   );
 };
 

@@ -26,67 +26,45 @@ const SobreNosotros = () => {
   ];
 
   return (
-    <>
-      <div
-        className="sobre-nosotros-section"
-        style={{
-          position: "relative",
-          backgroundImage: `url(${fondo_nosotros})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          minHeight: "100vh",
-          paddingTop: "30px", // Ajustado para header
-          paddingBottom: "2rem",
-        }}
-      >
-        {/* Capa oscura sobre el fondo */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
-            zIndex: 0,
-          }}
-        ></div>
+    
+    <div
+      className="sobre-nosotros-section full-width"
+      style={{
+        backgroundImage: `url(${fondo_nosotros})`,
+      }}
+    >
+      {/* Capa oscura sobre el fondo */}
+      <div className="sobre-nosotros-overlay"></div>
 
-        {/* Contenido */}
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <h1 className="text-center text-white mb-5">Sobre Nosotros</h1>
+      {/* Contenido */}
+      <div className="sobre-nosotros-content">
+        <h1 className="sobre-nosotros-title">Sobre Nosotros</h1>
 
-          <div className="container">
-            {data.map((item, index) => (
-              <div
-                key={index}
-                className={`row align-items-center mb-5 flex-md-row ${
-                  index % 2 !== 0 ? "flex-md-row-reverse" : ""
-                }`}
-              >
-                <div className="col-md-6 text-center mb-3 mb-md-0">
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    style={{
-                      maxWidth: "45%",
-                      height: "auto",
-                      borderRadius: "12px",
-                      boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
-                    }}
-                  />
-                </div>
-                <div
-                  className="col-md-6 p-4 bg-white text-black rounded shadow"
-                >
-                  <h2>{item.title}</h2>
-                  <p>{item.text}</p>
-                </div>
+        <div className="sobre-nosotros-items">
+          {data.map((item, index) => (
+            <div
+              key={index}
+              className={`sobre-nosotros-item ${
+                index % 2 !== 0 ? "reverse" : ""
+              }`}
+            >
+              <div className="sobre-nosotros-image-container">
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="sobre-nosotros-image"
+                />
               </div>
-            ))}
-          </div>
+              <div className="sobre-nosotros-text">
+                <h2>{item.title}</h2>
+                <p>{item.text}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 export default SobreNosotros;
-

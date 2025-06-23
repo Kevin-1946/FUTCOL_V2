@@ -1,3 +1,7 @@
+/* ========================================
+   CONTENEDOR CRUD DE SEDES
+   ======================================== */
+
 .sede-crud {
   max-width: 700px;
   margin: 2rem auto;
@@ -5,7 +9,12 @@
   background-color: #fdfdfd;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box; /* ✅ Evita que el padding sume al ancho total */
 }
+
+/* ========================================
+   ENCABEZADO
+   ======================================== */
 
 .sede-crud h2 {
   text-align: center;
@@ -13,6 +22,10 @@
   margin-bottom: 1.5rem;
   color: #222;
 }
+
+/* ========================================
+   FORMULARIO
+   ======================================== */
 
 .sede-crud form {
   display: grid;
@@ -26,6 +39,7 @@
   font-size: 0.95rem;
   border: 1px solid #ccc;
   border-radius: 6px;
+  box-sizing: border-box; /* ✅ Protección local */
 }
 
 .sede-crud button[type="submit"] {
@@ -44,6 +58,10 @@
   background-color: #0056b3;
 }
 
+/* ========================================
+   LISTA DE ELEMENTOS
+   ======================================== */
+
 .sede-crud ul {
   list-style: none;
   padding: 0;
@@ -59,7 +77,18 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  box-sizing: border-box;
 }
+
+.sede-crud li > div {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ========================================
+   BOTONES DE ACCIÓN EN LISTA
+   ======================================== */
 
 .sede-crud li button {
   padding: 0.4rem 0.75rem;
@@ -83,12 +112,10 @@
   opacity: 0.9;
 }
 
-.sede-crud li > div {
-  display: flex;
-  gap: 0.5rem;
-}
+/* ========================================
+   RESPONSIVE
+   ======================================== */
 
-/* 🌐 Responsive */
 @media (max-width: 768px) {
   .sede-crud {
     padding: 1.5rem;

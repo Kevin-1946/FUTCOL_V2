@@ -6,6 +6,7 @@ const Navigation = () => {
     const { canViewStats, canInscribeTeam, canManageSystem } = usePermissions();
 
     return (
+        <div className="page-container">
         <nav>
             {canViewStats() && (
                 <Link to="/estadisticas">Estadísticas</Link>
@@ -19,6 +20,7 @@ const Navigation = () => {
                 <Link to="/admin">Panel de Administración</Link>
             )}
         </nav>
+        </div>
     );
 };
 

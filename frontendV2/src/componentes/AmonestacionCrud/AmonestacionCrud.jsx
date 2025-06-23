@@ -76,79 +76,81 @@ const AmonestacionesCrud = () => {
   };
 
   return (
-    <div className="amonestacion-crud">
-      <h2>Amonestaciones</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          name="jugador_id"
-          placeholder="ID Jugador"
-          value={form.jugador_id}
-          onChange={handleChange}
-        />
-        <input
-          name="equipo_id"
-          placeholder="ID Equipo"
-          value={form.equipo_id}
-          onChange={handleChange}
-        />
-        <input
-          name="encuentro_id"
-          placeholder="ID Encuentro"
-          value={form.encuentro_id}
-          onChange={handleChange}
-        />
-        <input
-          name="numero_camiseta"
-          placeholder="Número Camiseta"
-          value={form.numero_camiseta}
-          onChange={handleChange}
-        />
-        <label>
+    <div className="page-container">
+      <div className="amonestacion-crud">
+        <h2>Amonestaciones</h2>
+        <form onSubmit={handleSubmit}>
           <input
-            type="checkbox"
-            name="tarjeta_roja"
-            checked={form.tarjeta_roja}
+            name="jugador_id"
+            placeholder="ID Jugador"
+            value={form.jugador_id}
             onChange={handleChange}
           />
-          Roja
-        </label>
-        <label>
           <input
-            type="checkbox"
-            name="tarjeta_amarilla"
-            checked={form.tarjeta_amarilla}
+            name="equipo_id"
+            placeholder="ID Equipo"
+            value={form.equipo_id}
             onChange={handleChange}
           />
-          Amarilla
-        </label>
-        <label>
           <input
-            type="checkbox"
-            name="tarjeta_azul"
-            checked={form.tarjeta_azul}
+            name="encuentro_id"
+            placeholder="ID Encuentro"
+            value={form.encuentro_id}
             onChange={handleChange}
           />
-          Azul
-        </label>
-        <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
-      </form>
+          <input
+            name="numero_camiseta"
+            placeholder="Número Camiseta"
+            value={form.numero_camiseta}
+            onChange={handleChange}
+          />
+          <label>
+            <input
+              type="checkbox"
+              name="tarjeta_roja"
+              checked={form.tarjeta_roja}
+              onChange={handleChange}
+            />
+            Roja
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="tarjeta_amarilla"
+              checked={form.tarjeta_amarilla}
+              onChange={handleChange}
+            />
+            Amarilla
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="tarjeta_azul"
+              checked={form.tarjeta_azul}
+              onChange={handleChange}
+            />
+            Azul
+          </label>
+          <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
+        </form>
 
-      <ul>
-        {amonestaciones.map((a) => (
-          <li key={a.id}>
-            Jugador: {a.jugador?.nombre || a.jugador_id} | Camiseta #{a.numero_camiseta}
-            <br />
-            Tarjetas:{" "}
-            {a.tarjeta_roja ? "🟥 " : ""}
-            {a.tarjeta_amarilla ? "🟨 " : ""}
-            {a.tarjeta_azul ? "🟦 " : ""}
-            <div>
-              <button onClick={() => handleEdit(a)}>Editar</button>
-              <button onClick={() => handleDelete(a.id)}>Eliminar</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+        <ul>
+          {amonestaciones.map((a) => (
+            <li key={a.id}>
+              Jugador: {a.jugador?.nombre || a.jugador_id} | Camiseta #{a.numero_camiseta}
+              <br />
+              Tarjetas:{" "}
+              {a.tarjeta_roja ? "🟥 " : ""}
+              {a.tarjeta_amarilla ? "🟨 " : ""}
+              {a.tarjeta_azul ? "🟦 " : ""}
+              <div>
+                <button onClick={() => handleEdit(a)}>Editar</button>
+                <button onClick={() => handleDelete(a.id)}>Eliminar</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

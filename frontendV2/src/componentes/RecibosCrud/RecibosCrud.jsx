@@ -82,6 +82,7 @@ const RecibosCrud = () => {
   };
 
   return (
+     <div className="page-container">
     <div>
       <h2>{editandoId ? "Editar Recibo" : "Nuevo Recibo"}</h2>
       <form onSubmit={manejarSubmit}>
@@ -177,6 +178,7 @@ const RecibosCrud = () => {
         </tbody>
       </table>
     </div>
+  </div>
   );
 };
 

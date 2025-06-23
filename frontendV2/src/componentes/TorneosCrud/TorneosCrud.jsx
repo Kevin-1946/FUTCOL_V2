@@ -65,6 +65,7 @@ const TorneosCrud = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="torneo-crud">
       <h2>Gestión de Torneos</h2>
       
@@ -123,6 +124,7 @@ const TorneosCrud = () => {
         ))}
       </div>
     </div>
+   </div> 
   );
 };
 

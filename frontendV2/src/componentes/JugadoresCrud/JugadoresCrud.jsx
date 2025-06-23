@@ -75,6 +75,7 @@ const JugadoresCrud = () => {
   };
 
   return (
+    <div className="page-container"> 
       <div className="jugadores-container">
         <h2>{editandoId ? "Editar Jugador" : "Nuevo Jugador"}</h2>
 
@@ -116,6 +117,7 @@ const JugadoresCrud = () => {
           </tbody>
         </table>
       </div>
+    </div>  
   );
 };
 

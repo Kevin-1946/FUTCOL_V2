@@ -1,9 +1,19 @@
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
+
 .torneo-crud {
   padding: 2rem;
   max-width: 1200px;
   margin: auto;
   color: white;
+  box-sizing: border-box; /* ✅ Controla padding + ancho */
+  overflow-x: hidden;      /* ✅ Evita desbordes por contenido interno */
 }
+
+/* ========================================
+   ENCABEZADO
+   ======================================== */
 
 .torneo-crud h2 {
   text-align: center;
@@ -11,12 +21,17 @@
   margin-bottom: 1.5rem;
 }
 
+/* ========================================
+   FORMULARIO
+   ======================================== */
+
 form {
   background-color: #f8f8f8;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 2rem;
   color: black;
+  box-sizing: border-box;
 }
 
 form input {
@@ -26,6 +41,7 @@ form input {
   font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 form button {
@@ -37,17 +53,24 @@ form button {
   margin-top: 0.5rem;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 form button:hover {
   background-color: #005fa3;
 }
 
+/* ========================================
+   GRILLA DE TORNEOS
+   ======================================== */
+
 .torneos-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   justify-content: center;
+  box-sizing: border-box;
+  overflow-x: hidden; /* ✅ Seguridad adicional */
 }
 
 .torneo-card {
@@ -61,11 +84,17 @@ form button:hover {
   display: flex;
   align-items: flex-end;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
+/* Efecto hover */
 .torneo-card:hover {
   transform: scale(1.05);
 }
+
+/* ========================================
+   OVERLAY Y CONTENIDO DE LA TARJETA
+   ======================================== */
 
 .torneo-overlay {
   background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
@@ -75,6 +104,7 @@ form button:hover {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  box-sizing: border-box;
 }
 
 .torneo-overlay h3 {
@@ -86,6 +116,10 @@ form button:hover {
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
+
+/* ========================================
+   BOTONES DENTRO DE LAS TARJETAS
+   ======================================== */
 
 .card-buttons {
   display: flex;
@@ -105,6 +139,7 @@ form button:hover {
   text-decoration: none;
   cursor: pointer;
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .card-buttons button:hover,

@@ -63,6 +63,7 @@ const Suscripciones = () => {
     };
 
     return (
+        <div className="page-container">
         <div className="suscripciones-container">
             <h2>Gestión de Suscripciones</h2>
             <form onSubmit={handleSubmit} className="suscripcion-form">
@@ -130,6 +131,7 @@ const Suscripciones = () => {
                 </tbody>
             </table>
         </div>
+       </div> 
     );
 };
 

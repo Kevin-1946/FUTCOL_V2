@@ -73,6 +73,7 @@ const LoginUsuariosCrud = () => {
   };
 
   return (
+    <div className="page-container">
       <div>
         <h2>{editandoId ? "Editar Login" : "Nuevo Login"}</h2>
 
@@ -118,6 +119,7 @@ const LoginUsuariosCrud = () => {
           </tbody>
         </table>
       </div>
+    </div>  
   );
 };
 

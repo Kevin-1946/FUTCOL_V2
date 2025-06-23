@@ -1,69 +1,94 @@
+/* ========================================
+   CONTENEDOR DE SUSCRIPCIONES
+   ======================================== */
+
 .suscripciones-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background-color: white; /* Mejora la visibilidad */
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* ✅ Prevenir overflow horizontal */
 }
 
+/* ========================================
+   FORMULARIO DE SUSCRIPCIÓN
+   ======================================== */
+
 .suscripcion-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .suscripcion-form input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 0; /* ✅ Evita que el input se desborde en algunos navegadores */
+  box-sizing: border-box;
 }
 
 .suscripcion-form button {
-    padding: 8px 16px;
-    background-color: #28a745;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 8px 16px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .suscripcion-form button:hover {
-    background-color: #218838;
+  background-color: #218838;
 }
 
+/* ========================================
+   TABLA DE SUSCRIPCIONES
+   ======================================== */
+
 .suscripcion-table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* ✅ Mejor comportamiento responsivo */
 }
 
 .suscripcion-table th,
 .suscripcion-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  word-break: break-word; /* ✅ Protege contra contenido largo */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .suscripcion-table th {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 .suscripcion-table button {
-    margin: 0 5px;
-    padding: 4px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  margin: 0 5px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.suscripcion-table button:hover {
+  opacity: 0.85;
 }
 
 .suscripcion-table button:first-child {
-    background-color: #007bff;
-    color: white;
+  background-color: #007bff;
+  color: white;
 }
 
 .suscripcion-table button:last-child {
-    background-color: #dc3545;
-    color: white;
+  background-color: #dc3545;
+  color: white;
 }

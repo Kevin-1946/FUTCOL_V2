@@ -71,6 +71,7 @@ const GolesCrud = () => {
   };
 
   return (
+    <div className="page-container"> 
       <div className="goles-crud">
         <h2>Goles por Jugador</h2>
         <form onSubmit={handleSubmit}>
@@ -114,6 +115,7 @@ const GolesCrud = () => {
           ))}
         </ul>
       </div>
+    </div>  
   );
 };
 

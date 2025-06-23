@@ -31,7 +31,7 @@
 .juez-crud button[type="submit"] {
   grid-column: span 2;
   padding: 12px;
-  background-color: rgb(#dc3545);
+  background-color:#dc3545;
   color: white;
   border: none;
   border-radius: 6px;

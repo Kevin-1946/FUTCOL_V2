@@ -82,6 +82,7 @@ const InscripcionesCrud = () => {
   };
 
   return (
+    <div className="page-container"> 
       <div className="inscripciones-crud">
         <h2>Inscripciones</h2>
         <form onSubmit={handleSubmit}>
@@ -120,6 +121,7 @@ const InscripcionesCrud = () => {
           ))}
         </ul>
       </div>
+    </div>  
   );
 };
 

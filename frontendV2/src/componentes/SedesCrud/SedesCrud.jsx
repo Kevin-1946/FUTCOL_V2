@@ -52,6 +52,7 @@ const SedesCrud = () => {
   };
 
   return (
+    <div className="page-container">
       <div className="sede-crud">
         <h2>Sedes</h2>
         <form onSubmit={handleSubmit}>
@@ -91,6 +92,7 @@ const SedesCrud = () => {
           ))}
         </ul>
       </div>
+    </div>  
   );
 };
 

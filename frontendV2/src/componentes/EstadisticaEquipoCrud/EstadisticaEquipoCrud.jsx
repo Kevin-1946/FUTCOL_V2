@@ -81,6 +81,7 @@ const EstadisticaEquipoCrud = () => {
   };
 
   return (
+    <div className="page-container"> 
       <div className="estadistica-crud">
         <h2>{editandoId ? "Editar Estadística" : "Estadísticas"}</h2>
 
@@ -159,6 +160,7 @@ const EstadisticaEquipoCrud = () => {
           </tbody>
         </table>
       </div>
+    </div>  
   );
 };
 

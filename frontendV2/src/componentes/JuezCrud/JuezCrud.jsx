@@ -58,6 +58,7 @@ const JuezCrud = () => {
   };
 
   return (
+    <div className="page-container"> 
       <div className="juez-crud">
         <h2>Jueces</h2>
         <form onSubmit={handleSubmit}>
@@ -101,6 +102,7 @@ const JuezCrud = () => {
           ))}
         </ul>
       </div>
+    </div>  
   );
 };
 
