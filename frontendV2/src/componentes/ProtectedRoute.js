@@ -10,10 +10,12 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     }
 
     if (!user) {
+        // Si no hay usuario autenticado, redirige al login
         return <Navigate to="/login" />;
     }
 
-    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role?.nombre)) {
+        // Si el rol del usuario no está permitido, redirige a una página de acceso no autorizado
         return <Navigate to="/unauthorized" />;
     }
 

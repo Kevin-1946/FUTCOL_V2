@@ -2,47 +2,56 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TorneoController;
-use App\Http\Controllers\EquipoController;
-use App\Http\Controllers\JugadorController;
-use App\Http\Controllers\PartidoController;
+
+// Controladores
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\TorneoController;
+use App\Http\Controllers\API\EquipoController;
+use App\Http\Controllers\API\JugadorController;
+use App\Http\Controllers\API\PartidoController;
+use App\Http\Controllers\API\SedeController;
+use App\Http\Controllers\API\SuscripcionController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
+| Aquí se registran todas las rutas expuestas por la API
+| con los respectivos middlewares según cada rol.
 */
 
-// Rutas de autenticación (públicas)
+// --------------------
+// RUTAS PÚBLICAS
+// --------------------
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Rutas públicas (sin autenticación)
 Route::get('/torneos', [TorneoController::class, 'index']);
 Route::get('/torneos/{torneo}', [TorneoController::class, 'show']);
 Route::get('/torneos/{torneo}/equipos', [EquipoController::class, 'equiposPorTorneo']);
+
 Route::get('/equipos', [EquipoController::class, 'index']);
 Route::get('/equipos/{equipo}', [EquipoController::class, 'show']);
+
 Route::get('/jugadores', [JugadorController::class, 'index']);
 Route::get('/jugadores/{jugador}', [JugadorController::class, 'show']);
 Route::get('/jugadores-sin-equipo', [JugadorController::class, 'jugadoresSinEquipo']);
 Route::get('/buscar-jugadores', [JugadorController::class, 'buscarJugadores']);
 
-// Rutas protegidas por autenticación (cualquier usuario autenticado)
+Route::get('/sedes', [SedeController::class, 'index']);
+Route::get('/suscripciones', [SuscripcionController::class, 'index']);
+
+// --------------------
+// RUTAS AUTENTICADAS
+// --------------------
 Route::middleware('auth:sanctum')->group(function () {
-    // Rutas de autenticación
+    // Autenticación
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    // Rutas de perfil personal (cualquier jugador autenticado)
+    // Perfil del jugador
     Route::get('/mi-perfil', [JugadorController::class, 'miPerfil']);
     Route::put('/mi-perfil', [JugadorController::class, 'actualizarMiPerfil']);
     Route::get('/mis-estadisticas', [JugadorController::class, 'misEstadisticas']);
@@ -50,51 +59,61 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/salir-del-equipo', [JugadorController::class, 'salirDelEquipo']);
 });
 
-// Rutas solo para ADMINISTRADORES
+// --------------------
+// RUTAS SOLO ADMINISTRADOR
+// --------------------
 Route::middleware(['auth:sanctum', 'check.administrador'])->group(function () {
-    // Gestión completa de torneos
+    // Torneos
     Route::post('/torneos', [TorneoController::class, 'store']);
     Route::put('/torneos/{torneo}', [TorneoController::class, 'update']);
     Route::delete('/torneos/{torneo}', [TorneoController::class, 'destroy']);
-    
-    // Gestión completa de jugadores
-    Route::post('/jugadores', [JugadorController::class, 'store']);
-    Route::put('/jugadores/{jugador}', [JugadorController::class, 'update']);
-    Route::delete('/jugadores/{jugador}', [JugadorController::class, 'destroy']);
-    
-    // Gestión completa de equipos
+
+    // Equipos
     Route::post('/equipos', [EquipoController::class, 'store']);
     Route::put('/equipos/{equipo}', [EquipoController::class, 'update']);
     Route::delete('/equipos/{equipo}', [EquipoController::class, 'destroy']);
-    
-    // Gestión de partidos (si tienes PartidoController)
+
+    // Jugadores
+    Route::post('/jugadores', [JugadorController::class, 'store']);
+    Route::put('/jugadores/{jugador}', [JugadorController::class, 'update']);
+    Route::delete('/jugadores/{jugador}', [JugadorController::class, 'destroy']);
+
+    // Partidos
     Route::apiResource('partidos', PartidoController::class);
+
+    // Sedes
+    Route::apiResource('sedes', SedeController::class)->except(['index', 'show']);
+
+    // Suscripciones
+    Route::apiResource('suscripciones', SuscripcionController::class)->except(['index', 'show']);
 });
 
-// Rutas solo para CAPITANES
+// --------------------
+// RUTAS SOLO CAPITÁN
+// --------------------
 Route::middleware(['auth:sanctum', 'check.capitan'])->group(function () {
-    // Gestión del equipo propio
     Route::get('/mi-equipo', [EquipoController::class, 'miEquipo']);
     Route::post('/equipos/{equipo}/agregar-jugador', [EquipoController::class, 'agregarJugador']);
     Route::delete('/equipos/{equipo}/jugadores/{jugador}', [EquipoController::class, 'removerJugador']);
     Route::put('/equipos/{equipo}/cambiar-capitan', [EquipoController::class, 'cambiarCapitan']);
-});
 
-// Rutas solo para PARTICIPANTES
-Route::middleware(['auth:sanctum', 'check.participante'])->group(function () {
-    // Los participantes pueden ver información básica
-    // (ya están cubiertas por las rutas públicas y de perfil personal)
-});
-
-// Rutas para CAPITANES y ADMINISTRADORES (usuarios con permisos elevados)
-Route::middleware(['auth:sanctum', 'check.capitan'])->group(function () {  // ← Usa tu middleware existente
+    // (Opcional) Ver jugadores de su equipo
     Route::get('/equipos/{equipo}/jugadores', function($equipoId) {
         $equipo = \App\Models\Equipo::with('jugadores')->findOrFail($equipoId);
         return response()->json($equipo->jugadores);
-    }); // ← Sin middleware adicional
+    });
 });
 
-// Rutas de fallback para manejo de errores
+// --------------------
+// RUTAS SOLO PARTICIPANTES
+// --------------------
+Route::middleware(['auth:sanctum', 'check.participante'])->group(function () {
+    // (Actualmente ya están cubiertas por rutas públicas y autenticadas)
+});
+
+// --------------------
+// RUTA POR DEFECTO (404)
+// --------------------
 Route::fallback(function () {
     return response()->json([
         'success' => false,

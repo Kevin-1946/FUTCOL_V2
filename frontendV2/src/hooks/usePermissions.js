@@ -5,7 +5,7 @@ const usePermissions = () => {
 
     const hasPermission = (allowedRoles) => {
         if (!user) return false;
-        return allowedRoles.includes(user.role);
+        return allowedRoles.includes(user.role?.nombre);  // Accede a user.role.nombre
     };
 
     const canViewStats = () => hasPermission(['admin', 'capitan', 'participante', 'publico']);

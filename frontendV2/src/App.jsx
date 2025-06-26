@@ -19,34 +19,41 @@ import Sede from "./paginas/torneos/sede";
 import Jugador from "./paginas/participantes/jugador";
 import Juez from "./paginas/participantes/juez";
 import Inscripciones from "./paginas/participantes/Inscripciones";
-import LoginUsuario from "./paginas/participantes/loginUsuario";
+import Login from "./paginas/participantes/Login.jsx";
 import ResetContrasena from "./paginas/participantes/ResetContrasena";
 import Suscripcion from "./paginas/participantes/suscripcion";
 
 // Administración
 import EstadisticaEquipo from "./paginas/administracion/estadisticaEquipo.jsx";
 import Recibo from "./paginas/administracion/recibo";
+import LoginUsuariosCrud from "./componentes/LoginUsuarioCrud/LoginUsuarioCrud.jsx"; // ✅ CRUD de inicios de sesión
 
 // Componentes
 import RutaProtegida from "./componentes/Proteccion/RutaProtegida.jsx";
 
-// Usuario simulado
-const usuarioActual = {
-  nombre: "Juan",
-  rol: "administrador" // puede ser "capitan", "usuario", o "administrador"
-};
+// Contexto de autenticación
+import { useAuth } from "./contexts/AuthContext.jsx";
+
+// Errores
+import Unauthorized from "./paginas/errores/Unauthorized";
 
 function App() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
   return (
     <Routes>
-      {/* TODAS las rutas usan Layout, incluyendo la de inicio */}
       <Route path="/" element={<Layout />}>
-        {/* Página de inicio como index */}
+        {/* Página de inicio */}
         <Route index element={<Futcol />} />
 
         {/* Páginas públicas */}
         <Route path="informacion/sobre_nosotros" element={<Nosotros />} />
-        <Route path="login_participante" element={<LoginUsuario />} />
+        <Route path="login" element={<Login />} />
+        <Route path="participantes/login" element={<Login />} />
         <Route path="suscribirse" element={<Suscripcion />} />
         <Route path="Reset_contrasena/:token" element={<ResetContrasena />} />
 
@@ -62,8 +69,24 @@ function App() {
         <Route
           path="participantes/Inscripciones"
           element={
-            <RutaProtegida rolesPermitidos={["capitan"]} usuario={usuarioActual}>
+            <RutaProtegida rolesPermitidos={["capitan"]} usuario={user}>
               <Inscripciones />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="participantes/juez"
+          element={
+            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+              <Juez />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="participantes/jugador"
+          element={
+            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+              <Jugador />
             </RutaProtegida>
           }
         />
@@ -72,35 +95,30 @@ function App() {
         <Route
           path="administracion/estadisticaEquipo"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={usuarioActual}>
+            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
               <EstadisticaEquipo />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="participantes/juez"
-          element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={usuarioActual}>
-              <Juez />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="participantes/jugador"
-          element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={usuarioActual}>
-              <Jugador />
             </RutaProtegida>
           }
         />
         <Route
           path="administracion/recibo"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={usuarioActual}>
+            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
               <Recibo />
             </RutaProtegida>
           }
         />
+        <Route
+          path="administracion/login-crud"
+          element={
+            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+              <LoginUsuariosCrud />
+            </RutaProtegida>
+          }
+        />
+
+        {/* Página de acceso denegado */}
+        <Route path="unauthorized" element={<Unauthorized />} />
       </Route>
     </Routes>
   );

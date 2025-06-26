@@ -45,7 +45,7 @@ class AuthController extends Controller
             // 3. Crear equipo con capitán correcto
             $equipo = Equipo::create([
                 'nombre' => $request->equipo_nombre,
-                'capitan_id' => $jugador->id, // ✅ CORREGIDO: apunta al Jugador
+                'capitan_id' => $jugador->id,
             ]);
 
             // 4. Asignar equipo al jugador

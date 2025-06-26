@@ -12,7 +12,7 @@
 .jugadores-container h3 {
   text-align: center;
   margin-bottom: 20px;
-  color: #0a8;
+  color: rgb(0, 0, 0);
 }
 
 .jugadores-form {

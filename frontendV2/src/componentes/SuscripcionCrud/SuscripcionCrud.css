@@ -1,15 +1,16 @@
-/* ========================================
-   CONTENEDOR DE SUSCRIPCIONES
-   ======================================== */
-
 .suscripciones-container {
   max-width: 800px;
   margin: auto;
   padding: 20px;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box; /* ✅ Prevenir overflow horizontal */
+  box-shadow: 0 4px 12px rgba(175, 39, 39, 0.1);
+  box-sizing: border-box;
+}
+
+.suscripciones-container h2 {
+  color: black;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 /* ========================================
@@ -28,7 +29,7 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  min-width: 0; /* ✅ Evita que el input se desborde en algunos navegadores */
+  min-width: 0; 
   box-sizing: border-box;
 }
 
@@ -61,7 +62,7 @@
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
-  word-break: break-word; /* ✅ Protege contra contenido largo */
+  word-break: break-word; 
   max-width: 100%;
   box-sizing: border-box;
 }

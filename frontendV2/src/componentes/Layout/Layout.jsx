@@ -55,7 +55,7 @@ const Layout = () => {
   ];
 
   const menuDerecha = [
-    { nombre: "Iniciar Sesión", ruta: "/login_participante" },
+    { nombre: "Iniciar Sesión", ruta: "/login" },
     { nombre: "Suscribirse", ruta: "/suscribirse" }
   ];
 

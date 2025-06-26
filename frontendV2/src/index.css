@@ -209,6 +209,65 @@ a:focus-visible {
 }
 
 /* ========================================
+   SECCIÓN LGIN
+   ======================================== */
+
+.login-page-wrapper {
+  display: flex;
+  max-width: none;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+}
+
+.login-form {
+  background-color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  width: 100vw;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1e3a8a;
+}
+
+.login-form input {
+  width: 100vw;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-form button:hover {
+  background: #1e40af;
+}
+
+.error-message {
+  color: rgb(255, 0, 0);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ========================================
    SECCIÓN SOBRE NOSOTROS
    ======================================== */
 
@@ -228,8 +287,6 @@ a:focus-visible {
   box-sizing: border-box;
   overflow-x: hidden;
 }
-
-
 
 .sobre-nosotros-content {
   position: relative;
@@ -361,6 +418,50 @@ a:focus-visible {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+/* ========================================
+   📄 PÁGINA Unauthorized
+   ======================================== */
+
+   /* Estilos globales para la página Unauthorized (Acceso Denegado) */
+.unauthorized {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* Ocupa toda la altura de la pantalla */
+  background-color: #f8f8f8;  /* Fondo claro */
+  color: #333;  /* Texto oscuro */
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.unauthorized h2 {
+  font-size: 2rem;
+  color: #e74c3c;  /* Rojo para resaltar el error */
+  margin-bottom: 1rem;
+}
+
+.unauthorized p {
+  font-size: 1.2rem;
+  color: #555;  /* Texto menos intenso */
+  margin-bottom: 2rem;
+}
+
+.unauthorized .back-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #3498db;  /* Azul de botón */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.unauthorized .back-button:hover {
+  background-color: #2980b9;  /* Azul más oscuro al pasar el mouse */
 }
 
 /* ========================================

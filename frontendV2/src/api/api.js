@@ -1,12 +1,11 @@
 import axios from "axios";
 
+// Crear la instancia de Axios
 const api = axios.create({
-  baseURL: "http://localhost:8000/api", // Asegúrate que tu backend corra ahí
-  withCredentials: true, // Solo si usas cookies para auth (ej. con Sanctum)
+  baseURL: "http://localhost:8000/api",  // Base URL de tu API backend
   headers: {
-    "Content-Type": "application/json",
-
-    Accept: "application/json",
+    "Content-Type": "application/json",  // Tipo de contenido JSON
+    Accept: "application/json",  // Espera una respuesta en formato JSON
   },
 });
 

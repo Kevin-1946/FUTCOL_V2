@@ -65,7 +65,7 @@ const Suscripciones = () => {
     return (
         <div className="page-container">
         <div className="suscripciones-container">
-            <h2>Gestión de Suscripciones</h2>
+            <h2>Suscripcion</h2>
             <form onSubmit={handleSubmit} className="suscripcion-form">
                 <input
                     type="number"
