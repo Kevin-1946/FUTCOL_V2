@@ -9,9 +9,9 @@ class RolesTableSeeder extends Seeder
 {
     public function run()
     {
-        // NO usar truncate() - usar firstOrCreate para evitar duplicados
-        Role::firstOrCreate(['nombre' => 'admin']);
-        Role::firstOrCreate(['nombre' => 'capitan']);
-        Role::firstOrCreate(['nombre' => 'participante']);
+        // Usar nombres con mayúscula inicial
+        Role::firstOrCreate(['nombre' => 'Administrador']);
+        Role::firstOrCreate(['nombre' => 'Capitan']);
+        Role::firstOrCreate(['nombre' => 'Participante']);
     }
-}
+}   

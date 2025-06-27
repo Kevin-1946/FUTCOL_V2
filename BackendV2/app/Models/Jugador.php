@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
 class Jugador extends Authenticatable
 {
@@ -17,6 +17,7 @@ class Jugador extends Authenticatable
         'email',
         'password',
         'equipo_id',
+        'user_id', // ✅ importante si ya lo estás usando en la migración
     ];
 
     protected $hidden = [
@@ -34,4 +35,10 @@ class Jugador extends Authenticatable
     {
         return $this->hasMany(Equipo::class, 'capitan_id');
     }
-}
+
+    // ✅ Relación con el modelo User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}   

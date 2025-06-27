@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';  // ✅ Importando el CSS
-import { BrowserRouter } from "react-router-dom";  // ✅ Importando Router
+import { BrowserRouter } from "react-router-dom"; 
 import { AuthProvider } from './contexts/AuthContext';  // Asegúrate de importar AuthProvider
 
 ReactDOM.createRoot(document.getElementById('root')).render(

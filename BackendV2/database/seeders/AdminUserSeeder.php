@@ -12,8 +12,8 @@ class AdminUserSeeder extends Seeder
     public function run()
     {
         // ✅ CORREGIDO: Buscar 'admin' en lugar de 'administrador'
-        $adminRole = Role::where('nombre', 'admin')->first();
-        $capitanRole = Role::where('nombre', 'capitan')->first();
+        $adminRole = Role::where('nombre', 'Administrador')->first();
+        $capitanRole = Role::where('nombre', 'Capitan')->first();
 
         // ✅ Solo crear si NO existe
         if (!User::where('email', 'admin@torneo.com')->exists()) {

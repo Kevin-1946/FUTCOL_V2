@@ -40,6 +40,7 @@ class AuthController extends Controller
                 'fecha_nacimiento' => $request->fecha_nacimiento,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'user_id' => $user->id, // Asocia el jugador con el usuario
             ]);
 
             // 3. Crear equipo con capitán correcto
@@ -56,13 +57,22 @@ class AuthController extends Controller
             $user->equipo_id = $equipo->id;
             $user->save();
 
+            $user->load('role', 'equipo');
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([
                 'message' => 'Registro exitoso',
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-                'user' => $user->load('role', 'equipo'),
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'equipo' => $user->equipo,
+                    'role' => [
+                        'nombre' => ucfirst(strtolower($user->role->nombre))
+                    ]
+                ],
                 'jugador' => $jugador->load('equipo'),
             ], 201);
 
@@ -90,12 +100,21 @@ class AuthController extends Controller
             ]);
         }
 
+        $user->load('role', 'equipo');
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user->load('role', 'equipo'),
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'equipo' => $user->equipo,
+                'role' => [
+                    'nombre' => ucfirst(strtolower($user->role->nombre))
+                ]
+            ]
         ]);
     }
 
@@ -112,17 +131,35 @@ class AuthController extends Controller
     // 👤 Perfil del usuario autenticado
     public function perfil(Request $request)
     {
-        return response()->json(
-            $request->user()->load('role', 'equipo')
-        );
+        $user = $request->user()->load('role', 'equipo');
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'equipo' => $user->equipo,
+            'role' => [
+                'nombre' => ucfirst(strtolower($user->role->nombre))
+            ]
+        ]);
     }
 
     // 🔁 Verificar sesión activa
     public function refresh(Request $request)
     {
+        $user = $request->user()->load('role', 'equipo');
+
         return response()->json([
             'message' => 'Sesión activa',
-            'user' => $request->user()->load('role', 'equipo')
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'equipo' => $user->equipo,
+                'role' => [
+                    'nombre' => ucfirst(strtolower($user->role->nombre))
+                ]
+            ]
         ]);
     }
 }

@@ -29,7 +29,7 @@ import Recibo from "./paginas/administracion/recibo";
 import LoginUsuariosCrud from "./componentes/LoginUsuarioCrud/LoginUsuarioCrud.jsx"; // ✅ CRUD de inicios de sesión
 
 // Componentes
-import RutaProtegida from "./componentes/Proteccion/RutaProtegida.jsx";
+import ProtectedRoute from "./componentes/ProtectedRoute.jsx";
 
 // Contexto de autenticación
 import { useAuth } from "./contexts/AuthContext.jsx";
@@ -67,27 +67,27 @@ function App() {
 
         {/* Participantes protegidos */}
         <Route
-          path="participantes/Inscripciones"
-          element={
-            <RutaProtegida rolesPermitidos={["capitan"]} usuario={user}>
-              <Inscripciones />
-            </RutaProtegida>
-          }
-        />
+            path="participantes/Inscripciones"
+            element={
+              <ProtectedRoute allowedRoles={["Capitan"]}>
+                <Inscripciones />
+              </ProtectedRoute>
+            }
+          />
         <Route
           path="participantes/juez"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+            <ProtectedRoute rolesPermitidos={["Administrador"]} usuario={user}>
               <Juez />
-            </RutaProtegida>
+            </ProtectedRoute>
           }
         />
         <Route
           path="participantes/jugador"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+            <ProtectedRoute rolesPermitidos={["Administrador"]} usuario={user}>
               <Jugador />
-            </RutaProtegida>
+            </ProtectedRoute>
           }
         />
 
@@ -95,30 +95,30 @@ function App() {
         <Route
           path="administracion/estadisticaEquipo"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+            <ProtectedRoute rolesPermitidos={["Administrador"]} usuario={user}>
               <EstadisticaEquipo />
-            </RutaProtegida>
+            </ProtectedRoute>
           }
         />
         <Route
           path="administracion/recibo"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+            <ProtectedRoute rolesPermitidos={["Administrador"]} usuario={user}>
               <Recibo />
-            </RutaProtegida>
+            </ProtectedRoute>
           }
         />
         <Route
           path="administracion/login-crud"
           element={
-            <RutaProtegida rolesPermitidos={["administrador"]} usuario={user}>
+            <ProtectedRoute rolesPermitidos={["Administrador"]} usuario={user}>
               <LoginUsuariosCrud />
-            </RutaProtegida>
+            </ProtectedRoute>
           }
         />
 
         {/* Página de acceso denegado */}
-        <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="/errores/unauthorized" element={<Unauthorized />} />
       </Route>
     </Routes>
   );

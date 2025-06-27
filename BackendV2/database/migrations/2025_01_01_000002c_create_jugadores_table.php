@@ -16,16 +16,15 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
 
-            // Role como string (más legible)
-            $table->enum('role', ['administrador', 'capitan', 'participante'])->default('participante');
+            // 👇 Rol como cadena con mayúscula inicial
+            $table->enum('role', ['Administrador', 'Capitan', 'Participante'])->default('Participante');
             
-            
-            // ✅ OPCIONAL: Vincular con User si quieres conectar ambos sistemas
+            // Relación opcional con User
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            
-            // ✅ NULLABLE para evitar dependencia circular
-            $table->foreignId('equipo_id')->nullable()->constrained('equipos')->onDelete('set null');
-            
+
+            // Relación opcional con Equipo
+            //$table->foreignId('equipo_id')->nullable()->constrained('equipos')->onDelete('set null');
+
             $table->timestamps();
         });
     }

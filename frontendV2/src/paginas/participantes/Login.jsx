@@ -24,11 +24,11 @@ const Login = () => {
       localStorage.setItem("token", access_token);
       localStorage.setItem("usuario", JSON.stringify(user));
 
-      if (user.role?.nombre === "admin") {
+      if (user.role?.nombre === "Administrador") {
         navigate("/administracion/estadisticaEquipo");
-      } else if (user.role?.nombre === "capitan") {
+      } else if (user.role?.nombre === "Capitan") {
         navigate("/participantes/Inscripciones");
-      } else if (user.role?.nombre === "participante") {
+      } else if (user.role?.nombre === "Participante") {
         navigate("/participantes/jugador");
       } else {
         alert("Rol no reconocido");

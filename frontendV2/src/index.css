@@ -427,6 +427,7 @@ a:focus-visible {
    /* Estilos globales para la página Unauthorized (Acceso Denegado) */
 .unauthorized {
   display: flex;
+  max-width: none;
   justify-content: center;
   align-items: center;
   height: 100vh;  /* Ocupa toda la altura de la pantalla */
