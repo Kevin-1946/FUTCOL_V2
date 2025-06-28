@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './layout.css';
-//import './navbar.css'; // Asegúrate de importar los estilos del navbar
+import { useAuth } from '../../contexts/AuthContext';
 
 const Layout = () => {
-  // Estados del navbar
   const [activeMenu, setActiveMenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // useEffect del layout original para detectar desbordamiento
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const elements = document.querySelectorAll('*');
     elements.forEach(el => {
@@ -18,7 +19,11 @@ const Layout = () => {
     });
   }, []);
 
-  // Datos del menú
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   const menuEstructurado = [
     { nombre: "Inicio", ruta: "/" },
     {
@@ -54,14 +59,45 @@ const Layout = () => {
     }
   ];
 
-  const menuDerecha = [
-    { nombre: "Iniciar Sesión", ruta: "/login" },
-    { nombre: "Suscribirse", ruta: "/suscribirse" }
-  ];
+  // Mostrar nombre según tipo de usuario logueado
+  const mostrarNombre = () => {
+  if (!user) return "";
+
+  const rol = user.role?.nombre?.toLowerCase();
+
+  if (rol === "administrador" || rol === "capitan") {
+    return user.role.nombre; // Solo muestra el rol
+  }
+
+  if (rol === "participante") {
+    return user.nombre || "Participante"; // Muestra nombre completo
+  }
+
+  return "Usuario"; // Fallback
+};
+
+    const menuDerecha = user
+    ? [
+        {
+          nombre: mostrarNombre(),
+          esEtiqueta: true
+        },
+        {
+          nombre: "Cerrar sesión",
+          accion: handleLogout,
+          esBoton: true
+        }
+      ]:
+    [
+      { nombre: "Iniciar Sesión",
+        ruta: "/login" },
+      { nombre: "Suscribirse", // <- esto se mostrará solo si NO hay usuario
+        ruta: "/suscribirse" }
+      
+    ];
 
   return (
     <div className="layout-container">
-      {/* Navbar integrado */}
       <nav className="navbar-container">
         <button className="menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
           ☰
@@ -90,15 +126,34 @@ const Layout = () => {
         </div>
 
         <div className={`navbar-actions ${mobileMenuOpen ? 'active' : ''}`}>
-          {menuDerecha.map((item, index) => (
-            <Link key={index} to={item.ruta} className="navbar-action-item">
-              {item.nombre}
-            </Link>
-          ))}
+          {menuDerecha.map((item, index) => {
+            if (item.esEtiqueta) {
+              return (
+                <span key={index} className="navbar-action-item etiqueta-rol">
+                  {item.nombre}
+                </span>
+              );
+            } else if (item.esBoton) {
+              return (
+                <button
+                  key={index}
+                  className="navbar-action-item"
+                  onClick={item.accion}
+                >
+                  {item.nombre}
+                </button>
+              );
+            } else {
+              return (
+                <Link key={index} to={item.ruta} className="navbar-action-item">
+                  {item.nombre}
+                </Link>
+              );
+            }
+          })}
         </div>
       </nav>
 
-      {/* Contenido principal */}
       <main className="main-content">
         <Outlet />
       </main>

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext"; // ✅ Ruta corregida
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ usamos login del contexto
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -15,24 +16,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8000/api/login", credentials, {
-        withCredentials: true,
-      });
-
-      const { access_token, user } = res.data;
-
-      localStorage.setItem("token", access_token);
-      localStorage.setItem("usuario", JSON.stringify(user));
-
-      if (user.role?.nombre === "Administrador") {
-        navigate("/administracion/estadisticaEquipo");
-      } else if (user.role?.nombre === "Capitan") {
-        navigate("/participantes/Inscripciones");
-      } else if (user.role?.nombre === "Participante") {
-        navigate("/participantes/jugador");
-      } else {
-        alert("Rol no reconocido");
-      }
+      await login(credentials); // ✅ esto actualiza el user en el contexto
+      navigate("/"); // ✅ redirige al inicio
     } catch (err) {
       setError("Correo o contraseña incorrectos.");
       console.error(err);
