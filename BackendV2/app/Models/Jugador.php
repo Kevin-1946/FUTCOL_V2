@@ -41,4 +41,4 @@ class Jugador extends Authenticatable
     {
         return $this->belongsTo(User::class);
     }
-}   
+}

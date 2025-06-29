@@ -22,7 +22,7 @@ class JuezController extends Controller
             'nombre' => 'required|string|max:255',
             'numero_de_contacto' => 'required|string|max:20',
             'correo' => 'required|email|unique:jueces,correo',
-            'sede_asignada' => 'required|string|max:255',
+            'sede_id' => 'nullable|exists:sedes,id',
         ]);
 
         $juez = Juez::create($request->all());
@@ -46,7 +46,7 @@ class JuezController extends Controller
             'nombre' => 'sometimes|required|string|max:255',
             'numero_de_contacto' => 'sometimes|required|string|max:20',
             'correo' => 'sometimes|required|email|unique:jueces,correo,' . $juez->id,
-            'sede_asignada' => 'sometimes|required|string|max:255',
+            'sede_id' => 'sometimes|required|string|max:255',
         ]);
 
         $juez->update($request->all());

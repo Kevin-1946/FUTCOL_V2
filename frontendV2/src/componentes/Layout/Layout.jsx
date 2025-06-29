@@ -8,6 +8,7 @@ const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { user, logout } = useAuth();
+  const rol = user?.role?.nombre?.toLowerCase();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,40 +25,89 @@ const Layout = () => {
     navigate("/login");
   };
 
-  const menuEstructurado = [
-    { nombre: "Inicio", ruta: "/" },
-    {
-      nombre: "Torneos",
-      ruta: "/torneos",
-      subitems: [
-        { nombre: "Amonestaciones", ruta: "/torneos/amonestacion" },
-        { nombre: "Encuentros", ruta: "/torneos/encuentros" },
-        { nombre: "Equipos", ruta: "/torneos/equipos" },
-        { nombre: "Goleadores", ruta: "/torneos/goles" },
-        { nombre: "Sedes", ruta: "/torneos/sede" }
-      ]
-    },
-    {
-      nombre: "Administración",
-      ruta: "/administracion",
-      subitems: [
-        { nombre: "Estadisticas por equipo", ruta: "/administracion/estadisticaEquipo" },
-        { nombre: "Recibos", ruta: "/administracion/recibo" }
-      ]
-    },
-    {
-      nombre: "Participantes",
-      ruta: "/participantes",
-      subitems: [
-        { nombre: "Jugadores", ruta: "/participantes/jugador" },
-        { nombre: "Jueces", ruta: "/participantes/juez" }
-      ]
-    },
-    {
-      nombre: "Información",
-      ruta: "/informacion/sobre_nosotros"
-    }
-  ];
+  const menuEstructurado = (() => {
+  if (!user) return [];
+
+  if (rol === "administrador") {
+    return [
+      { nombre: "Inicio", ruta: "/" },
+      {
+        nombre: "Torneos",
+        ruta: "/torneos",
+        subitems: [
+          { nombre: "Amonestaciones", ruta: "/admin/amonestaciones" },
+          { nombre: "Encuentros", ruta: "/admin/encuentros" },
+          { nombre: "Equipos", ruta: "/admin/equipos" },
+          { nombre: "Goleadores", ruta: "/admin/goles" },
+          { nombre: "Sedes", ruta: "/admin/sedes" },
+          { nombre: "Torneos", ruta: "/admin/torneos" },
+        ]
+      },
+      {
+        nombre: "Participantes",
+        ruta: "/participantes",
+        subitems: [
+          { nombre: "Jugadores", ruta: "/admin/jugadores" },
+          { nombre: "Jueces", ruta: "/admin/jueces" },
+          { nombre: "Estadísticas", ruta: "/admin/estadisticas" },
+          { nombre: "Recibos", ruta: "/admin/recibos" },
+          { nombre: "Inscripciones", ruta: "/admin/inscripciones" },
+          { nombre: "Usuarios", ruta: "/admin/usuarios" },
+        ]
+      },
+      { nombre: "Información", ruta: "/informacion/sobre_nosotros" }
+    ];
+  }
+
+  if (rol === "capitan") {
+    return [
+      { nombre: "Inicio", ruta: "/" },
+      {
+        nombre: "Torneos",
+        ruta: "/torneos",
+        subitems: [
+          { nombre: "Amonestaciones", ruta: "/torneos/amonestacion" },
+          { nombre: "Encuentros", ruta: "/torneos/encuentros" },
+          { nombre: "Equipos", ruta: "/torneos/equipos" },
+          { nombre: "Goleadores", ruta: "/torneos/goles" },
+          { nombre: "Sedes", ruta: "/torneos/sede" },
+          { nombre: "Estadísticas", ruta: "/torneos/estadisticas" },
+        ]
+      },
+      {
+        nombre: "Mi equipo",
+        ruta: "/capitan",
+        subitems: [
+          { nombre: "Jugadores", ruta: "/capitan/jugador" },
+          { nombre: "Inscripción", ruta: "/capitan/inscripciones" },
+          { nombre: "Recibo", ruta: "/capitan/recibo" },
+        ]
+      },
+      { nombre: "Información", ruta: "/informacion/sobre_nosotros" }
+    ];
+  }
+
+  if (rol === "participante") {
+    return [
+      { nombre: "Inicio", ruta: "/" },
+      {
+        nombre: "Torneos",
+        ruta: "/torneos",
+        subitems: [
+          { nombre: "Amonestaciones", ruta: "/torneos/amonestacion" },
+          { nombre: "Encuentros", ruta: "/torneos/encuentros" },
+          { nombre: "Equipos", ruta: "/torneos/equipos" },
+          { nombre: "Goleadores", ruta: "/torneos/goles" },
+          { nombre: "Sedes", ruta: "/torneos/sede" },
+          { nombre: "Estadísticas", ruta: "/torneos/estadisticas" },
+        ]
+      },
+      { nombre: "Información", ruta: "/informacion/sobre_nosotros" }
+    ];
+  }
+
+  return [];
+})();
 
   // Mostrar nombre según tipo de usuario logueado
   const mostrarNombre = () => {
@@ -91,7 +141,7 @@ const Layout = () => {
     [
       { nombre: "Iniciar Sesión",
         ruta: "/login" },
-      { nombre: "Suscribirse", // <- esto se mostrará solo si NO hay usuario
+      { nombre: "Suscribirse",
         ruta: "/suscribirse" }
       
     ];

@@ -1,0 +1,31 @@
+.recibo-container {
+  padding: 2rem;
+  background-color: #f0f4f8;
+}
+
+.recibo-titulo {
+  text-align: center;
+  font-size: 2rem;
+  color: #1a3c64;
+  margin-bottom: 1.5rem;
+}
+
+.recibo-cargando {
+  text-align: center;
+  color: #666;
+  margin-top: 2rem;
+}
+
+.recibo-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.recibo-item {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}

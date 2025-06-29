@@ -15,15 +15,12 @@ class Juez extends Model
         'nombre',
         'numero_de_contacto',
         'correo',
-        'sede_asignada',
+        'sede_id',
     ];
 
-    // Si quieres, aquí podrías definir relaciones si la tabla 'sede_asignada' es una clave foránea
-    // Por ejemplo, si 'sede_asignada' es el id de una sede, lo ideal sería cambiarlo a foreignId y relacionar:
-    /*
-    public function sede()
+    public function sede(): BelongsTo
     {
-        return $this->belongsTo(Sede::class, 'sede_asignada');
+        return $this->belongsTo(Sede::class, 'sede_id');
     }
-    */
+
 }

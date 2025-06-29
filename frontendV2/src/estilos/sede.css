@@ -1,0 +1,30 @@
+.sede-container {
+  padding: 2rem;
+  background-color: #f4f6f8;
+}
+
+.sede-title {
+  font-size: 1.8rem;
+  color: #1d3557;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sede-loading {
+  text-align: center;
+  color: #666;
+}
+
+.sede-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.sede-item {
+  background: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+}

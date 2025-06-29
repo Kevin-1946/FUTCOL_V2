@@ -10,8 +10,8 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     if (!user) return <Navigate to="/login" />;
 
     // Validación segura
-    const roleName = user?.role?.nombre?.toLowerCase(); // por si quieres manejarlo en minúsculas
-    const rolesPermitidos = allowedRoles.map(r => r.toLowerCase()); // opcional: para evitar problemas de mayúsculas
+    const roleName = user?.role?.nombre?.toLowerCase();
+    const rolesPermitidos = allowedRoles.map(r => r.toLowerCase());
 
     if (!roleName || !rolesPermitidos.includes(roleName)) {
         return <Navigate to="/errores/Unauthorized" />;

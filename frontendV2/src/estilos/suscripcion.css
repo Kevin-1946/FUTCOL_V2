@@ -1,0 +1,30 @@
+.suscripcion-container {
+  padding: 2rem;
+  background-color: #f4f4f4;
+}
+
+.suscripcion-title {
+  font-size: 1.8rem;
+  color: #1a237e;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.suscripcion-loading {
+  text-align: center;
+  color: #666;
+}
+
+.suscripcion-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.suscripcion-item {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
