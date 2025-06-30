@@ -9,11 +9,17 @@ const Jugador = () => {
   useEffect(() => {
     axios.get("/api/jugadores")
       .then((response) => {
-        setJugadores(response.data);
+        console.log("Respuesta jugadores:", response.data);
+        if (Array.isArray(response.data)) {
+          setJugadores(response.data);
+        } else {
+          setJugadores([]); // fallback por si la respuesta no es un array
+        }
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error al obtener jugadores:", error);
+        setJugadores([]); // asegurarse que no sea null
         setLoading(false);
       });
   }, []);
@@ -25,19 +31,23 @@ const Jugador = () => {
       {loading ? (
         <p className="jugador-cargando">Cargando jugadores...</p>
       ) : (
-        <div className="jugador-lista">
-          {jugadores.map((jugador) => (
-            <div key={jugador.id} className="jugador-item">
-              <h3>{jugador.nombre}</h3>
-              <p><strong>Documento:</strong> {jugador.n_documento}</p>
-              <p><strong>Fecha de nacimiento:</strong> {jugador.fecha_nacimiento}</p>
-              <p><strong>Email:</strong> {jugador.email}</p>
-              {jugador.equipo && (
-                <p><strong>Equipo:</strong> {jugador.equipo.nombre}</p>
-              )}
-            </div>
-          ))}
-        </div>
+        Array.isArray(jugadores) && jugadores.length > 0 ? (
+          <div className="jugador-lista">
+            {jugadores.map((jugador) => (
+              <div key={jugador.id} className="jugador-item">
+                <h3>{jugador.nombre}</h3>
+                <p><strong>Documento:</strong> {jugador.n_documento}</p>
+                <p><strong>Fecha de nacimiento:</strong> {jugador.fecha_nacimiento}</p>
+                <p><strong>Email:</strong> {jugador.email}</p>
+                {jugador.equipo && (
+                  <p><strong>Equipo:</strong> {jugador.equipo.nombre}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="jugador-cargando">No hay jugadores registrados.</p>
+        )
       )}
     </div>
   );

@@ -1,5 +1,10 @@
 .goles-container {
+  max-width: 800px;
+  margin: 2rem auto;
   padding: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 .titulo-seccion {
@@ -13,7 +18,6 @@
   width: 100%;
   border-collapse: collapse;
   margin: 0 auto;
-  max-width: 800px;
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;

@@ -1,5 +1,10 @@
 .equipos-container {
+  max-width: 1000px;              /* Centrado horizontal */
+  margin: 2rem auto;              /* Espacio arriba y abajo */
   padding: 2rem;
+  background-color: white;        /* Fondo blanco */
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 .titulo-seccion {

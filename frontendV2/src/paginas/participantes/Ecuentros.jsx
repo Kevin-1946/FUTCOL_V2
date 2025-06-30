@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getEncuentros } from "../../api/EncuentrosService";
+import { getEncuentros } from "../../api/EncuentroService";
 import ProtectedRoute from "../../componentes/ProtectedRoute";
 import "../../estilos/EncuentrosParticipante.css";
 

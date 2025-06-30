@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getEstadisticas } from "../../api/EstadisticasService";
+import { getEstadisticas } from "../../api/EstadisticaEquipoService";
 import ProtectedRoute from "../../componentes/ProtectedRoute";
 import "../../estilos/EstadisticaEquipoParticipante.css";
 

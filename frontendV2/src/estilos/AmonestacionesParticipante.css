@@ -1,7 +1,14 @@
 .amonestaciones-container {
+  max-width: 1000px;              /* Ancho máximo del contenido */
+  margin: 0 auto;                 /* Centrado horizontal */
   padding: 2rem;
+  background-color: white;        /* Fondo blanco */
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  margin-top: 2rem;               /* Separación desde el navbar */
 }
 
+/* Título centrado */
 .titulo-seccion {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -13,7 +20,6 @@
   width: 100%;
   border-collapse: collapse;
   margin: 0 auto;
-  max-width: 900px;
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;

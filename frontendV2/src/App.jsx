@@ -18,9 +18,7 @@ import Goles from "./paginas/participantes/Goles";
 import Inscripciones from "./paginas/participantes/Inscripciones";
 import Juez from "./paginas/participantes/Juez";
 import Jugador from "./paginas/participantes/Jugador";
-import LoginUsuario from "./paginas/participantes/LoginUsuario";
 import Recibo from "./paginas/participantes/Recibo";
-import ResetContrasena from "./paginas/participantes/ResetContrasena";
 import Sede from "./paginas/participantes/Sede";
 import Suscripcion from "./paginas/participantes/Suscripcion";
 import Torneos from "./paginas/participantes/Torneos";
@@ -31,7 +29,7 @@ import EncuentrosCrud from "./paginas/cruds/EncuentrosCrud";
 import EquiposCrud from "./paginas/cruds/EquiposCrud";
 import EstadisticaEquipoCrud from "./paginas/cruds/EstadisticaEquipoCrud";
 import GolesCrud from "./paginas/cruds/GolesCrud";
-import InscripcionCrud from "./paginas/cruds/InscripcionCrud";
+import InscripcionesCrud from "./paginas/cruds/InscripcionesCrud";
 import JuezCrud from "./paginas/cruds/JuezCrud";
 import JugadorCrud from "./paginas/cruds/JugadorCrud";
 import LoginUsuarioCrud from "./paginas/cruds/LoginUsuarioCrud";
@@ -65,7 +63,7 @@ function App() {
       <Route path="login" element={<Login />} />
       <Route path="participantes/login" element={<Login />} />
       <Route path="suscribirse" element={<Suscripcion />} />
-      <Route path="reset_contrasena/:token" element={<ResetContrasena />} />
+      <Route path="reset_contrasena/:token" element={<ResetContrasenaCrud />} />
       <Route path="informacion/sobre_nosotros" element={<Nosotros />} />
       <Route path="/errores/unauthorized" element={<Unauthorized />} />
 
@@ -152,7 +150,7 @@ function App() {
       />
       <Route
         path="admin/inscripciones"
-        element={<ProtectedRoute allowedRoles={["administrador"]}><InscripcionCrud /></ProtectedRoute>}
+        element={<ProtectedRoute allowedRoles={["administrador"]}><InscripcionesCrud /></ProtectedRoute>}
       />
       <Route
         path="admin/recibos"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAmonestaciones } from "../../api/AmonestacionesService";
+import { getAmonestaciones } from "../../api/AmonestacionService";
 import ProtectedRoute from "../../componentes/ProtectedRoute";
 import "../../estilos/AmonestacionesParticipante.css";
 
