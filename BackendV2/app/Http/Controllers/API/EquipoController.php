@@ -6,16 +6,46 @@ use App\Http\Controllers\Controller;
 use App\Models\Equipo;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ *     name="Equipos",
+ *     description="Operaciones relacionadas con los equipos"
+ * )
+ */
 class EquipoController extends Controller
 {
-    // Mostrar lista de equipos
+    /**
+     * @OA\Get(
+     *     path="/api/equipos",
+     *     summary="Mostrar lista de equipos",
+     *     tags={"Equipos"},
+     *     @OA\Response(response=200, description="Lista de equipos")
+     * )
+     */
     public function index()
     {
         $equipos = Equipo::with(['torneo', 'jugadores', 'capitan'])->get();
         return response()->json($equipos);
     }
 
-    // Crear un nuevo equipo
+    /**
+     * @OA\Post(
+     *     path="/api/equipos",
+     *     summary="Crear un nuevo equipo",
+     *     tags={"Equipos"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nombre","torneo_id"},
+     *             @OA\Property(property="nombre", type="string", example="Los Halcones"),
+     *             @OA\Property(property="torneo_id", type="integer", example=1),
+     *             @OA\Property(property="capitan_id", type="integer", example=5)
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Equipo creado exitosamente"),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -28,6 +58,90 @@ class EquipoController extends Controller
 
         return response()->json($equipo, 201);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/equipos/{id}",
+     *     summary="Mostrar un equipo específico",
+     *     tags={"Equipos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="ID del equipo"
+     *     ),
+     *     @OA\Response(response=200, description="Detalles del equipo"),
+     *     @OA\Response(response=404, description="Equipo no encontrado")
+     * )
+     */
+    public function show($id)
+    {
+        $equipo = Equipo::with(['torneo', 'jugadores', 'capitan'])->findOrFail($id);
+        return response()->json($equipo);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/equipos/{id}",
+     *     summary="Actualizar un equipo",
+     *     tags={"Equipos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="ID del equipo"
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nombre", type="string", example="Nuevo Nombre"),
+     *             @OA\Property(property="torneo_id", type="integer", example=2),
+     *             @OA\Property(property="capitan_id", type="integer", example=6)
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Equipo actualizado correctamente"),
+     *     @OA\Response(response=404, description="Equipo no encontrado")
+     * )
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'torneo_id' => 'sometimes|required|exists:torneos,id',
+            'capitan_id' => 'nullable|exists:jugadors,id',
+        ]);
+
+        $equipo = Equipo::findOrFail($id);
+        $equipo->update($request->all());
+
+        return response()->json($equipo);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/equipos/{id}",
+     *     summary="Eliminar un equipo",
+     *     tags={"Equipos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="ID del equipo"
+     *     ),
+     *     @OA\Response(response=204, description="Equipo eliminado exitosamente"),
+     *     @OA\Response(response=404, description="Equipo no encontrado")
+     * )
+     */
+    public function destroy($id)
+    {
+        $equipo = Equipo::findOrFail($id);
+        $equipo->delete();
+
+        return response()->json(null, 204);
+    }
+}
 
     // Mostrar un equipo específico
     public function show($id)

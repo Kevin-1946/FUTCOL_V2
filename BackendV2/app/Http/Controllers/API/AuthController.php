@@ -10,9 +10,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Tag(
+ *     name="Autenticación",
+ *     description="Operaciones relacionadas con el registro, inicio de sesión y gestión de usuarios autenticados"
+ * )
+ */
 class AuthController extends Controller
 {
-    // 🆕 Registro del capitán y su equipo
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Registrar un nuevo usuario capitán con su equipo",
+     *     tags={"Autenticación"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation","equipo_nombre","n_documento","fecha_nacimiento"},
+     *             @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *             @OA\Property(property="email", type="string", example="juan@example.com"),
+     *             @OA\Property(property="password", type="string", example="secret123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="secret123"),
+     *             @OA\Property(property="equipo_nombre", type="string", example="Los Tigres"),
+     *             @OA\Property(property="n_documento", type="string", example="123456789"),
+     *             @OA\Property(property="fecha_nacimiento", type="string", format="date", example="2000-01-01")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Registro exitoso"),
+     *     @OA\Response(response=500, description="Error en el registro")
+     * )
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -25,35 +52,30 @@ class AuthController extends Controller
         ]);
 
         try {
-            // 1. Crear usuario con rol de capitán (role_id = 2)
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role_id' => 2, // Capitán
+                'role_id' => 2,
             ]);
 
-            // 2. Crear jugador (el capitán también es jugador)
             $jugador = Jugador::create([
                 'nombre' => $request->name,
                 'n_documento' => $request->n_documento,
                 'fecha_nacimiento' => $request->fecha_nacimiento,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'user_id' => $user->id, // Asocia el jugador con el usuario
+                'user_id' => $user->id,
             ]);
 
-            // 3. Crear equipo con capitán correcto
             $equipo = Equipo::create([
                 'nombre' => $request->equipo_nombre,
                 'capitan_id' => $jugador->id,
             ]);
 
-            // 4. Asignar equipo al jugador
             $jugador->equipo_id = $equipo->id;
             $jugador->save();
 
-            // 5. Asignar equipo al usuario
             $user->equipo_id = $equipo->id;
             $user->save();
 
@@ -85,7 +107,23 @@ class AuthController extends Controller
         }
     }
 
-    // 🔐 Login
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Iniciar sesión de usuario",
+     *     tags={"Autenticación"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", example="juan@example.com"),
+     *             @OA\Property(property="password", type="string", example="secret123")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Inicio de sesión exitoso"),
+     *     @OA\Response(response=422, description="Credenciales incorrectas")
+     * )
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -120,7 +158,15 @@ class AuthController extends Controller
         ]);
     }
 
-    // 🚪 Logout
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Cerrar sesión del usuario autenticado",
+     *     tags={"Autenticación"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Sesión cerrada correctamente")
+     * )
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -130,7 +176,15 @@ class AuthController extends Controller
         ]);
     }
 
-    // 👤 Perfil del usuario autenticado
+    /**
+     * @OA\Get(
+     *     path="/api/perfil",
+     *     summary="Obtener el perfil del usuario autenticado",
+     *     tags={"Autenticación"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Perfil del usuario")
+     * )
+     */
     public function perfil(Request $request)
     {
         $user = $request->user()->load('role', 'equipo');
@@ -146,7 +200,15 @@ class AuthController extends Controller
         ]);
     }
 
-    // 🔁 Verificar sesión activa
+    /**
+     * @OA\Get(
+     *     path="/api/refresh",
+     *     summary="Verificar sesión activa",
+     *     tags={"Autenticación"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Sesión activa")
+     * )
+     */
     public function refresh(Request $request)
     {
         $user = $request->user()->load('role', 'equipo');

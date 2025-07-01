@@ -8,14 +8,42 @@ use Illuminate\Http\Request;
 
 class ReciboDePagoController extends Controller
 {
-    // Listar todos los recibos
+    /**
+     * @OA\Get(
+     *     path="/api/recibos",
+     *     summary="Listar todos los recibos de pago",
+     *     tags={"Recibos"},
+     *     @OA\Response(response=200, description="Lista de recibos de pago")
+     * )
+     */
     public function index()
     {
         $recibos = ReciboDePago::with(['suscripcion', 'torneo'])->get();
         return response()->json($recibos);
     }
 
-    // Crear un nuevo recibo
+    /**
+     * @OA\Post(
+     *     path="/api/recibos",
+     *     summary="Crear un nuevo recibo de pago",
+     *     tags={"Recibos"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"suscripcion_id", "torneo_id", "monto", "fecha_emision", "confirmado", "metodo_pago", "numero_comprobante"},
+     *             @OA\Property(property="suscripcion_id", type="integer", example=1),
+     *             @OA\Property(property="torneo_id", type="integer", example=1),
+     *             @OA\Property(property="monto", type="number", format="float", example=150000),
+     *             @OA\Property(property="fecha_emision", type="string", format="date", example="2024-10-01"),
+     *             @OA\Property(property="confirmado", type="boolean", example=true),
+     *             @OA\Property(property="metodo_pago", type="string", example="Transferencia"),
+     *             @OA\Property(property="numero_comprobante", type="string", example="ABC12345")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Recibo creado exitosamente"),
+     *     @OA\Response(response=422, description="Datos inválidos")
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -33,14 +61,43 @@ class ReciboDePagoController extends Controller
         return response()->json($recibo, 201);
     }
 
-    // Mostrar un recibo específico
+    /**
+     * @OA\Get(
+     *     path="/api/recibos/{id}",
+     *     summary="Mostrar un recibo de pago específico",
+     *     tags={"Recibos"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Información del recibo de pago"),
+     *     @OA\Response(response=404, description="Recibo no encontrado")
+     * )
+     */
     public function show($id)
     {
         $recibo = ReciboDePago::with(['suscripcion', 'torneo'])->findOrFail($id);
         return response()->json($recibo);
     }
 
-    // Actualizar un recibo
+    /**
+     * @OA\Put(
+     *     path="/api/recibos/{id}",
+     *     summary="Actualizar un recibo de pago",
+     *     tags={"Recibos"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="suscripcion_id", type="integer"),
+     *             @OA\Property(property="torneo_id", type="integer"),
+     *             @OA\Property(property="monto", type="number", format="float"),
+     *             @OA\Property(property="fecha_emision", type="string", format="date"),
+     *             @OA\Property(property="confirmado", type="boolean"),
+     *             @OA\Property(property="metodo_pago", type="string"),
+     *             @OA\Property(property="numero_comprobante", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Recibo actualizado exitosamente"),
+     *     @OA\Response(response=404, description="Recibo no encontrado")
+     * )
+     */
     public function update(Request $request, $id)
     {
         $recibo = ReciboDePago::findOrFail($id);
@@ -60,7 +117,16 @@ class ReciboDePagoController extends Controller
         return response()->json($recibo);
     }
 
-    // Eliminar un recibo
+    /**
+     * @OA\Delete(
+     *     path="/api/recibos/{id}",
+     *     summary="Eliminar un recibo de pago",
+     *     tags={"Recibos"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=204, description="Recibo eliminado exitosamente"),
+     *     @OA\Response(response=404, description="Recibo no encontrado")
+     * )
+     */
     public function destroy($id)
     {
         $recibo = ReciboDePago::findOrFail($id);

@@ -8,14 +8,39 @@ use Illuminate\Http\Request;
 
 class SuscripcionController extends Controller
 {
-    // Listar todas las suscripciones
+    /**
+     * @OA\Get(
+     *     path="/api/suscripciones",
+     *     summary="Listar todas las suscripciones",
+     *     tags={"Suscripciones"},
+     *     @OA\Response(response=200, description="Lista de suscripciones")
+     * )
+     */
     public function index()
     {
         $suscripciones = Suscripcion::with(['torneo', 'equipo', 'recibos'])->get();
         return response()->json($suscripciones);
     }
 
-    // Crear una nueva suscripción
+    /**
+     * @OA\Post(
+     *     path="/api/suscripciones",
+     *     summary="Crear una nueva suscripción",
+     *     tags={"Suscripciones"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"torneo_id", "equipo_id", "fecha_suscripcion", "estado"},
+     *             @OA\Property(property="torneo_id", type="integer", example=1),
+     *             @OA\Property(property="equipo_id", type="integer", example=1),
+     *             @OA\Property(property="fecha_suscripcion", type="string", format="date", example="2024-10-01"),
+     *             @OA\Property(property="estado", type="string", example="pendiente")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Suscripción creada exitosamente"),
+     *     @OA\Response(response=422, description="Datos inválidos")
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -30,14 +55,40 @@ class SuscripcionController extends Controller
         return response()->json($suscripcion, 201);
     }
 
-    // Mostrar una suscripción específica
+    /**
+     * @OA\Get(
+     *     path="/api/suscripciones/{id}",
+     *     summary="Mostrar una suscripción específica",
+     *     tags={"Suscripciones"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Información de la suscripción"),
+     *     @OA\Response(response=404, description="Suscripción no encontrada")
+     * )
+     */
     public function show($id)
     {
         $suscripcion = Suscripcion::with(['torneo', 'equipo', 'recibos'])->findOrFail($id);
         return response()->json($suscripcion);
     }
 
-    // Actualizar una suscripción
+    /**
+     * @OA\Put(
+     *     path="/api/suscripciones/{id}",
+     *     summary="Actualizar una suscripción",
+     *     tags={"Suscripciones"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="torneo_id", type="integer"),
+     *             @OA\Property(property="equipo_id", type="integer"),
+     *             @OA\Property(property="fecha_suscripcion", type="string", format="date"),
+     *             @OA\Property(property="estado", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Suscripción actualizada exitosamente"),
+     *     @OA\Response(response=404, description="Suscripción no encontrada")
+     * )
+     */
     public function update(Request $request, $id)
     {
         $suscripcion = Suscripcion::findOrFail($id);
@@ -54,7 +105,16 @@ class SuscripcionController extends Controller
         return response()->json($suscripcion);
     }
 
-    // Eliminar una suscripción
+    /**
+     * @OA\Delete(
+     *     path="/api/suscripciones/{id}",
+     *     summary="Eliminar una suscripción",
+     *     tags={"Suscripciones"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=204, description="Suscripción eliminada exitosamente"),
+     *     @OA\Response(response=404, description="Suscripción no encontrada")
+     * )
+     */
     public function destroy($id)
     {
         $suscripcion = Suscripcion::findOrFail($id);
