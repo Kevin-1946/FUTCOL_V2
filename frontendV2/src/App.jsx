@@ -3,6 +3,9 @@ import { Routes, Route } from "react-router-dom";
 // Layout
 import Layout from "./componentes/Layout/Layout";
 
+// Publicas
+import RegistroEquipoCapitan from './paginas/publico/RegistroEquipoCapitan';
+
 // Páginas de administracion
 import Futcol from "./paginas/administracion/futcol";
 import Login from "./paginas/administracion/Login.jsx";
@@ -60,6 +63,7 @@ function App() {
 
       {/* Página de inicio y públicas */}
       <Route index element={<Futcol />} />
+      <Route path="/suscribirse" element={<RegistroEquipoCapitan />} />
       <Route path="login" element={<Login />} />
       <Route path="participantes/login" element={<Login />} />
       <Route path="suscribirse" element={<Suscripcion />} />
@@ -68,10 +72,8 @@ function App() {
       <Route path="/errores/unauthorized" element={<Unauthorized />} />
 
       {/* PARTICIPANTE y CAPITÁN: Vistas solo lectura */}
-      <Route
-        path="torneos"
-        element={<ProtectedRoute allowedRoles={["participante", "capitan", "administrador"]}><Torneos /></ProtectedRoute>}
-      />
+      <Route path="torneos" element={<Torneos />} />
+      
       <Route
         path="torneos/amonestacion"
         element={<ProtectedRoute allowedRoles={["participante", "capitan", "administrador"]}><Amonestaciones /></ProtectedRoute>}

@@ -26,7 +26,13 @@ const Layout = () => {
   };
 
   const menuEstructurado = (() => {
-  if (!user) return [];
+  if (!user) {
+  return [
+    { nombre: "Inicio", ruta: "/" },
+    { nombre: "Torneos", ruta: "/torneos" }, // sin subitems
+    { nombre: "Información", ruta: "/informacion/sobre_nosotros" }
+  ];
+}
 
   if (rol === "administrador") {
     return [

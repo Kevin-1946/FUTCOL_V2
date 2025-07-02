@@ -7,8 +7,9 @@ const Suscripcion = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("/api/suscripciones") // Ajusta esta ruta si es necesario
+    axios.get("http://localhost:8000/api/suscripciones") // Ajusta esta ruta si es necesario
       .then((response) => {
+        console.log("Datos recibidos:", response.data);
         setSuscripciones(response.data);
         setLoading(false);
       })

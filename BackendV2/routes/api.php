@@ -15,6 +15,7 @@ use App\Http\Controllers\API\SuscripcionController;
 // --------------------
 // RUTAS PÚBLICAS
 // --------------------
+Route::post('/registro-equipo', [EquipoController::class, 'registrarEquipoCompleto']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
