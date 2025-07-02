@@ -8,7 +8,14 @@ use Illuminate\Http\Request;
 
 class TorneoController extends Controller
 {
-    // Listar todos los torneos con sus relaciones
+    /**
+     * @OA\Get(
+     *     path="/api/torneos",
+     *     summary="Listar todos los torneos con sus relaciones",
+     *     tags={"Torneos"},
+     *     @OA\Response(response=200, description="Lista de torneos")
+     * )
+     */
     public function index()
     {
         return response()->json(
@@ -16,7 +23,25 @@ class TorneoController extends Controller
         );
     }
 
-    // Crear un nuevo torneo
+    /**
+     * @OA\Post(
+     *     path="/api/torneos",
+     *     summary="Crear un nuevo torneo",
+     *     tags={"Torneos"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nombre", "categoria", "fecha_inicio", "fecha_fin"},
+     *             @OA\Property(property="nombre", type="string", example="Torneo Clausura 2024"),
+     *             @OA\Property(property="categoria", type="string", example="Sub-18"),
+     *             @OA\Property(property="fecha_inicio", type="string", format="date", example="2024-09-01"),
+     *             @OA\Property(property="fecha_fin", type="string", format="date", example="2024-12-01")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Torneo creado exitosamente"),
+     *     @OA\Response(response=422, description="Datos inválidos")
+     * )
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -30,14 +55,40 @@ class TorneoController extends Controller
         return response()->json($torneo, 201);
     }
 
-    // Mostrar un torneo específico con relaciones
+    /**
+     * @OA\Get(
+     *     path="/api/torneos/{id}",
+     *     summary="Mostrar un torneo específico con relaciones",
+     *     tags={"Torneos"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Información del torneo"),
+     *     @OA\Response(response=404, description="Torneo no encontrado")
+     * )
+     */
     public function show($id)
     {
         $torneo = Torneo::with(['equipos', 'sedes', 'suscripciones', 'recibosDePago', 'encuentros'])->findOrFail($id);
         return response()->json($torneo);
     }
 
-    // Actualizar un torneo
+    /**
+     * @OA\Put(
+     *     path="/api/torneos/{id}",
+     *     summary="Actualizar un torneo",
+     *     tags={"Torneos"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nombre", type="string"),
+     *             @OA\Property(property="categoria", type="string"),
+     *             @OA\Property(property="fecha_inicio", type="string", format="date"),
+     *             @OA\Property(property="fecha_fin", type="string", format="date")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Torneo actualizado exitosamente"),
+     *     @OA\Response(response=404, description="Torneo no encontrado")
+     * )
+     */
     public function update(Request $request, $id)
     {
         $torneo = Torneo::findOrFail($id);
@@ -53,7 +104,16 @@ class TorneoController extends Controller
         return response()->json($torneo);
     }
 
-    // Eliminar un torneo
+    /**
+     * @OA\Delete(
+     *     path="/api/torneos/{id}",
+     *     summary="Eliminar un torneo",
+     *     tags={"Torneos"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Torneo eliminado correctamente"),
+     *     @OA\Response(response=404, description="Torneo no encontrado")
+     * )
+     */
     public function destroy($id)
     {
         $torneo = Torneo::findOrFail($id);
