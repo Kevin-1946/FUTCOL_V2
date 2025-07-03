@@ -92,7 +92,7 @@ const RegistroEquipoCapitan = () => {
 
   return (
   <div className="registro-container">
-    <h2 className="titulo-suscripcion">📝Suscripción </h2>
+    <h2 className="titulo-suscripcion">Suscripción </h2>
 
     <form onSubmit={handleSubmit} className="registro-form">
       <fieldset>

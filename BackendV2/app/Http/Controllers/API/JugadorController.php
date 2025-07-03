@@ -146,5 +146,6 @@ class JugadorController extends Controller
         $jugador->delete();
 
         return response()->json(null, 204);
-    }
+    } 
+}
 
