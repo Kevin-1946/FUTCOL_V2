@@ -19,6 +19,7 @@ Route::post('/registro-equipo', [EquipoController::class, 'registrarEquipoComple
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Solo GET públicos para torneos
 Route::get('/torneos', [TorneoController::class, 'index']);
 Route::get('/torneos/{torneo}', [TorneoController::class, 'show']);
 Route::get('/torneos/{torneo}/equipos', [EquipoController::class, 'equiposPorTorneo']);
@@ -52,7 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
 // RUTAS SOLO ADMINISTRADOR
 // --------------------
 Route::middleware(['auth:sanctum', 'check.administrador'])->group(function () {
-    Route::apiResource('torneos', TorneoController::class)->except(['index', 'show']);
+    // Solo POST, PUT, DELETE para torneos (GET ya están arriba como públicos)
+    Route::apiResource('torneos', TorneoController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('equipos', EquipoController::class)->except(['index', 'show']);
     Route::apiResource('jugadores', JugadorController::class)->except(['index', 'show']);
     Route::apiResource('partidos', EncuentroController::class);

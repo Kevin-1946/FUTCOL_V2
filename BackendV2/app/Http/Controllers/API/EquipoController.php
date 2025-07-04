@@ -141,38 +141,6 @@ class EquipoController extends Controller
 
         return response()->json(null, 204);
     }
-}
-
-    // Mostrar un equipo específico
-    public function show($id)
-    {
-        $equipo = Equipo::with(['torneo', 'jugadores', 'capitan'])->findOrFail($id);
-        return response()->json($equipo);
-    }
-
-    // Actualizar un equipo
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nombre' => 'sometimes|required|string|max:255',
-            'torneo_id' => 'sometimes|required|exists:torneos,id',
-            'capitan_id' => 'nullable|exists:jugadors,id',
-        ]);
-
-        $equipo = Equipo::findOrFail($id);
-        $equipo->update($request->all());
-
-        return response()->json($equipo);
-    }
-
-    // Eliminar un equipo
-    public function destroy($id)
-    {
-        $equipo = Equipo::findOrFail($id);
-        $equipo->delete();
-
-        return response()->json(null, 204);
-    }
 
     // ===== MÉTODOS ADICIONALES =====
 
@@ -303,73 +271,73 @@ class EquipoController extends Controller
             'equipo' => $equipo->load(['jugadores', 'capitan'])
         ]);
     }
-    // 👇 Agrega esto al final del controlador EquipoController.php
-public function registrarEquipoCompleto(Request $request)
-{
-    $request->validate([
-        'nombre_equipo' => 'required|string|max:100|unique:equipos,nombre',
-        'torneo_id' => 'required|exists:torneos,id',
-        'capitan' => 'required|array',
-        'capitan.nombre' => 'required|string|max:100',
-        'capitan.correo' => 'required|email|unique:users,email',
-        'capitan.documento' => 'required|string|max:20',
-        'capitan.password' => 'required|string|min:6',
-        'jugadores' => 'required|array|min:6|max:8',
-        'jugadores.*.nombre' => 'required|string|max:100',
-        'jugadores.*.correo' => 'required|email',
-        'jugadores.*.documento' => 'required|string|max:20',
-    ]);
 
-    // 1. Crear el equipo
-    $equipo = \App\Models\Equipo::create([
-        'nombre' => $request->nombre_equipo,
-        'torneo_id' => $request->torneo_id,
-    ]);
-
-    // 2. Crear usuario para el capitán
-    $user = \App\Models\User::create([
-        'name' => $request->capitan['nombre'],
-        'email' => $request->capitan['correo'],
-        'password' => bcrypt($request->capitan['password']),
-        'equipo_id' => $equipo->id,
-    ]);
-    $user->roles()->attach(\App\Models\Role::where('nombre', 'capitan')->first()->id);
-
-    // 3. Crear capitán como jugador
-    $capitan = \App\Models\Jugador::create([
-        'nombre' => $request->capitan['nombre'],
-        'correo' => $request->capitan['correo'],
-        'documento' => $request->capitan['documento'],
-        'equipo_id' => $equipo->id,
-        'rol' => 'capitan',
-    ]);
-
-    // 4. Actualizar el ID del capitán en el equipo
-    $equipo->update(['capitan_id' => $capitan->id]);
-
-    // 5. Crear jugadores adicionales
-    foreach ($request->jugadores as $jugador) {
-        \App\Models\Jugador::create([
-            'nombre' => $jugador['nombre'],
-            'correo' => $jugador['correo'],
-            'documento' => $jugador['documento'],
-            'equipo_id' => $equipo->id,
-            'rol' => 'jugador',
+    // Registrar equipo completo
+    public function registrarEquipoCompleto(Request $request)
+    {
+        $request->validate([
+            'nombre_equipo' => 'required|string|max:100|unique:equipos,nombre',
+            'torneo_id' => 'required|exists:torneos,id',
+            'capitan' => 'required|array',
+            'capitan.nombre' => 'required|string|max:100',
+            'capitan.correo' => 'required|email|unique:users,email',
+            'capitan.documento' => 'required|string|max:20',
+            'capitan.password' => 'required|string|min:6',
+            'jugadores' => 'required|array|min:6|max:8',
+            'jugadores.*.nombre' => 'required|string|max:100',
+            'jugadores.*.correo' => 'required|email',
+            'jugadores.*.documento' => 'required|string|max:20',
         ]);
+
+        // 1. Crear el equipo
+        $equipo = \App\Models\Equipo::create([
+            'nombre' => $request->nombre_equipo,
+            'torneo_id' => $request->torneo_id,
+        ]);
+
+        // 2. Crear usuario para el capitán
+        $user = \App\Models\User::create([
+            'name' => $request->capitan['nombre'],
+            'email' => $request->capitan['correo'],
+            'password' => bcrypt($request->capitan['password']),
+            'equipo_id' => $equipo->id,
+        ]);
+        $user->roles()->attach(\App\Models\Role::where('nombre', 'capitan')->first()->id);
+
+        // 3. Crear capitán como jugador
+        $capitan = \App\Models\Jugador::create([
+            'nombre' => $request->capitan['nombre'],
+            'correo' => $request->capitan['correo'],
+            'documento' => $request->capitan['documento'],
+            'equipo_id' => $equipo->id,
+            'rol' => 'capitan',
+        ]);
+
+        // 4. Actualizar el ID del capitán en el equipo
+        $equipo->update(['capitan_id' => $capitan->id]);
+
+        // 5. Crear jugadores adicionales
+        foreach ($request->jugadores as $jugador) {
+            \App\Models\Jugador::create([
+                'nombre' => $jugador['nombre'],
+                'correo' => $jugador['correo'],
+                'documento' => $jugador['documento'],
+                'equipo_id' => $equipo->id,
+                'rol' => 'jugador',
+            ]);
+        }
+
+        // 6. Crear suscripción
+        \App\Models\Suscripcion::create([
+            'equipo_id' => $equipo->id,
+            'torneo_id' => $request->torneo_id,
+            'fecha_suscripcion' => now(),
+            'estado' => 'pendiente',
+        ]);
+
+        return response()->json([
+            'message' => 'Equipo, capitán y jugadores registrados correctamente. Pendiente de pago.',
+            'equipo_id' => $equipo->id,
+        ], 201);
     }
-
-    // 6. Crear suscripción
-    \App\Models\Suscripcion::create([
-        'equipo_id' => $equipo->id,
-        'torneo_id' => $request->torneo_id,
-        'fecha_suscripcion' => now(),
-        'estado' => 'pendiente',
-    ]);
-
-    return response()->json([
-        'message' => 'Equipo, capitán y jugadores registrados correctamente. Pendiente de pago.',
-        'equipo_id' => $equipo->id,
-    ], 201);
-}
-
 }
