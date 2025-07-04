@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->string('categoria'); // no unique
             $table->enum('modalidad', ['liga', 'relampago', 'mixto', 'eliminacion_directa']);
             $table->string('organizador'); // no unique
-            $table->decimal('precio', 8, 2)->default(0); // precio para participar
-            $table->string('sedes')->nullable(); // o luego cambiar a tabla sedes
+            $table->decimal('precio', 8, 2)->default(0);
+            $table->string('sedes')->nullable();
             $table->timestamps();
         });
     }

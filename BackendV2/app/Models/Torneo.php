@@ -14,6 +14,10 @@ class Torneo extends Model
         'categoria',
         'fecha_inicio',
         'fecha_fin',
+        'modalidad',
+        'organizador',
+        'precio', 
+        'sedes'
     ];
 
     // Un torneo tiene muchos equipos

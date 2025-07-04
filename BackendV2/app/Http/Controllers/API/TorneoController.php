@@ -45,10 +45,14 @@ class TorneoController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:255|unique:torneos,nombre',
             'categoria' => 'required|string|max:100',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'modalidad' => 'required|in:liga,relampago,mixto,eliminacion_directa',
+            'organizador' => 'required|string|max:255',
+            'precio' => 'nullable|numeric|min:0',
+            'sedes' => 'nullable|string',
         ]);
 
         $torneo = Torneo::create($validated);
@@ -94,10 +98,14 @@ class TorneoController extends Controller
         $torneo = Torneo::findOrFail($id);
 
         $validated = $request->validate([
-            'nombre' => 'sometimes|string|max:255',
-            'categoria' => 'sometimes|string|max:100',
-            'fecha_inicio' => 'sometimes|date',
-            'fecha_fin' => 'sometimes|date|after_or_equal:fecha_inicio',
+            'nombre' => 'required|string|max:255|unique:torneos,nombre',
+            'categoria' => 'required|string|max:100',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'modalidad' => 'required|in:liga,relampago,mixto,eliminacion_directa',
+            'organizador' => 'required|string|max:255',
+            'precio' => 'nullable|numeric|min:0',
+            'sedes' => 'nullable|string',
         ]);
 
         $torneo->update($validated);

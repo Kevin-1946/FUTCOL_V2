@@ -18,7 +18,9 @@ class CheckAdministrador
             ], 401);
         }
 
-        if (Auth::user()->role !== 'administrador') {
+        $user = Auth::user()->load('role');
+
+        if (!$user->role || $user->role->nombre !== 'Administrador') {
             return response()->json([
                 'success' => false,
                 'message' => 'Solo los administradores pueden acceder a este recurso',

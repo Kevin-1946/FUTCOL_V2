@@ -8,10 +8,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('sedes', function (Blueprint $table) {
-            $table->id();
-            $table->string('ubicacion');
-            $table->timestamps();
-        });
+        $table->id();
+        $table->string('nombre');
+        $table->string('direccion');
+        $table->foreignId('torneo_id')->constrained()->onDelete('cascade');
+        $table->timestamps();
+});
     }
 
     public function down(): void
