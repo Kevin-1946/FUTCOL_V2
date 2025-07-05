@@ -32,7 +32,7 @@ class TorneoController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             required={"nombre", "categoria", "fecha_inicio", "fecha_fin"},
-     *             @OA\Property(property="nombre", type="string", example="Torneo Clausura 2024"),
+     *             @OA\Property(property="nombre", type="string", example="Liga Clausura 2024"),
      *             @OA\Property(property="categoria", type="string", example="Sub-18"),
      *             @OA\Property(property="fecha_inicio", type="string", format="date", example="2024-09-01"),
      *             @OA\Property(property="fecha_fin", type="string", format="date", example="2024-12-01")
@@ -45,14 +45,14 @@ class TorneoController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:torneos,nombre',
-            'categoria' => 'required|string|max:100',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'modalidad' => 'required|in:liga,relampago,mixto,eliminacion_directa',
-            'organizador' => 'required|string|max:255',
-            'precio' => 'nullable|numeric|min:0',
-            'sedes' => 'nullable|string',
+            'nombre' => 'required|in:Liga,Copa,Torneo,Campeonato',
+            'categoria' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-0-9]+$/',
+            'fecha_inicio' => 'required|date|unique:torneos,fecha_inicio',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio|unique:torneos,fecha_fin',
+            'modalidad' => 'required|in:Todos contra todos,Mixto,Competencia rápida,Uno contra uno',
+            'organizador' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'precio' => 'required|numeric|min:0|unique:torneos,precio',
+            'sedes' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s,.-]+$/',
         ]);
 
         $torneo = Torneo::create($validated);
@@ -98,14 +98,14 @@ class TorneoController extends Controller
         $torneo = Torneo::findOrFail($id);
 
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:torneos,nombre',
-            'categoria' => 'required|string|max:100',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'modalidad' => 'required|in:liga,relampago,mixto,eliminacion_directa',
-            'organizador' => 'required|string|max:255',
-            'precio' => 'nullable|numeric|min:0',
-            'sedes' => 'nullable|string',
+            'nombre' => 'required|in:Liga,Copa,Torneo,Campeonato',
+            'categoria' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-0-9]+$/',
+            'fecha_inicio' => 'required|date|unique:torneos,fecha_inicio,' . $id,
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio|unique:torneos,fecha_fin,' . $id,
+            'modalidad' => 'required|in:Todos contra todos,Mixto,Competencia rápida,Uno contra uno',
+            'organizador' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'precio' => 'required|numeric|min:0|unique:torneos,precio,' . $id,
+            'sedes' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s,.-]+$/',
         ]);
 
         $torneo->update($validated);

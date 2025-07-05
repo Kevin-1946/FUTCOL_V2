@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // --------------------
 // RUTAS SOLO ADMINISTRADOR
 // --------------------
-Route::middleware(['auth:sanctum', 'check.administrador'])->group(function () {
+    Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::class])->group(function () {
     // Solo POST, PUT, DELETE para torneos (GET ya están arriba como públicos)
     Route::apiResource('torneos', TorneoController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('equipos', EquipoController::class)->except(['index', 'show']);
