@@ -10,7 +10,7 @@ import "./RecibosCrud.css";
 const RecibosCrud = () => {
   const [recibos, setRecibos] = useState([]);
   const [form, setForm] = useState({
-    suscripcion_id: "",
+    inscripcion_id: "",
     torneo_id: "",
     monto: "",
     fecha_emision: "",
@@ -47,7 +47,7 @@ const RecibosCrud = () => {
       .then(() => {
         cargarRecibos();
         setForm({
-          suscripcion_id: "",
+          inscripcion_id: "",
           torneo_id: "",
           monto: "",
           fecha_emision: "",
@@ -62,7 +62,7 @@ const RecibosCrud = () => {
 
   const editarRecibo = (recibo) => {
     setForm({
-      suscripcion_id: recibo.suscripcion_id,
+      inscripcion_id: recibo.inscripcion_id,
       torneo_id: recibo.torneo_id,
       monto: recibo.monto,
       fecha_emision: recibo.fecha_emision,
@@ -87,9 +87,9 @@ const RecibosCrud = () => {
       <h2>{editandoId ? "Editar Recibo" : "Nuevo Recibo"}</h2>
       <form onSubmit={manejarSubmit}>
         <input
-          name="suscripcion_id"
-          placeholder="ID Suscripción"
-          value={form.suscripcion_id}
+          name="inscripcion_id"
+          placeholder="ID inscripcion"
+          value={form.inscripcion_id}
           onChange={manejarCambio}
           required
         />
@@ -148,7 +148,7 @@ const RecibosCrud = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Suscripción</th>
+            <th>Inscripción</th>
             <th>Torneo</th>
             <th>Monto</th>
             <th>Fecha Emisión</th>
@@ -162,7 +162,7 @@ const RecibosCrud = () => {
           {recibos.map((r) => (
             <tr key={r.id}>
               <td>{r.id}</td>
-              <td>{r.suscripcion_id}</td>
+              <td>{r.inscripcion_id}</td>
               <td>{r.torneo_id}</td>
               <td>{r.monto}</td>
               <td>{r.fecha_emision}</td>

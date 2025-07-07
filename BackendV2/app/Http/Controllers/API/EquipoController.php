@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Equipo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Tag(
@@ -54,7 +55,7 @@ class EquipoController extends Controller
             'capitan_id' => 'nullable|exists:jugadors,id',
         ]);
 
-        $equipo = Equipo::create($request->all());
+        $equipo = Equipo::create($request->only(['nombre', 'torneo_id', 'capitan_id']));    
 
         return response()->json($equipo, 201);
     }
@@ -113,9 +114,12 @@ class EquipoController extends Controller
         ]);
 
         $equipo = Equipo::findOrFail($id);
-        $equipo->update($request->all());
+        $equipo->update($request->only(['nombre', 'torneo_id', 'capitan_id']));
 
-        return response()->json($equipo);
+        return response()->json([
+        'message' => 'Equipo actualizado correctamente',
+        'equipo' => $equipo
+        ]);
     }
 
     /**
@@ -227,6 +231,7 @@ class EquipoController extends Controller
             'message' => 'Jugador removido del equipo exitosamente',
             'equipo' => $equipo->load('jugadores')
         ]);
+
     }
 
     // Obtener equipos por torneo
@@ -271,73 +276,159 @@ class EquipoController extends Controller
             'equipo' => $equipo->load(['jugadores', 'capitan'])
         ]);
     }
+// Registrar equipo completo - MÉTODO CORREGIDO
+public function registrarEquipoCompleto(Request $request)
+{
+    // Validación corregida
+    $request->validate([
+        'nombre_equipo' => 'required|string|max:100|unique:equipos,nombre',
+        'torneo_id' => 'required|exists:torneos,id',
+        'forma_pago' => 'required|string|max:100',
+        'estado_pago' => 'required|string|max:100',
+        'total_pagado' => 'required|numeric|min:0',
+        
+        // Validación del capitán
+        'capitan' => 'required|array',
+        'capitan.nombre' => 'required|string|max:100',
+        'capitan.email' => 'required|email|unique:users,email',
+        'capitan.documento' => 'required|string|max:20|unique:jugadores,n_documento',
+        'capitan.password' => 'required|string|min:6',
+        'capitan.genero' => 'required|string',
+        'capitan.edad' => 'required|integer|min:16|max:50',
+        'capitan.fecha_nacimiento' => 'required|date',
+        
+        // Validación de jugadores
+        'jugadores' => 'required|array|min:6|max:8',
+        'jugadores.*.nombre' => 'required|string|max:100',
+        'jugadores.*.email' => 'required|email',
+        'jugadores.*.documento' => 'required|string|max:20',
+        'jugadores.*.genero' => 'required|string',
+        'jugadores.*.edad' => 'required|integer|min:16|max:50',
+        'jugadores.*.fecha_nacimiento' => 'required|date',
+    ]);
 
-    // Registrar equipo completo
-    public function registrarEquipoCompleto(Request $request)
-    {
-        $request->validate([
-            'nombre_equipo' => 'required|string|max:100|unique:equipos,nombre',
-            'torneo_id' => 'required|exists:torneos,id',
-            'capitan' => 'required|array',
-            'capitan.nombre' => 'required|string|max:100',
-            'capitan.correo' => 'required|email|unique:users,email',
-            'capitan.documento' => 'required|string|max:20',
-            'capitan.password' => 'required|string|min:6',
-            'jugadores' => 'required|array|min:6|max:8',
-            'jugadores.*.nombre' => 'required|string|max:100',
-            'jugadores.*.correo' => 'required|email',
-            'jugadores.*.documento' => 'required|string|max:20',
-        ]);
+    // Verificar duplicidad de correos y documentos DENTRO del equipo
+    $correos = [$request->capitan['email']]; // ✅ Corregido: era 'correo'
+    $documentos = [$request->capitan['documento']];
 
+    foreach ($request->jugadores as $jugador) {
+        // Verificar duplicados dentro del mismo equipo
+        if (in_array($jugador['email'], $correos)) {
+            return response()->json(['message' => "Correo duplicado en el equipo: {$jugador['email']}"], 422);
+        }
+        if (in_array($jugador['documento'], $documentos)) {
+            return response()->json(['message' => "Documento duplicado en el equipo: {$jugador['documento']}"], 422);
+        }
+        $correos[] = $jugador['email'];
+        $documentos[] = $jugador['documento'];
+    }
+
+    // Verificar que los correos no existan en la base de datos
+    foreach ($correos as $correo) {
+        if (\App\Models\User::where('email', $correo)->exists()) {
+            return response()->json(['message' => "El correo {$correo} ya está registrado en el sistema."], 422);
+        }
+    }
+
+    // Verificar que los documentos no existan en la base de datos
+    foreach ($documentos as $doc) {
+        if (\App\Models\Jugador::where('n_documento', $doc)->exists()) {
+            return response()->json(['message' => "El documento {$doc} ya está registrado en el sistema."], 422);
+        }
+    }
+
+    // ✅ USAR TRANSACCIÓN PARA GARANTIZAR CONSISTENCIA
+    \DB::beginTransaction();
+    
+    try {
         // 1. Crear el equipo
         $equipo = \App\Models\Equipo::create([
             'nombre' => $request->nombre_equipo,
             'torneo_id' => $request->torneo_id,
         ]);
 
-        // 2. Crear usuario para el capitán
-        $user = \App\Models\User::create([
+        // 2. Obtener el rol de capitán
+        $roleCapitan = \App\Models\Role::where('nombre', 'capitan')->first();
+        $roleJugador = \App\Models\Role::where('nombre', 'participante')->first();
+
+        // 3. Crear usuario del capitán
+        $userCapitan = \App\Models\User::create([
             'name' => $request->capitan['nombre'],
-            'email' => $request->capitan['correo'],
+            'email' => $request->capitan['email'], // ✅ Corregido: era 'correo'
             'password' => bcrypt($request->capitan['password']),
             'equipo_id' => $equipo->id,
+            'role_id' => $roleCapitan->id,
         ]);
-        $user->roles()->attach(\App\Models\Role::where('nombre', 'capitan')->first()->id);
 
-        // 3. Crear capitán como jugador
+        // 4. Crear jugador capitán
         $capitan = \App\Models\Jugador::create([
             'nombre' => $request->capitan['nombre'],
-            'correo' => $request->capitan['correo'],
-            'documento' => $request->capitan['documento'],
+            'email' => $request->capitan['email'], // ✅ Corregido: era 'correo'
+            'n_documento' => $request->capitan['documento'],
             'equipo_id' => $equipo->id,
-            'rol' => 'capitan',
+            'user_id' => $userCapitan->id,
+            'genero' => $request->capitan['genero'],
+            'edad' => $request->capitan['edad'],
+            'fecha_nacimiento' => $request->capitan['fecha_nacimiento'],
+            'password' => bcrypt($request->capitan['password']), // Agregar si es necesario
         ]);
 
-        // 4. Actualizar el ID del capitán en el equipo
+        // 5. Actualizar el equipo con el ID del capitán
         $equipo->update(['capitan_id' => $capitan->id]);
 
-        // 5. Crear jugadores adicionales
-        foreach ($request->jugadores as $jugador) {
-            \App\Models\Jugador::create([
-                'nombre' => $jugador['nombre'],
-                'correo' => $jugador['correo'],
-                'documento' => $jugador['documento'],
+        // 6. Crear los jugadores del equipo
+        foreach ($request->jugadores as $jugadorData) {
+            // Crear usuario para cada jugador
+            $userJugador = \App\Models\User::create([
+                'name' => $jugadorData['nombre'],
+                'email' => $jugadorData['email'], // ✅ Corregido: era 'correo'
+                'password' => bcrypt($request->capitan['password']), // Misma contraseña del equipo
                 'equipo_id' => $equipo->id,
-                'rol' => 'jugador',
+                'role_id' => $roleJugador->id,
+            ]);
+
+            // Crear jugador
+            \App\Models\Jugador::create([
+                'nombre' => $jugadorData['nombre'],
+                'email' => $jugadorData['email'], // ✅ Corregido: era 'correo'
+                'n_documento' => $jugadorData['documento'],
+                'equipo_id' => $equipo->id,
+                'user_id' => $userJugador->id,
+                'genero' => $jugadorData['genero'],
+                'edad' => $jugadorData['edad'],
+                'fecha_nacimiento' => $jugadorData['fecha_nacimiento'],
+                'password' => bcrypt($request->capitan['password']), // Misma contraseña del equipo
             ]);
         }
 
-        // 6. Crear suscripción
-        \App\Models\Suscripcion::create([
+        // 7. Crear la inscripción
+        \App\Models\Inscripcion::create([
             'equipo_id' => $equipo->id,
             'torneo_id' => $request->torneo_id,
-            'fecha_suscripcion' => now(),
-            'estado' => 'pendiente',
+            'fecha_de_inscripcion' => now(),
+            'forma_pago' => $request->forma_pago,
+            'estado_pago' => $request->estado_pago,
+            'correo_confirmado' => false,
+            'total_pagado' => $request->total_pagado,
         ]);
 
+        // ✅ CONFIRMAR TRANSACCIÓN
+        \DB::commit();
+
         return response()->json([
-            'message' => 'Equipo, capitán y jugadores registrados correctamente. Pendiente de pago.',
+            'message' => 'Equipo registrado exitosamente',
             'equipo_id' => $equipo->id,
+            'equipo' => $equipo->load(['jugadores', 'capitan', 'torneo', 'inscripcion']),
         ], 201);
+
+    } catch (\Exception $e) {
+        // ✅ ROLLBACK EN CASO DE ERROR
+        \DB::rollBack();
+        
+        return response()->json([
+            'message' => 'Error al registrar el equipo',
+            'error' => $e->getMessage()
+        ], 500);
+        }
     }
 }

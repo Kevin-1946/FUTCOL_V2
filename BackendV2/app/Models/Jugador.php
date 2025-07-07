@@ -10,14 +10,18 @@ class Jugador extends Authenticatable
 {
     use HasFactory;
 
+    protected $table = 'jugadores';
+
     protected $fillable = [
         'nombre',
         'n_documento',
         'fecha_nacimiento',
+        'genero',
+        'edad',
         'email',
         'password',
         'equipo_id',
-        'user_id', // ✅ importante si ya lo estás usando en la migración
+        'user_id',
     ];
 
     protected $hidden = [

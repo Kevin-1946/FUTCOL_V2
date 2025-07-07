@@ -18,7 +18,7 @@ class ReciboDePagoController extends Controller
      */
     public function index()
     {
-        $recibos = ReciboDePago::with(['suscripcion', 'torneo'])->get();
+        $recibos = ReciboDePago::with(['inscripcion', 'torneo'])->get();
         return response()->json($recibos);
     }
 
@@ -47,7 +47,7 @@ class ReciboDePagoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'suscripcion_id' => 'required|exists:suscripcions,id',
+            'inscripcion_id' => 'required|exists:suscripcions,id',
             'torneo_id' => 'required|exists:torneos,id',
             'monto' => 'required|numeric|min:0',
             'fecha_emision' => 'required|date',
@@ -73,7 +73,7 @@ class ReciboDePagoController extends Controller
      */
     public function show($id)
     {
-        $recibo = ReciboDePago::with(['suscripcion', 'torneo'])->findOrFail($id);
+        $recibo = ReciboDePago::with(['inscdripcion', 'torneo'])->findOrFail($id);
         return response()->json($recibo);
     }
 
@@ -103,7 +103,7 @@ class ReciboDePagoController extends Controller
         $recibo = ReciboDePago::findOrFail($id);
 
         $request->validate([
-            'suscripcion_id' => 'sometimes|required|exists:suscripcions,id',
+            'inscripcion_id' => 'sometimes|required|exists:suscripcions,id',
             'torneo_id' => 'sometimes|required|exists:torneos,id',
             'monto' => 'sometimes|required|numeric|min:0',
             'fecha_emision' => 'sometimes|required|date',

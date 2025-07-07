@@ -22,7 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'equipo_id', // ⚠️ Asegúrate de que esta columna exista en la tabla users
+        'equipo_id',
     ];
 
     /**

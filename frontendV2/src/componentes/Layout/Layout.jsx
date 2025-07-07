@@ -148,7 +148,7 @@ const Layout = () => {
       { nombre: "Iniciar Sesión",
         ruta: "/login" },
       { nombre: "Suscribirse",
-        ruta: "/suscribirse" }
+        ruta: "/inscripcion" }
       
     ];
 

@@ -33,6 +33,11 @@ class Equipo extends Model
         return $this->belongsTo(Jugador::class, 'capitan_id');
     }
 
+    public function inscripcion()
+    {
+        return $this->hasOne(Inscripcion::class);
+    }
+
     // Encuentros donde el equipo es local
     public function encuentrosLocal()
     {

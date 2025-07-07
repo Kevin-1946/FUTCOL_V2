@@ -9,12 +9,12 @@ return new class extends Migration {
     {
         Schema::create('torneos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
+            $table->string('nombre');
             $table->date('fecha_inicio')->nullable();
             $table->date('fecha_fin')->nullable();
-            $table->string('categoria'); // no unique
-            $table->enum('modalidad', ['liga', 'relampago', 'mixto', 'eliminacion_directa']);
-            $table->string('organizador'); // no unique
+            $table->string('categoria'); 
+            $table->enum('modalidad', ['todos contra todos', 'mixto', 'competencia rapida', 'uno contra uno']);
+            $table->string('organizador');
             $table->decimal('precio', 8, 2)->default(0);
             $table->string('sedes')->nullable();
             $table->timestamps();

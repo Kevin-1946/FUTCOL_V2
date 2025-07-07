@@ -15,6 +15,8 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('genero'); 
+            $table->integer('edad');
 
             // 👇 Rol como cadena con mayúscula inicial
             $table->enum('role', ['Administrador', 'Capitan', 'Participante'])->default('Participante');

@@ -33,9 +33,9 @@ class Torneo extends Model
     }
 
     // Un torneo tiene muchas suscripciones
-    public function suscripciones()
+    public function inscripciones()
     {
-        return $this->hasMany(Suscripcion::class);
+        return $this->hasMany(Inscripcion::class);
     }
 
     // Un torneo tiene muchos recibos de pago

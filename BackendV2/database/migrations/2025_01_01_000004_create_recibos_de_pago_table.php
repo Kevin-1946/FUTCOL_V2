@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
 
             // Relaciones
-            $table->foreignId('suscripcion_id')->constrained('suscripciones')->onDelete('cascade');
+            $table->foreignId('inscripcion_id')->constrained('inscripciones')->onDelete('cascade');
             $table->foreignId('torneo_id')->constrained('torneos')->onDelete('cascade');
 
             // Información del pago
@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->timestamps();
 
             // Índice único con nombre corto para evitar error
-            $table->unique(['suscripcion_id', 'torneo_id', 'numero_comprobante'], 'recibo_pago_unique_idx');
+            $table->unique(['inscripcion_id', 'torneo_id', 'numero_comprobante'], 'recibo_pago_unique_idx');
         });
     }
 

@@ -19,7 +19,7 @@ class TorneoController extends Controller
     public function index()
     {
         return response()->json(
-            Torneo::with(['equipos', 'sedes', 'suscripciones', 'recibosDePago', 'encuentros'])->get()
+            Torneo::with(['equipos', 'sedes', 'inscripciones', 'recibosDePago', 'encuentros'])->get()
         );
     }
 
@@ -44,14 +44,20 @@ class TorneoController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+        'modalidad' => strtolower($request->modalidad),
+        'nombre' => ucfirst(strtolower($request->nombre)),
+        'categoria' => ucfirst(strtolower($request->categoria))
+        ]);
+
         $validated = $request->validate([
-            'nombre' => 'required|in:Liga,Copa,Torneo,Campeonato',
+            'nombre' => 'required|in:Liga,Relampago,Eliminacion directa,Mixto',
             'categoria' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-0-9]+$/',
-            'fecha_inicio' => 'required|date|unique:torneos,fecha_inicio',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio|unique:torneos,fecha_fin',
-            'modalidad' => 'required|in:Todos contra todos,Mixto,Competencia rápida,Uno contra uno',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'modalidad' => 'required|in:todos contra todos,mixto,competencia rapida,uno contra uno',
             'organizador' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'precio' => 'required|numeric|min:0|unique:torneos,precio',
+            'precio' => 'required|numeric|min:0',
             'sedes' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s,.-]+$/',
         ]);
 
@@ -71,7 +77,7 @@ class TorneoController extends Controller
      */
     public function show($id)
     {
-        $torneo = Torneo::with(['equipos', 'sedes', 'suscripciones', 'recibosDePago', 'encuentros'])->findOrFail($id);
+        $torneo = Torneo::with(['equipos', 'sedes', 'inscripciones', 'recibosDePago', 'encuentros'])->findOrFail($id);
         return response()->json($torneo);
     }
 
@@ -93,18 +99,23 @@ class TorneoController extends Controller
      *     @OA\Response(response=404, description="Torneo no encontrado")
      * )
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id)   
     {
         $torneo = Torneo::findOrFail($id);
+        $request->merge([
+        'modalidad' => strtolower($request->modalidad),
+        'nombre' => ucfirst(strtolower($request->nombre)),
+        'categoria' => ucfirst(strtolower($request->categoria))
+        ]);
 
         $validated = $request->validate([
-            'nombre' => 'required|in:Liga,Copa,Torneo,Campeonato',
+            'nombre' => 'required|in:Liga,Relampago,Eliminacion directa,Mixto',
             'categoria' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-0-9]+$/',
-            'fecha_inicio' => 'required|date|unique:torneos,fecha_inicio,' . $id,
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio|unique:torneos,fecha_fin,' . $id,
-            'modalidad' => 'required|in:Todos contra todos,Mixto,Competencia rápida,Uno contra uno',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'modalidad' => 'required|in:todos contra todos,mixto,competencia rapida,uno contra uno',
             'organizador' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'precio' => 'required|numeric|min:0|unique:torneos,precio,' . $id,
+            'precio' => 'required|numeric|min:0',
             'sedes' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s,.-]+$/',
         ]);
 

@@ -10,7 +10,7 @@ use App\Http\Controllers\API\EquipoController;
 use App\Http\Controllers\API\JugadorController;
 use App\Http\Controllers\API\EncuentroController;
 use App\Http\Controllers\API\SedeController;
-use App\Http\Controllers\API\SuscripcionController;
+use App\Http\Controllers\API\InscripcionController;
 
 // --------------------
 // RUTAS PÚBLICAS
@@ -33,7 +33,7 @@ Route::get('/jugadores-sin-equipo', [JugadorController::class, 'jugadoresSinEqui
 Route::get('/buscar-jugadores', [JugadorController::class, 'buscarJugadores']);
 
 Route::get('/sedes', [SedeController::class, 'index']);
-Route::get('/suscripciones', [SuscripcionController::class, 'index']);
+Route::get('/inscripciones', [InscripcionController::class, 'index']); // ✅ CORREGIDO
 
 // --------------------
 // RUTAS AUTENTICADAS
@@ -52,14 +52,14 @@ Route::middleware('auth:sanctum')->group(function () {
 // --------------------
 // RUTAS SOLO ADMINISTRADOR
 // --------------------
-    Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::class])->group(function () {
-    // Solo POST, PUT, DELETE para torneos (GET ya están arriba como públicos)
+Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::class])->group(function () {
     Route::apiResource('torneos', TorneoController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('equipos', EquipoController::class)->except(['index', 'show']);
     Route::apiResource('jugadores', JugadorController::class)->except(['index', 'show']);
     Route::apiResource('partidos', EncuentroController::class);
     Route::apiResource('sedes', SedeController::class)->except(['index', 'show']);
-    Route::apiResource('suscripciones', SuscripcionController::class)->except(['index', 'show']);
+
+    Route::apiResource('inscripciones', InscripcionController::class)->except(['index']); // ✅ CORREGIDO
 });
 
 // --------------------

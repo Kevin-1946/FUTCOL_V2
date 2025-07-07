@@ -10,7 +10,7 @@ class ReciboDePago extends Model
     use HasFactory;
 
     protected $fillable = [
-        'suscripcion_id',
+        'inscripcion_id',
         'torneo_id',
         'monto',
         'fecha_emision',
@@ -20,9 +20,9 @@ class ReciboDePago extends Model
     ];
 
     // Relación: El recibo pertenece a una suscripción
-    public function suscripcion()
+    public function inscripcion()
     {
-        return $this->belongsTo(Suscripcion::class);
+        return $this->belongsTo(Inscripcion::class);
     }
 
     // Relación: El recibo pertenece a un torneo
