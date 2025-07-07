@@ -13,10 +13,11 @@ class Encuentro extends Model
         'torneo_id',
         'sede_id',
         'fecha',
+        'hora',
         'equipo_local_id',
         'equipo_visitante_id',
-        'goles_equipo_local',
-        'goles_equipo_visitante',
+        'goles_local',
+        'goles_visitante',
     ];
 
     // Relación: Un encuentro pertenece a un torneo

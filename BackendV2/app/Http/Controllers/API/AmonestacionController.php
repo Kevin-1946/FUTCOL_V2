@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Amonestacion;
+use App\Models\Jugador;
 use Illuminate\Http\Request;
 
 /**
@@ -62,7 +63,7 @@ class AmonestacionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'jugador_id' => 'required|exists:jugadors,id',
+            'jugador_id' => 'required|exists:jugadores,id',
             'equipo_id' => 'required|exists:equipos,id',
             'encuentro_id' => 'required|exists:encuentros,id',
             'numero_camiseta' => 'required|integer|min:0',
@@ -142,7 +143,7 @@ class AmonestacionController extends Controller
         $amonestacion = Amonestacion::findOrFail($id);
 
         $request->validate([
-            'jugador_id' => 'sometimes|required|exists:jugadors,id',
+            'jugador_id' => 'sometimes|required|exists:jugadores,id',
             'equipo_id' => 'sometimes|required|exists:equipos,id',
             'encuentro_id' => 'sometimes|required|exists:encuentros,id',
             'numero_camiseta' => 'sometimes|required|integer|min:0',

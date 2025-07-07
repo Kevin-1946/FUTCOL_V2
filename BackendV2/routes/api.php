@@ -11,6 +11,7 @@ use App\Http\Controllers\API\JugadorController;
 use App\Http\Controllers\API\EncuentroController;
 use App\Http\Controllers\API\SedeController;
 use App\Http\Controllers\API\InscripcionController;
+use App\Http\Controllers\API\AmonestacionController;
 
 // --------------------
 // RUTAS PÚBLICAS
@@ -56,10 +57,12 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::clas
     Route::apiResource('torneos', TorneoController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('equipos', EquipoController::class)->except(['index', 'show']);
     Route::apiResource('jugadores', JugadorController::class)->except(['index', 'show']);
-    Route::apiResource('partidos', EncuentroController::class);
+    Route::apiResource('encuentros', EncuentroController::class);
     Route::apiResource('sedes', SedeController::class)->except(['index', 'show']);
+    Route::apiResource('inscripciones', InscripcionController::class)->except(['index']);
 
-    Route::apiResource('inscripciones', InscripcionController::class)->except(['index']); // ✅ CORREGIDO
+    
+    Route::apiResource('amonestaciones', AmonestacionController::class);
 });
 
 // --------------------

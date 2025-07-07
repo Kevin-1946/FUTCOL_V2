@@ -65,10 +65,11 @@ class EncuentroController extends Controller
             'torneo_id' => 'required|exists:torneos,id',
             'sede_id' => 'required|exists:sedes,id',
             'fecha' => 'required|date',
+            'hora' => 'required|date_format:H:i:s',
             'equipo_local_id' => 'required|exists:equipos,id|different:equipo_visitante_id',
             'equipo_visitante_id' => 'required|exists:equipos,id',
-            'goles_equipo_local' => 'nullable|integer|min:0',
-            'goles_equipo_visitante' => 'nullable|integer|min:0',
+            'goles_local' => 'nullable|integer|min:0',
+            'goles_visitante' => 'nullable|integer|min:0',
         ]);
 
         $encuentro = Encuentro::create($request->all());
@@ -139,10 +140,11 @@ class EncuentroController extends Controller
             'torneo_id' => 'sometimes|required|exists:torneos,id',
             'sede_id' => 'sometimes|required|exists:sedes,id',
             'fecha' => 'sometimes|required|date',
+            'hora' => 'required|date_format:H:i:s',
             'equipo_local_id' => 'sometimes|required|exists:equipos,id|different:equipo_visitante_id',
             'equipo_visitante_id' => 'sometimes|required|exists:equipos,id',
-            'goles_equipo_local' => 'nullable|integer|min:0',
-            'goles_equipo_visitante' => 'nullable|integer|min:0',
+            'goles_local' => 'nullable|integer|min:0',
+            'goles_visitante' => 'nullable|integer|min:0',
         ]);
 
         $encuentro->update($request->all());
