@@ -30,8 +30,8 @@ class ReciboDePagoController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"suscripcion_id", "torneo_id", "monto", "fecha_emision", "confirmado", "metodo_pago", "numero_comprobante"},
-     *             @OA\Property(property="suscripcion_id", type="integer", example=1),
+     *             required={"inscripcion_id", "torneo_id", "monto", "fecha_emision", "confirmado", "metodo_pago", "numero_comprobante"},
+     *             @OA\Property(property="inscripcion_id", type="integer", example=1),
      *             @OA\Property(property="torneo_id", type="integer", example=1),
      *             @OA\Property(property="monto", type="number", format="float", example=150000),
      *             @OA\Property(property="fecha_emision", type="string", format="date", example="2024-10-01"),
@@ -47,7 +47,7 @@ class ReciboDePagoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'inscripcion_id' => 'required|exists:suscripcions,id',
+            'inscripcion_id' => 'required|exists:inscripciones,id',
             'torneo_id' => 'required|exists:torneos,id',
             'monto' => 'required|numeric|min:0',
             'fecha_emision' => 'required|date',
@@ -73,7 +73,7 @@ class ReciboDePagoController extends Controller
      */
     public function show($id)
     {
-        $recibo = ReciboDePago::with(['inscdripcion', 'torneo'])->findOrFail($id);
+        $recibo = ReciboDePago::with(['inscripcion', 'torneo'])->findOrFail($id);
         return response()->json($recibo);
     }
 
@@ -85,7 +85,7 @@ class ReciboDePagoController extends Controller
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(
      *         @OA\JsonContent(
-     *             @OA\Property(property="suscripcion_id", type="integer"),
+     *             @OA\Property(property="inscripcion_id", type="integer"),
      *             @OA\Property(property="torneo_id", type="integer"),
      *             @OA\Property(property="monto", type="number", format="float"),
      *             @OA\Property(property="fecha_emision", type="string", format="date"),
@@ -103,7 +103,7 @@ class ReciboDePagoController extends Controller
         $recibo = ReciboDePago::findOrFail($id);
 
         $request->validate([
-            'inscripcion_id' => 'sometimes|required|exists:suscripcions,id',
+            'inscripcion_id' => 'sometimes|required|exists:inscripciones,id',
             'torneo_id' => 'sometimes|required|exists:torneos,id',
             'monto' => 'sometimes|required|numeric|min:0',
             'fecha_emision' => 'sometimes|required|date',

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
 
             // Relación opcional con Equipo
-            //$table->foreignId('equipo_id')->nullable()->constrained('equipos')->onDelete('set null');
+            $table->foreignId('equipo_id')->nullable()->constrained('equipos')->onDelete('set null');
 
             $table->timestamps();
         });

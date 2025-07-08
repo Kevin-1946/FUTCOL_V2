@@ -49,7 +49,7 @@ class GolJugadorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'jugador_id' => 'required|exists:jugadors,id',
+            'jugador_id' => 'required|exists:jugadores,id',
             'encuentro_id' => 'required|exists:encuentros,id',
             'cantidad' => 'required|integer|min:1',
         ]);
@@ -109,7 +109,7 @@ class GolJugadorController extends Controller
         $gol = GolJugador::findOrFail($id);
 
         $request->validate([
-            'jugador_id' => 'sometimes|required|exists:jugadors,id',
+            'jugador_id' => 'sometimes|required|exists:jugadores,id',
             'encuentro_id' => 'sometimes|required|exists:encuentros,id',
             'cantidad' => 'sometimes|required|integer|min:1',
         ]);

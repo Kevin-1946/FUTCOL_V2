@@ -9,6 +9,8 @@ class ReciboDePago extends Model
 {
     use HasFactory;
 
+    protected $table = 'recibos_de_pago';
+
     protected $fillable = [
         'inscripcion_id',
         'torneo_id',

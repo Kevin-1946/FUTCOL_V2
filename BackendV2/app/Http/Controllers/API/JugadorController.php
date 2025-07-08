@@ -48,9 +48,9 @@ class JugadorController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'n_documento' => 'required|string|unique:jugadors,n_documento',
+            'n_documento' => 'required|string|unique:jugadores,n_documento',
             'fecha_nacimiento' => 'required|date',
-            'email' => 'required|email|unique:jugadors,email',
+            'email' => 'required|email|unique:jugadores,email',
             'password' => 'required|string|min:6',
             'equipo_id' => 'nullable|exists:equipos,id',
         ]);
@@ -109,9 +109,9 @@ class JugadorController extends Controller
 
         $request->validate([
             'nombre' => 'sometimes|required|string|max:255',
-            'n_documento' => 'sometimes|required|string|unique:jugadors,n_documento,' . $jugador->id,
+            'n_documento' => 'sometimes|required|string|unique:jugadores,n_documento,' . $jugador->id,
             'fecha_nacimiento' => 'sometimes|required|date',
-            'email' => 'sometimes|required|email|unique:jugadors,email,' . $jugador->id,
+            'email' => 'sometimes|required|email|unique:jugadores,email,' . $jugador->id,
             'password' => 'nullable|string|min:6',
             'equipo_id' => 'nullable|exists:equipos,id',
         ]);

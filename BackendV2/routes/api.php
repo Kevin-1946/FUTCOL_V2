@@ -12,6 +12,10 @@ use App\Http\Controllers\API\EncuentroController;
 use App\Http\Controllers\API\SedeController;
 use App\Http\Controllers\API\InscripcionController;
 use App\Http\Controllers\API\AmonestacionController;
+use App\Http\Controllers\API\EstadisticaEquipoController;
+use App\Http\Controllers\API\GolJugadorController;
+use App\Http\Controllers\API\JuezController;
+use App\Http\Controllers\API\ReciboDePagoController;
 
 // --------------------
 // RUTAS PÚBLICAS
@@ -19,6 +23,8 @@ use App\Http\Controllers\API\AmonestacionController;
 Route::post('/registro-equipo', [EquipoController::class, 'registrarEquipoCompleto']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/jueces', [JuezController::class, 'index']);
+Route::get('/jueces/{id}', [JuezController::class, 'show']);
 
 // Solo GET públicos para torneos
 Route::get('/torneos', [TorneoController::class, 'index']);
@@ -60,9 +66,11 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::clas
     Route::apiResource('encuentros', EncuentroController::class);
     Route::apiResource('sedes', SedeController::class)->except(['index', 'show']);
     Route::apiResource('inscripciones', InscripcionController::class)->except(['index']);
-
-    
+    Route::apiResource('jueces', JuezController::class)->except(['index', 'show']);
+    Route::apiResource('estadisticas-equipos', EstadisticaEquipoController::class);
+    Route::apiResource('goles-jugadores', GolJugadorController::class);
     Route::apiResource('amonestaciones', AmonestacionController::class);
+    Route::apiResource('recibos', ReciboDePagoController::class);
 });
 
 // --------------------
