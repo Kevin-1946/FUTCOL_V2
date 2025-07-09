@@ -10,14 +10,17 @@ return new class extends Migration {
         Schema::create('goles_jugadores', function (Blueprint $table) {
             $table->id();
 
-            // Relaciones corregidas
+            // Relaciones
             $table->foreignId('jugador_id')->constrained('jugadores')->onDelete('cascade');
             $table->foreignId('encuentro_id')->constrained('encuentros')->onDelete('cascade');
 
-            // Estadística
-            $table->unsignedInteger('cantidad')->default(1); // Número de goles marcados
+            // Número de goles anotados (mínimo 1, sin negativos)
+            $table->unsignedInteger('cantidad')->default(1);
 
             $table->timestamps();
+
+            // ✅ Solo un registro por jugador en cada encuentro
+            $table->unique(['jugador_id', 'encuentro_id']);
         });
     }
 

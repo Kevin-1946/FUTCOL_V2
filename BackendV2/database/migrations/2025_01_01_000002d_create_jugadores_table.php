@@ -15,18 +15,14 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('genero'); 
+            $table->string('genero');
             $table->integer('edad');
-
-            // 👇 Rol como cadena con mayúscula inicial
-            $table->enum('role', ['Administrador', 'Capitan', 'Participante'])->default('Participante');
             
-            // Relación opcional con User
+            // Relación opcional con la tabla 'users'
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-
-            // Relación opcional con Equipo
-            $table->foreignId('equipo_id')->nullable()->constrained('equipos')->onDelete('set null');
-
+            
+            // NO incluir equipo_id aquí - se agregará después
+            
             $table->timestamps();
         });
     }

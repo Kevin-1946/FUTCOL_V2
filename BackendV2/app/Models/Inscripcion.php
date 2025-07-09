@@ -16,9 +16,7 @@ class Inscripcion extends Model
         'torneo_id',
         'fecha_de_inscripcion',
         'forma_pago',
-        'estado_pago',
-        'correo_confirmado',
-        'total_pagado',
+        
     ];
 
     // Relaciones

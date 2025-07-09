@@ -110,7 +110,7 @@ class EquipoController extends Controller
         $request->validate([
             'nombre' => 'sometimes|required|string|max:255',
             'torneo_id' => 'sometimes|required|exists:torneos,id',
-            'capitan_id' => 'nullable|exists:jugadors,id',
+            'capitan_id' => 'nullable|exists:jugadores,id',
         ]);
 
         $equipo = Equipo::findOrFail($id);
@@ -169,7 +169,7 @@ class EquipoController extends Controller
     public function agregarJugador(Request $request, $equipoId)
     {
         $request->validate([
-            'jugador_id' => 'required|exists:jugadors,id'
+            'jugador_id' => 'required|exists:jugadores,id'
         ]);
 
         $equipo = Equipo::findOrFail($equipoId);
@@ -248,7 +248,7 @@ class EquipoController extends Controller
     public function cambiarCapitan(Request $request, $equipoId)
     {
         $request->validate([
-            'nuevo_capitan_id' => 'required|exists:jugadors,id'
+            'nuevo_capitan_id' => 'required|exists:jugadores,id'
         ]);
 
         $equipo = Equipo::findOrFail($equipoId);
@@ -284,8 +284,7 @@ public function registrarEquipoCompleto(Request $request)
         'nombre_equipo' => 'required|string|max:100|unique:equipos,nombre',
         'torneo_id' => 'required|exists:torneos,id',
         'forma_pago' => 'required|string|max:100',
-        'estado_pago' => 'required|string|max:100',
-        'total_pagado' => 'required|numeric|min:0',
+        
         
         // Validación del capitán
         'capitan' => 'required|array',
@@ -407,9 +406,6 @@ public function registrarEquipoCompleto(Request $request)
             'torneo_id' => $request->torneo_id,
             'fecha_de_inscripcion' => now(),
             'forma_pago' => $request->forma_pago,
-            'estado_pago' => $request->estado_pago,
-            'correo_confirmado' => false,
-            'total_pagado' => $request->total_pagado,
         ]);
 
         // ✅ CONFIRMAR TRANSACCIÓN

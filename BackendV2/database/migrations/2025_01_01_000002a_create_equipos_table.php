@@ -11,11 +11,16 @@ return new class extends Migration
         Schema::create('equipos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            
+            // Relación con torneo
             $table->foreignId('torneo_id')->nullable()->constrained('torneos')->onDelete('cascade');
-            $table->foreignId('capitan_id')->nullable()->constrained('jugadores')->onDelete('set null');
+            
+            // NO incluir capitan_id aquí - se agregará después
+            
             $table->timestamps();
-
-            $table->unique(['nombre', 'torneo_id']); // un mismo nombre no puede repetirse en un torneo
+            
+            // Restricción: No se puede repetir nombre dentro del mismo torneo
+            $table->unique(['nombre', 'torneo_id'], 'nombre_torneo_unique');
         });
     }
 

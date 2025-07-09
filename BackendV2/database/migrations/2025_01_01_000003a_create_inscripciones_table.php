@@ -14,9 +14,6 @@ return new class extends Migration {
 
             $table->date('fecha_de_inscripcion');
             $table->string('forma_pago')->nullable(); // efectivo, transferencia, etc.
-            $table->enum('estado_pago', ['pendiente', 'pagado'])->default('pendiente');
-            $table->boolean('correo_confirmado')->default(false);
-            $table->decimal('total_pagado', 8, 2)->nullable();
 
             $table->timestamps();
 

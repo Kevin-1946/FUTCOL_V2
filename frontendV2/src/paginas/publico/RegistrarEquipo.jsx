@@ -4,6 +4,22 @@ import "../../estilos/RegistrarEquipo.css";
 
 const RegistrarEquipo = () => {
   const [torneos, setTorneos] = useState([]);
+  
+  
+  const crearJugadorVacio = () => ({
+    nombre: "",
+    email: "",
+    documento: "",
+    genero: "",
+    edad: "",
+    fecha_nacimiento: "",
+  });
+
+  
+  const crearJugadores = (cantidad) => {
+    return Array(cantidad).fill(null).map(() => crearJugadorVacio());
+  };
+
   const [form, setForm] = useState({
     nombre_equipo: "",
     torneo_id: "",
@@ -17,19 +33,14 @@ const RegistrarEquipo = () => {
       edad: "",
       fecha_nacimiento: "",
     },
-    jugadores: Array(6).fill({
-      nombre: "",
-      email: "",
-      documento: "",
-      genero: "",
-      edad: "",
-      fecha_nacimiento: "",
-    }),
+    jugadores: crearJugadores(6),
   });
 
   useEffect(() => {
     axios.get("http://localhost:8000/api/torneos").then((res) => {
       setTorneos(res.data);
+    }).catch((error) => {
+      console.error("Error al cargar torneos:", error);
     });
   }, []);
 
@@ -51,19 +62,76 @@ const RegistrarEquipo = () => {
     setForm({ ...form, jugadores });
   };
 
+  // ✅ VALIDACIÓN MEJORADA
+  const validarFormulario = () => {
+    // Validar campos básicos
+    if (!form.nombre_equipo.trim()) {
+      alert("El nombre del equipo es obligatorio");
+      return false;
+    }
+    if (!form.torneo_id) {
+      alert("Debe seleccionar un torneo");
+      return false;
+    }
+
+    // Validar capitán
+    const capitanIncompleto = Object.values(form.capitan).some(valor => !valor || valor.toString().trim() === "");
+    if (capitanIncompleto) {
+      alert("Todos los campos del capitán son obligatorios");
+      return false;
+    }
+
+    // Validar jugadores
+    if (form.jugadores.length < 6) {
+      alert("Debe registrar al menos 6 jugadores");
+      return false;
+    }
+
+    for (let i = 0; i < form.jugadores.length; i++) {
+      const jugador = form.jugadores[i];
+      const jugadorIncompleto = Object.values(jugador).some(valor => !valor || valor.toString().trim() === "");
+      if (jugadorIncompleto) {
+        alert(`El jugador ${i + 1} tiene campos incompletos`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.jugadores.length < 6 || form.jugadores.length > 8) {
-      alert("Debes registrar entre 6 y 8 jugadores, además del capitán.");
+    
+    if (!validarFormulario()) {
       return;
     }
+
     try {
-      const res = await axios.post("http://localhost:8000/api/registrar-equipo", form);
+      console.log("Datos enviados:", form); // ✅ Para debug
+      
+      const res = await axios.post("http://localhost:8000/api/registro-equipo", form);
       alert("Inscripción exitosa");
-      console.log(res.data);
+      console.log("Respuesta del servidor:", res.data);
+      
+      // Opcional: Limpiar formulario o redirigir
+      
     } catch (error) {
-      console.error(error.response?.data || error.message);
-      alert("Error en la inscripción");
+      console.error("Error completo:", error);
+      
+      if (error.response) {
+        // Error del servidor
+        console.error("Error del servidor:", error.response.data);
+        const mensajeError = error.response.data?.message || "Error en el servidor";
+        alert(`Error: ${mensajeError}`);
+      } else if (error.request) {
+        // Error de conexión
+        console.error("Error de conexión:", error.request);
+        alert("Error de conexión con el servidor");
+      } else {
+        // Otro error
+        console.error("Error:", error.message);
+        alert("Error desconocido");
+      }
     }
   };
 
@@ -89,16 +157,25 @@ const RegistrarEquipo = () => {
             <input 
               id="nombre_equipo"
               name="nombre_equipo" 
+              type="text"
               placeholder="Ingrese el nombre del equipo" 
               value={form.nombre_equipo} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              autoComplete="organization"
               required
             />
           </div>
 
           <div className="input-group">
             <label htmlFor="torneo_id">Torneo</label>
-            <select name="torneo_id" value={form.torneo_id} onChange={handleChange} required>
+            <select 
+              id="torneo_id"
+              name="torneo_id" 
+              value={form.torneo_id} 
+              onChange={handleChange}
+              autoComplete="off"
+              required
+            >
               <option value="">Seleccione Torneo</option>
               {torneos.map((torneo) => (
                 <option key={torneo.id} value={torneo.id}>{torneo.nombre}</option>
@@ -116,7 +193,13 @@ const RegistrarEquipo = () => {
           <div className="input-row">
             <div className="input-group">
               <label htmlFor="forma_pago">Forma de Pago</label>
-              <select name="forma_pago" value={form.forma_pago} onChange={handleChange}>
+              <select 
+                id="forma_pago"
+                name="forma_pago" 
+                value={form.forma_pago} 
+                onChange={handleChange}
+                autoComplete="off"
+              >
                 <option value="efectivo">Efectivo</option>
                 <option value="transferencia">Transferencia</option>
               </select>
@@ -133,7 +216,7 @@ const RegistrarEquipo = () => {
           <div className="capitan-grid">
             {Object.entries(form.capitan).map(([key, value]) => (
               <div key={key} className="input-group">
-                <label htmlFor={key}>
+                <label htmlFor={`capitan_${key}`}>
                   {key === 'nombre' ? 'Nombre Completo' :
                    key === 'email' ? 'Correo Electrónico' :
                    key === 'documento' ? 'Documento' :
@@ -143,24 +226,46 @@ const RegistrarEquipo = () => {
                    key === 'fecha_nacimiento' ? 'Fecha de Nacimiento' : 
                    key.replace(/_/g, ' ').toUpperCase()}
                 </label>
-                <input
-                  id={key}
-                  name={key}
-                  type={key === 'email' ? 'email' : 
-                        key === 'password' ? 'password' : 
-                        key === 'edad' ? 'number' : 
-                        key === 'fecha_nacimiento' ? 'date' : 'text'}
-                  placeholder={key === 'nombre' ? 'Nombre completo del capitán' :
-                              key === 'email' ? 'correo@ejemplo.com' :
-                              key === 'documento' ? 'Número de documento' :
-                              key === 'password' ? 'Contraseña' :
-                              key === 'genero' ? 'M/F' :
-                              key === 'edad' ? 'Edad' :
-                              key.replace(/_/g, ' ').toUpperCase()}
-                  value={value}
-                  onChange={(e) => handleChange(e, ["capitan", key])}
-                  required
-                />
+                {key === 'genero' ? (
+                  <select
+                    id={`capitan_${key}`}
+                    name={key}
+                    value={value}
+                    onChange={(e) => handleChange(e, ["capitan", key])}
+                    autoComplete="sex"
+                    required
+                  >
+                    <option value="">Seleccione género</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                  </select>
+                ) : (
+                  <input
+                    id={`capitan_${key}`}
+                    name={key}
+                    type={key === 'email' ? 'email' : 
+                          key === 'password' ? 'password' : 
+                          key === 'edad' ? 'number' : 
+                          key === 'fecha_nacimiento' ? 'date' : 'text'}
+                    placeholder={key === 'nombre' ? 'Nombre completo del capitán' :
+                                key === 'email' ? 'correo@ejemplo.com' :
+                                key === 'documento' ? 'Número de documento' :
+                                key === 'password' ? 'Contraseña' :
+                                key === 'edad' ? 'Edad' :
+                                key.replace(/_/g, ' ').toUpperCase()}
+                    value={value}
+                    onChange={(e) => handleChange(e, ["capitan", key])}
+                    autoComplete={
+                      key === 'nombre' ? 'name' :
+                      key === 'email' ? 'email' :
+                      key === 'documento' ? 'off' :
+                      key === 'password' ? 'new-password' :
+                      key === 'edad' ? 'off' :
+                      key === 'fecha_nacimiento' ? 'bday' : 'off'
+                    }
+                    required
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -192,22 +297,43 @@ const RegistrarEquipo = () => {
                          key === 'edad' ? 'Edad' :
                          key === 'fecha_nacimiento' ? 'Fecha Nac.' : key}
                       </label>
-                      <input
-                        id={`jugador_${index}_${key}`}
-                        name={key}
-                        type={key === 'email' ? 'email' : 
-                              key === 'edad' ? 'number' : 
-                              key === 'fecha_nacimiento' ? 'date' : 'text'}
-                        placeholder={key === 'nombre' ? 'Nombre completo' :
-                                    key === 'email' ? 'email@ejemplo.com' :
-                                    key === 'documento' ? 'Documento' :
-                                    key === 'genero' ? 'M/F' :
-                                    key === 'edad' ? 'Edad' :
-                                    key.replace(/_/g, ' ').toUpperCase()}
-                        value={value}
-                        onChange={(e) => handleJugadorChange(index, e)}
-                        required
-                      />
+                      {key === 'genero' ? (
+                        <select
+                          id={`jugador_${index}_${key}`}
+                          name={key}
+                          value={value}
+                          onChange={(e) => handleJugadorChange(index, e)}
+                          autoComplete="sex"
+                          required
+                        >
+                          <option value="">Seleccione</option>
+                          <option value="M">M</option>
+                          <option value="F">F</option>
+                        </select>
+                      ) : (
+                        <input
+                          id={`jugador_${index}_${key}`}
+                          name={key}
+                          type={key === 'email' ? 'email' : 
+                                key === 'edad' ? 'number' : 
+                                key === 'fecha_nacimiento' ? 'date' : 'text'}
+                          placeholder={key === 'nombre' ? 'Nombre completo' :
+                                      key === 'email' ? 'email@ejemplo.com' :
+                                      key === 'documento' ? 'Documento' :
+                                      key === 'edad' ? 'Edad' :
+                                      key.replace(/_/g, ' ').toUpperCase()}
+                          value={value}
+                          onChange={(e) => handleJugadorChange(index, e)}
+                          autoComplete={
+                            key === 'nombre' ? 'name' :
+                            key === 'email' ? 'email' :
+                            key === 'documento' ? 'off' :
+                            key === 'edad' ? 'off' :
+                            key === 'fecha_nacimiento' ? 'bday' : 'off'
+                          }
+                          required
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -219,14 +345,7 @@ const RegistrarEquipo = () => {
             {form.jugadores.length < 8 && (
               <button type="button" className="btn-add" onClick={() => setForm({
                 ...form,
-                jugadores: [...form.jugadores, {
-                  nombre: "",
-                  email: "",
-                  documento: "",
-                  genero: "",
-                  edad: "",
-                  fecha_nacimiento: "",
-                }]
+                jugadores: [...form.jugadores, crearJugadorVacio()] // ✅ CORREGIDO: usar función
               })}>
                 <span>+</span> Añadir jugador
               </button>
