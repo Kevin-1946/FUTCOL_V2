@@ -149,20 +149,53 @@ class EquipoController extends Controller
     // ===== MÉTODOS ADICIONALES =====
 
     // Obtener el equipo del usuario autenticado como capitán
+    // Reemplaza el método miEquipo existente en tu EquipoController con este:
+
     public function miEquipo(Request $request)
     {
-        $user = $request->user();
-        $equipo = Equipo::with(['torneo', 'jugadores'])
-                        ->where('capitan_id', $user->id)
-                        ->first();
-        
-        if (!$equipo) {
+        try {
+            // Obtener el usuario autenticado
+            $user = $request->user();
+            
+            // Buscar el jugador asociado al usuario
+            $jugador = \App\Models\Jugador::where('user_id', $user->id)->first();
+            
+            if (!$jugador) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró el perfil de jugador asociado al usuario'
+                ], 404);
+            }
+            
+            // 🔧 CORRECCIÓN: Buscar el equipo donde este jugador es capitán
+            $equipo = \App\Models\Equipo::where('capitan_id', $jugador->id)
+                ->with(['jugadores', 'torneo', 'capitan'])
+                ->first();
+            
+            if (!$equipo) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No tienes un equipo registrado como capitán'
+                ], 404);
+            }
+            
             return response()->json([
-                'message' => 'No tienes un equipo asignado como capitán'
-            ], 404);
+                'success' => true,
+                'data' => [
+                    'equipo' => $equipo,
+                    'jugadores' => $equipo->jugadores,
+                    'torneo' => $equipo->torneo,
+                    'capitan' => $equipo->capitan
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el equipo',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json($equipo);
     }
 
     // Agregar jugador al equipo

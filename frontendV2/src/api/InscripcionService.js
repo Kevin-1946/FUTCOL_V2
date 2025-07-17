@@ -1,4 +1,4 @@
-import axios from "../axios";
+import axios from "../axios.js";
 
 // Listar todas las inscripciones
 export const getInscripciones = () => axios.get("/inscripciones");

@@ -1,4 +1,4 @@
-import axios from "../axios";
+import axios from "../axios.js";
 
 // Obtener todas las amonestaciones
 export const getAmonestaciones = () => axios.get("/amonestaciones");

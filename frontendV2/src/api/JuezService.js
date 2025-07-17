@@ -1,4 +1,4 @@
-import axios from "../axios";
+import axios from "../axios.js";
 
 // Obtener todos los jueces
 export const getJueces = () => axios.get("/jueces");

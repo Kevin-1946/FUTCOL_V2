@@ -33,8 +33,10 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewareAliases = [
+        // === MIDDLEWARES BÁSICOS DE LARAVEL ===
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
@@ -43,11 +45,15 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-
         // === MIDDLEWARES PERSONALIZADOS PARA TU APLICACIÓN ===
+        // Middleware de roles generales
         'role' => \App\Http\Middleware\CheckRole::class,
+        
+        // Middleware de verificación de propiedad
         'team.owner' => \App\Http\Middleware\CheckTeamOwner::class,
-
+        'jugador.owner' => \App\Http\Middleware\CheckJugadorOwner::class,
+        
+        // Middleware específicos por rol (si los necesitas)
         'check.administrador' => \App\Http\Middleware\CheckAdministrador::class,
         'check.capitan' => \App\Http\Middleware\CheckCapitan::class,
         'check.participante' => \App\Http\Middleware\CheckParticipante::class,

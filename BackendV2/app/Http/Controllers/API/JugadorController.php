@@ -6,20 +6,45 @@ use App\Http\Controllers\Controller;
 use App\Models\Jugador;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class JugadorController extends Controller
 {
     /**
      * @OA\Get(
      *     path="/api/jugadores",
-     *     summary="Listar todos los jugadores",
+     *     summary="Listar jugadores (filtrado por rol)",
      *     tags={"Jugadores"},
      *     @OA\Response(response=200, description="Lista de jugadores")
      * )
      */
     public function index()
     {
-        $jugadores = Jugador::with('equipo', 'equiposCapitaneados')->get();
+        $user = Auth::user();
+        
+        // Si es Administrador, ve todos los jugadores
+        if ($user->role->nombre === 'Administrador') {
+            $jugadores = Jugador::with('equipo', 'equiposCapitaneados')->get();
+        } 
+        // Si es Capitán, solo ve los jugadores de su equipo
+        elseif ($user->role->nombre === 'Capitan') {
+            // Obtener el equipo que capitanea este usuario
+            $equipoCapitaneado = $user->equiposCapitaneados()->first();
+            
+            if ($equipoCapitaneado) {
+                $jugadores = Jugador::with('equipo', 'equiposCapitaneados')
+                    ->where('equipo_id', $equipoCapitaneado->id)
+                    ->get();
+            } else {
+                // Si el capitán no tiene equipo asignado
+                $jugadores = collect();
+            }
+        }
+        // Si es Participante, no ve jugadores (o solo se ve a sí mismo)
+        else {
+            $jugadores = collect();
+        }
+        
         return response()->json($jugadores);
     }
 
@@ -46,6 +71,8 @@ class JugadorController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        
         $request->validate([
             'nombre' => 'required|string|max:255',
             'n_documento' => 'required|string|unique:jugadores,n_documento',
@@ -54,6 +81,15 @@ class JugadorController extends Controller
             'password' => 'required|string|min:6',
             'equipo_id' => 'nullable|exists:equipos,id',
         ]);
+
+        // Si es Capitán, solo puede crear jugadores para su equipo
+        if ($user->role->nombre === 'Capitan') {
+            $equipoCapitaneado = $user->equiposCapitaneados()->first();
+            if (!$equipoCapitaneado) {
+                return response()->json(['error' => 'No tienes un equipo asignado'], 403);
+            }
+            $request->merge(['equipo_id' => $equipoCapitaneado->id]);
+        }
 
         $jugador = Jugador::create([
             'nombre' => $request->nombre,
@@ -79,7 +115,17 @@ class JugadorController extends Controller
      */
     public function show($id)
     {
+        $user = Auth::user();
         $jugador = Jugador::with('equipo', 'equiposCapitaneados')->findOrFail($id);
+        
+        // Si es Capitán, solo puede ver jugadores de su equipo
+        if ($user->role->nombre === 'Capitan') {
+            $equipoCapitaneado = $user->equiposCapitaneados()->first();
+            if (!$equipoCapitaneado || $jugador->equipo_id !== $equipoCapitaneado->id) {
+                return response()->json(['error' => 'No autorizado'], 403);
+            }
+        }
+        
         return response()->json($jugador);
     }
 
@@ -105,7 +151,18 @@ class JugadorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = Auth::user();
         $jugador = Jugador::findOrFail($id);
+
+        // Si es Capitán, solo puede actualizar jugadores de su equipo
+        if ($user->role->nombre === 'Capitan') {
+            $equipoCapitaneado = $user->equiposCapitaneados()->first();
+            if (!$equipoCapitaneado || $jugador->equipo_id !== $equipoCapitaneado->id) {
+                return response()->json(['error' => 'No autorizado'], 403);
+            }
+            // Los capitanes no pueden cambiar el equipo del jugador
+            $request->offsetUnset('equipo_id');
+        }
 
         $request->validate([
             'nombre' => 'sometimes|required|string|max:255',
@@ -123,7 +180,11 @@ class JugadorController extends Controller
         if ($request->filled('password')) {
             $jugador->password = Hash::make($request->password);
         }
-        $jugador->equipo_id = $request->equipo_id ?? $jugador->equipo_id;
+        
+        // Solo los administradores pueden cambiar el equipo
+        if ($user->role->nombre === 'Administrador') {
+            $jugador->equipo_id = $request->equipo_id ?? $jugador->equipo_id;
+        }
 
         $jugador->save();
 
@@ -142,10 +203,19 @@ class JugadorController extends Controller
      */
     public function destroy($id)
     {
+        $user = Auth::user();
         $jugador = Jugador::findOrFail($id);
+        
+        // Si es Capitán, solo puede eliminar jugadores de su equipo
+        if ($user->role->nombre === 'Capitan') {
+            $equipoCapitaneado = $user->equiposCapitaneados()->first();
+            if (!$equipoCapitaneado || $jugador->equipo_id !== $equipoCapitaneado->id) {
+                return response()->json(['error' => 'No autorizado'], 403);
+            }
+        }
+        
         $jugador->delete();
 
         return response()->json(null, 204);
     } 
 }
-

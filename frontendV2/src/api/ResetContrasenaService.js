@@ -1,4 +1,4 @@
-import axios from "../axios";
+import axios from "../axios.js";
 
 export const solicitarReset = (email) =>
   axios.post("/reset-contrasena", { email });

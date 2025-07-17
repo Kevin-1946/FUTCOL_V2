@@ -58,7 +58,6 @@ const Layout = () => {
           { nombre: "Estadísticas", ruta: "/admin/estadisticas" },
           { nombre: "Recibos", ruta: "/admin/recibos" },
           { nombre: "Inscripciones", ruta: "/admin/inscripciones" },
-          { nombre: "Usuarios", ruta: "/admin/usuarios" },
         ]
       },
       { nombre: "Información", ruta: "/informacion/sobre_nosotros" }

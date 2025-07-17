@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext"; // ✅ Ruta corregida
+import { useAuth } from "../../contexts/AuthContext";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });

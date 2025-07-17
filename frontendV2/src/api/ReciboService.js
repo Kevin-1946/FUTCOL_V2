@@ -1,4 +1,4 @@
-import axios from "../axios";
+import axios from "../axios.js";
 
 // Listar todos los recibos
 export const getRecibos = () => axios.get("/recibos");

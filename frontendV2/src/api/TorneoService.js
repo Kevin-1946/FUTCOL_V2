@@ -1,4 +1,4 @@
-import axios from "../axios";
+import axios from "../axios.js";
 
 // Obtener todos los torneos
 export const getTorneos = () => axios.get("/torneos");

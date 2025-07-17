@@ -2,21 +2,15 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * Los atributos que se pueden asignar masivamente.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name',
         'email',
@@ -25,28 +19,18 @@ class User extends Authenticatable
         'equipo_id',
     ];
 
-    /**
-     * Los atributos que deben ocultarse para arrays o respuestas JSON.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Los atributos que deben ser casteados a tipos nativos.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
      * Relación con el rol del usuario.
-     * Cada usuario pertenece a un solo rol.
      */
     public function role()
     {
@@ -54,11 +38,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Relación con el equipo.
-     * Cada usuario puede pertenecer a un solo equipo.
+     * Relación con el equipo al que pertenece (como jugador).
      */
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);
+    }
+
+    /**
+     * Relación con los equipos que capitanea.
+     * Un usuario (capitán) puede capitanear uno o más equipos.
+     */
+    public function equiposCapitaneados()
+    {
+        return $this->hasMany(Equipo::class, 'capitan_id');
     }
 }

@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
                     const parsedUser = JSON.parse(storedUser);
 
                     // Validación simple: debe tener al menos nombre y rol.nombre
-                    if (parsedUser?.nombre && parsedUser?.role?.nombre) {
+                    if (parsedUser?.name && parsedUser?.role?.nombre) {
                         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                         setUser(parsedUser);
                     } else {
@@ -46,15 +46,15 @@ export const AuthProvider = ({ children }) => {
     // Función de login que guarda token y usuario
     const login = async (credentials) => {
         const response = await axios.post('/login', credentials);
-        const { token, user } = response.data;
+        const { access_token, user } = response.data;
 
-        if (!user?.nombre || !user?.role?.nombre) {
+        if (!user?.name || !user?.role?.nombre) {
             throw new Error("El usuario devuelto no tiene los datos esperados.");
         }
 
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', access_token);
         localStorage.setItem('user', JSON.stringify(user));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
         setUser(user);
 
         return response;

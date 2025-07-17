@@ -2,7 +2,7 @@
 $host = "localhost";  
 $usuario = "root";         
 $password = "";             
-$dbname = "futcol1";  
+$dbname = "futcolv2";  
 
 
 $conn = new mysqli($host, $usuario, $password, $dbname);

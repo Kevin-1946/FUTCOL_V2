@@ -24,24 +24,45 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.tabla-inscripciones th,
+.tabla-inscripciones th, 
 .tabla-inscripciones td {
   border: 1px solid #ccc;
   padding: 0.75rem;
   text-align: center;
+  color: #333; /* Color del texto definido para ambos */
 }
 
 .tabla-inscripciones th {
   background-color: #f0f0f0;
   font-weight: bold;
+  color: #222; /* Color más oscuro para encabezados */
+}
+
+.tabla-inscripciones td {
+  background-color: #fff;
+  color: #333; /* Color específico para celdas de contenido */
 }
 
 .tabla-inscripciones tbody tr:hover {
   background-color: #f9f9f9;
 }
 
+.tabla-inscripciones tbody tr:hover td {
+  color: #000; /* Color más oscuro al hacer hover */
+}
+
 .cargando {
   text-align: center;
   margin-top: 3rem;
   font-size: 1.2rem;
+  color: #666;
+}
+
+/* Estilos adicionales para mejorar la visibilidad */
+.tabla-inscripciones tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.tabla-inscripciones tbody tr:nth-child(even) td {
+  background-color: #f8f9fa;
 }

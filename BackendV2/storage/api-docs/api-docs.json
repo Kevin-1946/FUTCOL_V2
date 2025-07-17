@@ -1,0 +1,2202 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "FUTCOL API",
+        "description": "API para el sistema de gestión de torneos de fútbol FUTCOL. Esta API permite gestionar torneos, equipos, jugadores, amonestaciones y estadísticas.",
+        "contact": {
+            "name": "FUTCOL Support Team",
+            "email": "admin@futcol.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "FUTCOL API Server"
+        }
+    ],
+    "paths": {
+        "/api/amonestaciones": {
+            "get": {
+                "tags": [
+                    "Amonestaciones"
+                ],
+                "summary": "Obtener todas las amonestaciones",
+                "operationId": "8a2b7f1c70fcf4c2ef0181dcb45c4a33",
+                "responses": {
+                    "200": {
+                        "description": "Lista de amonestaciones"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Amonestaciones"
+                ],
+                "summary": "Crear una nueva amonestación",
+                "operationId": "c4e75e8329595de75a755974af2c2866",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "jugador_id",
+                                    "equipo_id",
+                                    "encuentro_id",
+                                    "numero_camiseta"
+                                ],
+                                "properties": {
+                                    "jugador_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "equipo_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "encuentro_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "numero_camiseta": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "tarjeta_roja": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "tarjeta_amarilla": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "tarjeta_azul": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Amonestación creada correctamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/amonestaciones/{id}": {
+            "get": {
+                "tags": [
+                    "Amonestaciones"
+                ],
+                "summary": "Obtener una amonestación específica",
+                "operationId": "8bcee443bd6d315b72e8aa7a01f1320e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la amonestación",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la amonestación"
+                    },
+                    "404": {
+                        "description": "Amonestación no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Amonestaciones"
+                ],
+                "summary": "Actualizar una amonestación",
+                "operationId": "f15e80dd6604993950b3b7564ec9cc26",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la amonestación a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "jugador_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "equipo_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "encuentro_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "numero_camiseta": {
+                                        "type": "integer",
+                                        "example": 7
+                                    },
+                                    "tarjeta_roja": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "tarjeta_amarilla": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "tarjeta_azul": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Amonestación actualizada correctamente"
+                    },
+                    "404": {
+                        "description": "Amonestación no encontrada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Amonestaciones"
+                ],
+                "summary": "Eliminar una amonestación",
+                "operationId": "1e38b711baf9e84c096e360818533338",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la amonestación a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Amonestación eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Amonestación no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Registrar un nuevo usuario capitán con su equipo",
+                "operationId": "a718f172ff3ac464d723835815f8fb57",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "equipo_nombre",
+                                    "n_documento",
+                                    "fecha_nacimiento"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "juan@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "secret123"
+                                    },
+                                    "equipo_nombre": {
+                                        "type": "string",
+                                        "example": "Los Tigres"
+                                    },
+                                    "n_documento": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "fecha_nacimiento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2000-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registro exitoso"
+                    },
+                    "500": {
+                        "description": "Error en el registro"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Iniciar sesión de usuario",
+                "operationId": "44212a9096e4b09358281e9ec8a0701d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "juan@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso"
+                    },
+                    "422": {
+                        "description": "Credenciales incorrectas"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Cerrar sesión del usuario autenticado",
+                "operationId": "79854151e609bd20032aa5aa4d5a35c0",
+                "responses": {
+                    "200": {
+                        "description": "Sesión cerrada correctamente"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/perfil": {
+            "get": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Obtener el perfil del usuario autenticado",
+                "operationId": "0c77aa5383bb0a94f054e9e8adada7dd",
+                "responses": {
+                    "200": {
+                        "description": "Perfil del usuario"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/refresh": {
+            "get": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Verificar sesión activa",
+                "operationId": "a90e05f2b08af80521e5961413c1b0df",
+                "responses": {
+                    "200": {
+                        "description": "Sesión activa"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/encuentros": {
+            "get": {
+                "tags": [
+                    "Encuentros"
+                ],
+                "summary": "Listar todos los encuentros",
+                "operationId": "3b88e73ebf7f0277212b496e282a68f9",
+                "responses": {
+                    "200": {
+                        "description": "Lista de encuentros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Encuentros"
+                ],
+                "summary": "Crear un nuevo encuentro",
+                "operationId": "4e6a92bb6fa52a8781b8c1a8b81020f6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "torneo_id",
+                                    "sede_id",
+                                    "fecha",
+                                    "equipo_local_id",
+                                    "equipo_visitante_id"
+                                ],
+                                "properties": {
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "sede_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "fecha": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-10-10"
+                                    },
+                                    "equipo_local_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "equipo_visitante_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "goles_equipo_local": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "goles_equipo_visitante": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Encuentro creado correctamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/encuentros/{id}": {
+            "get": {
+                "tags": [
+                    "Encuentros"
+                ],
+                "summary": "Mostrar un encuentro específico",
+                "operationId": "7341b5fbfa6e9b48b1e4ebb97432884d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del encuentro",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del encuentro"
+                    },
+                    "404": {
+                        "description": "Encuentro no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Encuentros"
+                ],
+                "summary": "Actualizar un encuentro",
+                "operationId": "0d2cf5c7f470ea2ac20b61e4313b45ce",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del encuentro a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "sede_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "fecha": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-10-11"
+                                    },
+                                    "equipo_local_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "equipo_visitante_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "goles_equipo_local": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "goles_equipo_visitante": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Encuentro actualizado correctamente"
+                    },
+                    "404": {
+                        "description": "Encuentro no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Encuentros"
+                ],
+                "summary": "Eliminar un encuentro",
+                "operationId": "62e6bb0c386136652a729bbf9e3ccaca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del encuentro a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Encuentro eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Encuentro no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/equipos": {
+            "get": {
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Mostrar lista de equipos",
+                "operationId": "0227b0b118324381c3e82e2160c0977e",
+                "responses": {
+                    "200": {
+                        "description": "Lista de equipos"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Crear un nuevo equipo",
+                "operationId": "e304b22fd61cf0f02d0fd48a29378a16",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "torneo_id"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Los Halcones"
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "capitan_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Equipo creado exitosamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/equipos/{id}": {
+            "get": {
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Mostrar un equipo específico",
+                "operationId": "62247bab9e1d63e7e286ade6d241b341",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del equipo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del equipo"
+                    },
+                    "404": {
+                        "description": "Equipo no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Actualizar un equipo",
+                "operationId": "9b47f424e97f7647e23e42c0e4baa1e4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del equipo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Nuevo Nombre"
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "capitan_id": {
+                                        "type": "integer",
+                                        "example": 6
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Equipo actualizado correctamente"
+                    },
+                    "404": {
+                        "description": "Equipo no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Eliminar un equipo",
+                "operationId": "97125dc2dbb6253a3a853e53bc8801e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del equipo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Equipo eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Equipo no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/estadisticas-equipos": {
+            "get": {
+                "tags": [
+                    "Estadísticas de Equipos"
+                ],
+                "summary": "Listar todas las estadísticas de equipos",
+                "operationId": "c5315ec91aed858e4a7f304f0314c964",
+                "responses": {
+                    "200": {
+                        "description": "Lista de estadísticas"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Estadísticas de Equipos"
+                ],
+                "summary": "Crear una nueva estadística de equipo",
+                "operationId": "cb1a959c7ed02e7f27394f7f0e59ff12",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "equipo_id",
+                                    "torneo_id",
+                                    "partidos_jugados",
+                                    "partidos_ganados",
+                                    "partidos_empatados",
+                                    "partidos_perdidos",
+                                    "goles_a_favor",
+                                    "goles_en_contra",
+                                    "diferencia_de_goles",
+                                    "puntos"
+                                ],
+                                "properties": {
+                                    "equipo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "partidos_jugados": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "partidos_ganados": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "partidos_empatados": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "partidos_perdidos": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "goles_a_favor": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "goles_en_contra": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "diferencia_de_goles": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "puntos": {
+                                        "type": "integer",
+                                        "example": 10
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Estadística creada exitosamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/estadisticas-equipos/{id}": {
+            "get": {
+                "tags": [
+                    "Estadísticas de Equipos"
+                ],
+                "summary": "Mostrar una estadística de equipo específica",
+                "operationId": "73d30b14a64afe8a0a9e3a2de0aeb605",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la estadística",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la estadística"
+                    },
+                    "404": {
+                        "description": "Estadística no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Estadísticas de Equipos"
+                ],
+                "summary": "Actualizar una estadística de equipo",
+                "operationId": "f033bbf795ead9a417b1ca67a17252f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la estadística",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "partidos_jugados": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "puntos": {
+                                        "type": "integer",
+                                        "example": 12
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Estadística actualizada correctamente"
+                    },
+                    "404": {
+                        "description": "Estadística no encontrada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Estadísticas de Equipos"
+                ],
+                "summary": "Eliminar una estadística de equipo",
+                "operationId": "002f3c2c8603ef75018f0f46bd601128",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la estadística",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Estadística eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Estadística no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/goles-jugadores": {
+            "get": {
+                "tags": [
+                    "Goles de Jugadores"
+                ],
+                "summary": "Listar todos los registros de goles",
+                "operationId": "25f5b768147fd76e299e5e4eee85950e",
+                "responses": {
+                    "200": {
+                        "description": "Lista de goles registrados"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Goles de Jugadores"
+                ],
+                "summary": "Registrar un nuevo gol de jugador",
+                "operationId": "0352d609f7c2a6de68ff2939a38461f4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "jugador_id",
+                                    "encuentro_id",
+                                    "cantidad"
+                                ],
+                                "properties": {
+                                    "jugador_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "encuentro_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "cantidad": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Gol registrado correctamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/goles-jugadores/{id}": {
+            "get": {
+                "tags": [
+                    "Goles de Jugadores"
+                ],
+                "summary": "Mostrar un gol registrado",
+                "operationId": "0b68b9abf597172c479111d0bee92bbc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del registro de gol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalle del gol registrado"
+                    },
+                    "404": {
+                        "description": "Gol no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Goles de Jugadores"
+                ],
+                "summary": "Actualizar un registro de gol",
+                "operationId": "b431c1232ea1e0a76b1c1399cd889fb5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del gol a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "jugador_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "encuentro_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "cantidad": {
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Gol actualizado correctamente"
+                    },
+                    "404": {
+                        "description": "Gol no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Goles de Jugadores"
+                ],
+                "summary": "Eliminar un registro de gol",
+                "operationId": "e9f2d92427772f52629f4be961f3bfa0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del gol a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Gol eliminado correctamente"
+                    },
+                    "404": {
+                        "description": "Gol no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/inscripciones": {
+            "get": {
+                "tags": [
+                    "Inscripciones"
+                ],
+                "summary": "Listar todas las inscripciones",
+                "operationId": "1f07b977038166cbcc8953ab14a47e52",
+                "responses": {
+                    "200": {
+                        "description": "Lista de inscripciones"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Inscripciones"
+                ],
+                "summary": "Crear una nueva inscripción",
+                "operationId": "d73801d351337b2c1978482dfbf045ce",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "equipo_id",
+                                    "torneo_id",
+                                    "fecha_de_inscripcion",
+                                    "forma_pago",
+                                    "estado_pago",
+                                    "correo_confirmado",
+                                    "total_pagado"
+                                ],
+                                "properties": {
+                                    "equipo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "fecha_de_inscripcion": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-01"
+                                    },
+                                    "forma_pago": {
+                                        "type": "string",
+                                        "example": "Transferencia"
+                                    },
+                                    "estado_pago": {
+                                        "type": "string",
+                                        "example": "Pagado"
+                                    },
+                                    "correo_confirmado": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "total_pagado": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 150000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Inscripción creada correctamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/inscripciones/{id}": {
+            "get": {
+                "tags": [
+                    "Inscripciones"
+                ],
+                "summary": "Mostrar una inscripción específica",
+                "operationId": "ba4ca8961f38fabaea167abf95926f61",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la inscripción",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la inscripción"
+                    },
+                    "404": {
+                        "description": "Inscripción no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Inscripciones"
+                ],
+                "summary": "Actualizar una inscripción",
+                "operationId": "3de0e6d0916222b7b6c21b826ab72d1f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la inscripción a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "forma_pago": {
+                                        "type": "string",
+                                        "example": "Efectivo"
+                                    },
+                                    "estado_pago": {
+                                        "type": "string",
+                                        "example": "Pendiente"
+                                    },
+                                    "total_pagado": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 75000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inscripción actualizada correctamente"
+                    },
+                    "404": {
+                        "description": "Inscripción no encontrada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Inscripciones"
+                ],
+                "summary": "Eliminar una inscripción",
+                "operationId": "4b14414b9e38a61037093ffc14b33bab",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la inscripción a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Inscripción eliminada correctamente"
+                    },
+                    "404": {
+                        "description": "Inscripción no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/jueces": {
+            "get": {
+                "tags": [
+                    "Jueces"
+                ],
+                "summary": "Listar todos los jueces",
+                "operationId": "fdddee27068db3908aacc064c43ac215",
+                "responses": {
+                    "200": {
+                        "description": "Lista de jueces"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Jueces"
+                ],
+                "summary": "Registrar un nuevo juez",
+                "operationId": "348fc8b610ff427591fdac6ff042412c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "numero_de_contacto",
+                                    "correo"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Carlos Pérez"
+                                    },
+                                    "numero_de_contacto": {
+                                        "type": "string",
+                                        "example": "3111234567"
+                                    },
+                                    "correo": {
+                                        "type": "string",
+                                        "example": "carlos@example.com"
+                                    },
+                                    "sede_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Juez creado exitosamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                }
+            }
+        },
+        "/api/jueces/{id}": {
+            "get": {
+                "tags": [
+                    "Jueces"
+                ],
+                "summary": "Obtener información de un juez específico",
+                "operationId": "6f5f13799c272913c00d34fbe6d1bafc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Información del juez"
+                    },
+                    "404": {
+                        "description": "Juez no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Jueces"
+                ],
+                "summary": "Actualizar información de un juez",
+                "operationId": "b74dd72a45faf20224c4a320a79a5636",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Carlos Pérez"
+                                    },
+                                    "numero_de_contacto": {
+                                        "type": "string",
+                                        "example": "3111234567"
+                                    },
+                                    "correo": {
+                                        "type": "string",
+                                        "example": "carlos@example.com"
+                                    },
+                                    "sede_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Juez actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Juez no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Jueces"
+                ],
+                "summary": "Eliminar un juez",
+                "operationId": "4240c5b9ae2e8cb7eaaec2ea8c27367d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Juez eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Juez no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/jugadores": {
+            "get": {
+                "tags": [
+                    "Jugadores"
+                ],
+                "summary": "Listar todos los jugadores",
+                "operationId": "dea173c276f606c29f946190cd3fbf0d",
+                "responses": {
+                    "200": {
+                        "description": "Lista de jugadores"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Jugadores"
+                ],
+                "summary": "Crear un nuevo jugador",
+                "operationId": "a6bca232b4957d71a1179acf4eba7097",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "n_documento",
+                                    "fecha_nacimiento",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "n_documento": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "fecha_nacimiento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2000-01-01"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "juan@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret"
+                                    },
+                                    "equipo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Jugador creado exitosamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                }
+            }
+        },
+        "/api/jugadores/{id}": {
+            "get": {
+                "tags": [
+                    "Jugadores"
+                ],
+                "summary": "Mostrar un jugador específico",
+                "operationId": "38a1e42cd09832fbd502015f2a56d7d7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Información del jugador"
+                    },
+                    "404": {
+                        "description": "Jugador no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Jugadores"
+                ],
+                "summary": "Actualizar un jugador",
+                "operationId": "43b9b9ac5454068b7a7befe507c8e46f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string"
+                                    },
+                                    "n_documento": {
+                                        "type": "string"
+                                    },
+                                    "fecha_nacimiento": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "equipo_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Jugador actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Jugador no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Jugadores"
+                ],
+                "summary": "Eliminar un jugador",
+                "operationId": "ad3b63cc99eed2fea1490aca50426404",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Jugador eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Jugador no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/recibos": {
+            "get": {
+                "tags": [
+                    "Recibos"
+                ],
+                "summary": "Listar todos los recibos de pago",
+                "operationId": "bf85a7bfa8b3a0031ff5a5ec1a341f72",
+                "responses": {
+                    "200": {
+                        "description": "Lista de recibos de pago"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Recibos"
+                ],
+                "summary": "Crear un nuevo recibo de pago",
+                "operationId": "b3c2fb5d3ff32cb6a7d88a8855039f99",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "inscripcion_id",
+                                    "torneo_id",
+                                    "monto",
+                                    "fecha_emision",
+                                    "confirmado",
+                                    "metodo_pago",
+                                    "numero_comprobante"
+                                ],
+                                "properties": {
+                                    "inscripcion_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "monto": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 150000
+                                    },
+                                    "fecha_emision": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-10-01"
+                                    },
+                                    "confirmado": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "metodo_pago": {
+                                        "type": "string",
+                                        "example": "Transferencia"
+                                    },
+                                    "numero_comprobante": {
+                                        "type": "string",
+                                        "example": "ABC12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Recibo creado exitosamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                }
+            }
+        },
+        "/api/recibos/{id}": {
+            "get": {
+                "tags": [
+                    "Recibos"
+                ],
+                "summary": "Mostrar un recibo de pago específico",
+                "operationId": "5eb499644d38f0893e4344a2aac05ecb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Información del recibo de pago"
+                    },
+                    "404": {
+                        "description": "Recibo no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Recibos"
+                ],
+                "summary": "Actualizar un recibo de pago",
+                "operationId": "475667f8855dc8649b81e9a720cd0450",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "inscripcion_id": {
+                                        "type": "integer"
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer"
+                                    },
+                                    "monto": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "fecha_emision": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "confirmado": {
+                                        "type": "boolean"
+                                    },
+                                    "metodo_pago": {
+                                        "type": "string"
+                                    },
+                                    "numero_comprobante": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Recibo actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Recibo no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Recibos"
+                ],
+                "summary": "Eliminar un recibo de pago",
+                "operationId": "d0a0b285e101d68dd1c7b6835e535ea7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Recibo eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Recibo no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/sedes": {
+            "get": {
+                "tags": [
+                    "Sedes"
+                ],
+                "summary": "Listar todas las sedes",
+                "operationId": "957205a3296ece9539db8919256438c0",
+                "responses": {
+                    "200": {
+                        "description": "Lista de sedes con su torneo asociado"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Sedes"
+                ],
+                "summary": "Crear una nueva sede",
+                "operationId": "5bfd771571873bfafbe26f64d6cc4285",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "direccion",
+                                    "torneo_id"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Cancha el Dorado"
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Carrera 12 #45-67"
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sede creada exitosamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                }
+            }
+        },
+        "/api/sedes/{id}": {
+            "get": {
+                "tags": [
+                    "Sedes"
+                ],
+                "summary": "Mostrar una sede específica",
+                "operationId": "82761c19368834a3a53044485b94a9a3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la sede",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Información de la sede"
+                    },
+                    "404": {
+                        "description": "Sede no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Sedes"
+                ],
+                "summary": "Actualizar una sede",
+                "operationId": "b53c2fdfd7e19e2be4e529c19606422f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la sede",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Nuevo nombre de sede"
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Nueva dirección"
+                                    },
+                                    "torneo_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sede actualizada correctamente"
+                    },
+                    "404": {
+                        "description": "Sede no encontrada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Sedes"
+                ],
+                "summary": "Eliminar una sede",
+                "operationId": "5cf9daa3fe988bf044a1c65785bf9e9c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la sede",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sede eliminada con éxito"
+                    },
+                    "404": {
+                        "description": "Sede no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/torneos": {
+            "get": {
+                "tags": [
+                    "Torneos"
+                ],
+                "summary": "Listar todos los torneos con sus relaciones",
+                "operationId": "4e29c43dc52a51a9209258bf84986dde",
+                "responses": {
+                    "200": {
+                        "description": "Lista de torneos"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Torneos"
+                ],
+                "summary": "Crear un nuevo torneo",
+                "operationId": "ce5996daacaeeb4bbe3406485338c5f7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "categoria",
+                                    "fecha_inicio",
+                                    "fecha_fin"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Liga Clausura 2024"
+                                    },
+                                    "categoria": {
+                                        "type": "string",
+                                        "example": "Sub-18"
+                                    },
+                                    "fecha_inicio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-01"
+                                    },
+                                    "fecha_fin": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Torneo creado exitosamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                }
+            }
+        },
+        "/api/torneos/{id}": {
+            "get": {
+                "tags": [
+                    "Torneos"
+                ],
+                "summary": "Mostrar un torneo específico con relaciones",
+                "operationId": "d9f455d03020f7d1756fc201a2f5ad88",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Información del torneo"
+                    },
+                    "404": {
+                        "description": "Torneo no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Torneos"
+                ],
+                "summary": "Actualizar un torneo",
+                "operationId": "efcf4386945898751d6517127e6b96e4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string"
+                                    },
+                                    "categoria": {
+                                        "type": "string"
+                                    },
+                                    "fecha_inicio": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "fecha_fin": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Torneo actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Torneo no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Torneos"
+                ],
+                "summary": "Eliminar un torneo",
+                "operationId": "2fb17d30739a7af8777c590e66ef1f7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Torneo eliminado correctamente"
+                    },
+                    "404": {
+                        "description": "Torneo no encontrado"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Ingresa tu token JWT en el formato: Bearer {token}",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Amonestaciones",
+            "description": "Operaciones relacionadas con amonestaciones de jugadores"
+        },
+        {
+            "name": "Autenticación",
+            "description": "Operaciones relacionadas con el registro, inicio de sesión y gestión de usuarios autenticados"
+        },
+        {
+            "name": "Encuentros",
+            "description": "Operaciones relacionadas con los encuentros deportivos"
+        },
+        {
+            "name": "Equipos",
+            "description": "Operaciones relacionadas con los equipos"
+        },
+        {
+            "name": "Inscripciones",
+            "description": "Operaciones relacionadas con las inscripciones de equipos en torneos"
+        },
+        {
+            "name": "Jueces",
+            "description": "Gestión de jueces/árbitros"
+        },
+        {
+            "name": "Jugadores",
+            "description": "Gestión de jugadores"
+        },
+        {
+            "name": "Sedes",
+            "description": "Gestión de sedes"
+        },
+        {
+            "name": "Torneos",
+            "description": "Gestión de torneos"
+        },
+        {
+            "name": "Estadísticas de Equipos",
+            "description": "Operaciones para gestionar estadísticas de equipos en torneos"
+        },
+        {
+            "name": "Goles de Jugadores",
+            "description": "Operaciones para registrar y gestionar goles anotados por jugadores"
+        },
+        {
+            "name": "Recibos",
+            "description": "Recibos"
+        }
+    ]
+}

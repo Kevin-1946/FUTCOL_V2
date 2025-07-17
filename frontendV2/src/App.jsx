@@ -34,7 +34,6 @@
   import InscripcionesCrud from "./paginas/cruds/InscripcionesCrud";
   import JuezCrud from "./paginas/cruds/JuezCrud";
   import JugadorCrud from "./paginas/cruds/JugadorCrud";
-  import LoginUsuarioCrud from "./paginas/cruds/LoginUsuarioCrud";
   import ReciboCrud from "./paginas/cruds/ReciboCrud";
   import ResetContrasenaCrud from "./paginas/cruds/ResetContrasenaCrud";
   import SedeCrud from "./paginas/cruds/SedeCrud";
@@ -154,10 +153,6 @@
         <Route
           path="admin/recibos"
           element={<ProtectedRoute allowedRoles={["administrador"]}><ReciboCrud /></ProtectedRoute>}
-        />
-        <Route
-          path="admin/usuarios"
-          element={<ProtectedRoute allowedRoles={["administrador"]}><LoginUsuarioCrud /></ProtectedRoute>}
         />
         <Route
           path="admin/reset"
