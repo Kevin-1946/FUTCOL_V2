@@ -22,9 +22,11 @@
   margin-bottom: 2rem;
 }
 
+/* Estilos para inputs y selects */
 .amonestacion-crud input[type="text"],
 .amonestacion-crud input[type="number"],
-.amonestacion-crud input:not([type="checkbox"]) {
+.amonestacion-crud input:not([type="checkbox"]),
+.amonestacion-crud select {
   padding: 0.6rem 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -32,11 +34,30 @@
   transition: border-color 0.3s;
   width: 100%;
   box-sizing: border-box;
+  background-color: white;
 }
 
-.amonestacion-crud input:focus {
+.amonestacion-crud input:focus,
+.amonestacion-crud select:focus {
   border-color: #3498db;
   outline: none;
+}
+
+/* Estilo específico para los selects */
+.amonestacion-crud select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+.amonestacion-crud select option {
+  padding: 0.5rem;
+  background-color: white;
+  color: #333;
 }
 
 .amonestacion-crud label {
@@ -70,18 +91,26 @@
 }
 
 .amonestacion-crud li {
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 10px;
   margin-bottom: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
   font-size: 0.95rem;
 }
 
-.amonestacion-crud li div {
+.amonestacion-info {
+  line-height: 1.6;
+}
+
+.amonestacion-info strong {
+  color: #2c3a50;
+}
+
+.amonestacion-crud li div:last-child {
   display: flex;
   gap: 0.5rem;
 }
@@ -95,6 +124,15 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  grid-column: auto;
+}
+
+.amonestacion-crud li button:first-child {
+  background-color: #f39c12;
+}
+
+.amonestacion-crud li button:first-child:hover {
+  background-color: #e67e22;
 }
 
 .amonestacion-crud li button:hover {
@@ -118,7 +156,7 @@
     font-size: 0.9rem;
   }
 
-  .amonestacion-crud li div {
+  .amonestacion-crud li div:last-child {
     flex-direction: column;
     gap: 0.25rem;
   }
@@ -128,3 +166,4 @@
     text-align: center;
   }
 }
+

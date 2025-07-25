@@ -3,13 +3,13 @@
    ======================================== */
 
 .sede-crud {
-  max-width: 700px;
+  max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #fdfdfd;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
-  box-sizing: border-box; /* ✅ Evita que el padding sume al ancho total */
+  box-sizing: border-box;
 }
 
 /* ========================================
@@ -23,6 +23,14 @@
   color: #222;
 }
 
+.sede-crud h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #333;
+  border-bottom: 2px solid #dc3545;
+  padding-bottom: 0.5rem;
+}
+
 /* ========================================
    FORMULARIO
    ======================================== */
@@ -32,19 +40,55 @@
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
 }
 
-.sede-crud input {
-  padding: 0.5rem 0.75rem;
+.sede-crud input,
+.sede-crud select {
+  padding: 0.75rem;
   font-size: 0.95rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  box-sizing: border-box; /* ✅ Protección local */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sede-crud input:focus,
+.sede-crud select:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+}
+
+.sede-crud select.select-torneo {
+  grid-column: span 2;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.sede-crud select:disabled,
+.sede-crud input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ========================================
+   BOTONES DEL FORMULARIO
+   ======================================== */
+
+.form-buttons {
+  grid-column: span 2;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .sede-crud button[type="submit"] {
-  grid-column: span 2;
-  padding: 0.6rem;
+  flex: 1;
+  padding: 0.75rem;
   font-weight: bold;
   background-color: #dc3545;
   color: #fff;
@@ -54,13 +98,58 @@
   transition: background-color 0.3s ease;
 }
 
-.sede-crud button[type="submit"]:hover {
-  background-color: #0056b3;
+.sede-crud button[type="submit"]:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.sede-crud button[type="submit"]:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.sede-crud button[type="button"] {
+  flex: 0 0 auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sede-crud button[type="button"]:hover:not(:disabled) {
+  background-color: #545b62;
+}
+
+/* ========================================
+   LOADING Y ESTADOS
+   ======================================== */
+
+.loading {
+  text-align: center;
+  padding: 1rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px dashed #dee2e6;
 }
 
 /* ========================================
    LISTA DE ELEMENTOS
    ======================================== */
+
+.sedes-list {
+  margin-top: 2rem;
+}
 
 .sede-crud ul {
   list-style: none;
@@ -71,45 +160,85 @@
 .sede-crud li {
   background-color: #fff;
   border: 1px solid #ddd;
-  padding: 1rem;
+  padding: 1.5rem;
   margin-bottom: 1rem;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
   box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
 }
 
-.sede-crud li > div {
+.sede-crud li:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sede-info {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex: 1;
+}
+
+.sede-info strong {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.sede-info .direccion {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.sede-info .torneo {
+  color: #dc3545;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 /* ========================================
    BOTONES DE ACCIÓN EN LISTA
    ======================================== */
 
+.sede-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .sede-crud li button {
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
-.sede-crud li button:first-of-type {
+.sede-crud li button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-edit {
   background-color: #28a745;
-  margin-right: 0.5rem;
 }
 
-.sede-crud li button:last-of-type {
+.btn-edit:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
   background-color: #dc3545;
 }
 
-.sede-crud li button:hover {
-  opacity: 0.9;
+.btn-delete:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-1px);
 }
 
 /* ========================================
@@ -119,23 +248,51 @@
 @media (max-width: 768px) {
   .sede-crud {
     padding: 1.5rem;
+    margin: 1rem;
   }
 
   .sede-crud form {
     display: flex;
     flex-direction: column;
+    padding: 1rem;
   }
 
   .sede-crud input,
-  .sede-crud button[type="submit"] {
+  .sede-crud select,
+  .form-buttons {
     width: 100%;
   }
 
-  .sede-crud li > div {
+  .form-buttons {
     flex-direction: column;
   }
 
-  .sede-crud li button {
+  .sede-crud li {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sede-actions {
     width: 100%;
+    justify-content: stretch;
+  }
+
+  .sede-crud li button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .sede-crud {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .sede-crud h2 {
+    font-size: 1.5rem;
+  }
+
+  .sede-crud h3 {
+    font-size: 1.1rem;
   }
 }

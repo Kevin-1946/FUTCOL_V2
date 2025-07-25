@@ -77,20 +77,20 @@ Route::middleware('auth:sanctum')->group(function () {
 // --------------------
 Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::class])->group(function () {
     // CRUD COMPLETO SOLO PARA ADMINISTRADOR
-    Route::apiResource('torneos', TorneoController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('equipos', EquipoController::class)->except(['index', 'show']);
-    Route::apiResource('jugadores', JugadorController::class)->except(['index', 'show']);
-    Route::apiResource('encuentros', EncuentroController::class)->except(['index', 'show']);
-    Route::apiResource('sedes', SedeController::class)->except(['index', 'show']);
-    Route::apiResource('inscripciones', InscripcionController::class)->except(['index']);
-    Route::apiResource('jueces', JuezController::class)->except(['index', 'show']);
-    Route::apiResource('estadisticas-equipos', EstadisticaEquipoController::class)->except(['index', 'show']);
+    Route::apiResource('torneos', TorneoController::class);
+    Route::apiResource('equipos', EquipoController::class);
+    Route::apiResource('jugadores', JugadorController::class);
+    Route::apiResource('encuentros', EncuentroController::class);
+    Route::apiResource('sedes', SedeController::class);
+    Route::apiResource('inscripciones', InscripcionController::class);
+    Route::apiResource('jueces', JuezController::class);
+    Route::apiResource('estadisticas-equipos', EstadisticaEquipoController::class);
     
     // 🔧 CORREGIDO: ApiResource para goles de jugadores
-    Route::apiResource('goles-jugadores', GolJugadorController::class)->except(['index', 'show']);
+    Route::apiResource('goles-jugadores', GolJugadorController::class);
     
-    Route::apiResource('amonestaciones', AmonestacionController::class)->except(['index', 'show']);
-    Route::apiResource('recibos', ReciboDePagoController::class)->except(['index', 'show']);
+    Route::apiResource('amonestaciones', AmonestacionController::class);
+    Route::apiResource('recibos', ReciboDePagoController::class);
 });
 
 // --------------------
