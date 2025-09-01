@@ -1,5 +1,6 @@
+/* Contenedor principal */
 .equipo-crud {
-  max-width: 700px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #f9f9f9;
@@ -9,103 +10,306 @@
 
 .equipo-crud h2 {
   text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  margin-bottom: 2rem;
   color: #333;
+  font-weight: 600;
 }
 
-.equipo-crud form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Formulario */
+.equipo-form {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
-.equipo-crud input {
-  padding: 0.6rem 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-.equipo-crud button {
-  align-self: flex-start;
-  padding: 0.6rem 1rem;
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.equipo-crud input,
+.equipo-crud select {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.equipo-crud input:focus,
+.equipo-crud select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.equipo-crud select {
+  cursor: pointer;
+}
+
+/* Ayuda del formulario */
+.form-help {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Badge de estado */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.status-badge.inscrito {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.no-inscrito {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.form-actions button[type="submit"] {
   background-color: #007bff;
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.equipo-crud button:hover {
+.form-actions button[type="submit"]:hover:not(:disabled) {
   background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
-.equipo-crud ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.form-actions button[type="submit"]:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
 
-.equipo-crud li {
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+/* Lista de equipos */
+.equipos-list h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-style: italic;
   background-color: #fff;
-  border: 1px solid #ddd;
-  padding: 1rem;
-  margin-bottom: 1rem;
   border-radius: 8px;
-  transition: box-shadow 0.2s ease;
+  border: 2px dashed #ddd;
 }
 
-.equipo-crud li:hover {
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+/* Grid de equipos */
+.equipos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
 }
 
-.equipo-crud li div {
-  margin-top: 0.5rem;
+/* Tarjeta de equipo */
+.equipo-card {
+  background-color: #fff;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.equipo-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Header de la tarjeta */
+.equipo-header {
   display: flex;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
 }
 
-.equipo-crud li button {
-  padding: 0.4rem 0.75rem;
+.equipo-header h4 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.equipo-id {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Información del equipo */
+.equipo-info {
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.info-item strong {
+  color: #495057;
+  display: inline-block;
+  min-width: 80px;
+}
+
+/* Acciones de la tarjeta */
+.equipo-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.equipo-actions button {
+  flex: 1;
+  padding: 0.6rem 1rem;
   border: none;
   border-radius: 4px;
-  color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.equipo-crud li button:first-child {
+.btn-edit {
   background-color: #28a745;
+  color: white;
 }
 
-.equipo-crud li button:last-child {
+.btn-edit:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.btn-delete {
   background-color: #dc3545;
+  color: white;
 }
 
-.equipo-crud li button:hover {
-  opacity: 0.9;
+.btn-delete:hover:not(:disabled) {
+  background-color: #c82333;
 }
 
-/* 🌐 Responsive para dispositivos móviles */
+.equipo-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .equipo-crud {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .equipo-form {
     padding: 1.5rem;
   }
 
-  .equipo-crud input,
-  .equipo-crud button {
+  .equipos-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
     width: 100%;
   }
 
-  .equipo-crud li div {
+  .equipo-header {
     flex-direction: column;
+    gap: 0.5rem;
     align-items: flex-start;
   }
 
-  .equipo-crud li button {
-    width: 100%;
+  .equipo-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .equipo-crud h2 {
+    font-size: 1.5rem;
+  }
+
+  .equipo-form {
+    padding: 1rem;
+  }
+
+  .equipo-card {
+    padding: 1rem;
+  }
+
+  .info-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
   }
 }

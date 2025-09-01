@@ -4,6 +4,7 @@ import "../../estilos/RegistrarEquipo.css";
 
 const RegistrarEquipo = () => {
   const [torneos, setTorneos] = useState([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   
   const crearJugadorVacio = () => ({
@@ -110,7 +111,9 @@ const RegistrarEquipo = () => {
       console.log("Datos enviados:", form); // ✅ Para debug
       
       const res = await axios.post("http://localhost:8000/api/registro-equipo", form);
-      alert("Inscripción exitosa");
+      
+      // ✅ MOSTRAR MODAL DE ÉXITO
+      setShowSuccessModal(true);
       console.log("Respuesta del servidor:", res.data);
       
       // Opcional: Limpiar formulario o redirigir
@@ -133,6 +136,48 @@ const RegistrarEquipo = () => {
         alert("Error desconocido");
       }
     }
+  };
+
+  // ✅ MODAL DE ÉXITO
+  const SuccessModal = () => {
+    if (!showSuccessModal) return null;
+
+    // Auto-close después de 5 segundos
+    useEffect(() => {
+      if (showSuccessModal) {
+        const timer = setTimeout(() => {
+          setShowSuccessModal(false);
+        }, 5000);
+        return () => clearTimeout(timer);
+      }
+    }, []);
+
+    return (
+      <div className="modal-overlay" onClick={() => setShowSuccessModal(false)}>
+        <div className="success-modal" onClick={e => e.stopPropagation()}>
+          {/* Confetti */}
+          {[...Array(9)].map((_, i) => (
+            <div key={i} className="confetti"></div>
+          ))}
+          
+          <div className="success-icon">
+            <svg className="checkmark" viewBox="0 0 24 24">
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+          </div>
+          
+          <h2 className="success-title">¡Registro Exitoso!</h2>
+          <p className="success-message">
+            El equipo <strong>{form.nombre_equipo}</strong> ha sido registrado correctamente.
+            En breve recibirás un correo de confirmación.
+          </p>
+          
+          <button className="success-button" onClick={() => setShowSuccessModal(false)}>
+            Continuar
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -369,6 +414,9 @@ const RegistrarEquipo = () => {
           </button>
         </div>
       </form>
+
+      {/* ✅ MODAL DE ÉXITO */}
+      <SuccessModal />
     </div>
   );
 };
