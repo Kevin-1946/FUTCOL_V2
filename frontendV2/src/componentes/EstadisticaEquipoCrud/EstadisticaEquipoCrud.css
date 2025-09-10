@@ -1,3 +1,4 @@
+/* Estilos base */
 form {
   margin-bottom: 20px;
   display: flex;
@@ -8,20 +9,22 @@ form {
 .estadistica-crud h2,
 .estadistica-crud h3 {
   color: white;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6); /* mejora contraste */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
 }
 
-input {
+/* Estilos globales para inputs y buttons (solo para elementos fuera del formulario) */
+input:not(.formulario-estadistica input) {
   padding: 5px;
   font-size: 14px;
 }
 
-button {
+button:not(.formulario-estadistica button):not(.botones-form button) {
   padding: 6px 12px;
   margin-top: 5px;
   cursor: pointer;
 }
 
+/* Estilos de tabla */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -35,4 +38,119 @@ td, th {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
+}
+
+/* FORMULARIO PRINCIPAL */
+.formulario-estadistica {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 0 auto 20px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  max-width: 1000px;
+}
+
+.formulario-estadistica label {
+  display: flex;
+  flex-direction: column;
+  color: #333;
+  font-weight: bold;
+}
+
+/* TODOS los campos del formulario con la misma altura */
+.formulario-estadistica select,
+.formulario-estadistica input {
+  padding: 6px 8px;
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  height: 32px; /* Altura más pequeña */
+  line-height: 1.2;
+  vertical-align: top;
+  display: inline-block;
+}
+
+.formulario-estadistica select {
+  background-color: white;
+  color: #333;
+  max-width: 200px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* Flecha personalizada para select */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+/* Campos numéricos - TODO EN UNA SOLA REGLA */
+.formulario-estadistica input[type="number"] {
+  text-align: center;
+  max-width: 100px;
+  height: 32px !important; /* Forzar la misma altura */
+  padding: 6px 8px !important; /* Padding más pequeño */
+  
+  /* Quitar flechas en Firefox y normalizar apariencia */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+/* Quitar flechas en Chrome, Safari, Edge */
+.formulario-estadistica input[type="number"]::-webkit-outer-spin-button,
+.formulario-estadistica input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Botones del formulario */
+.botones-form {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.botones-form button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.botones-form button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.botones-form button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.botones-form button[type="button"] {
+  background-color: #6c757d;
+  color: white;
+}
+
+.botones-form button[type="button"]:hover {
+  background-color: #5a6268;
+}
+
+/* Estados de focus para mejor accesibilidad */
+.formulario-estadistica select:focus,
+.formulario-estadistica input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }

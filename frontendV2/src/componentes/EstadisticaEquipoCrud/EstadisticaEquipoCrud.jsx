@@ -5,10 +5,13 @@ import {
   updateEstadistica,
   deleteEstadistica,
 } from "../../api/EstadisticaEquipoService";
+import { getTorneos, getEquipos } from "../../api/EquipoService";
 import "./EstadisticaEquipoCrud.css";
 
 const EstadisticaEquipoCrud = () => {
   const [estadisticas, setEstadisticas] = useState([]);
+  const [equipos, setEquipos] = useState([]);
+  const [torneos, setTorneos] = useState([]);
   const [form, setForm] = useState({
     equipo_id: "",
     torneo_id: "",
@@ -25,12 +28,26 @@ const EstadisticaEquipoCrud = () => {
 
   useEffect(() => {
     cargarEstadisticas();
+    cargarEquipos();
+    cargarTorneos();
   }, []);
 
   const cargarEstadisticas = () => {
     getEstadisticas()
       .then((res) => setEstadisticas(res.data))
       .catch((err) => console.error(err));
+  };
+
+  const cargarEquipos = () => {
+    getEquipos()
+      .then((res) => setEquipos(res.data))
+      .catch((err) => console.error("Error al cargar equipos:", err));
+  };
+
+  const cargarTorneos = () => {
+    getTorneos()
+      .then((res) => setTorneos(res.data))
+      .catch((err) => console.error("Error al cargar torneos:", err));
   };
 
   const manejarCambio = (e) => {
@@ -57,7 +74,7 @@ const EstadisticaEquipoCrud = () => {
   };
 
   const eliminar = (id) => {
-    if (confirm("¿Eliminar estadística?")) {
+    if (window.confirm("¿Eliminar estadística?")) {
       deleteEstadistica(id)
         .then(() => cargarEstadisticas())
         .catch((err) => console.error(err));
@@ -86,40 +103,67 @@ const EstadisticaEquipoCrud = () => {
         <h2>{editandoId ? "Editar Estadística" : "Estadísticas"}</h2>
 
         <form onSubmit={manejarSubmit} className="formulario-estadistica">
-  <label>Equipo ID
-    <input name="equipo_id" value={form.equipo_id} onChange={manejarCambio} required />
-  </label>
-  <label>Torneo ID
-    <input name="torneo_id" value={form.torneo_id} onChange={manejarCambio} required />
-  </label>
-  <label>Partidos Jugados
-    <input name="partidos_jugados" type="number" value={form.partidos_jugados} onChange={manejarCambio} />
-  </label>
-  <label>Partidos Ganados
-    <input name="partidos_ganados" type="number" value={form.partidos_ganados} onChange={manejarCambio} />
-  </label>
-  <label>Partidos Empatados
-    <input name="partidos_empatados" type="number" value={form.partidos_empatados} onChange={manejarCambio} />
-  </label>
-  <label>Partidos Perdidos
-    <input name="partidos_perdidos" type="number" value={form.partidos_perdidos} onChange={manejarCambio} />
-  </label>
-  <label>Goles a Favor
-    <input name="goles_a_favor" type="number" value={form.goles_a_favor} onChange={manejarCambio} />
-  </label>
-  <label>Goles en Contra
-    <input name="goles_en_contra" type="number" value={form.goles_en_contra} onChange={manejarCambio} />
-  </label>
-  <label>Diferencia de Goles
-    <input name="diferencia_de_goles" type="number" value={form.diferencia_de_goles} onChange={manejarCambio} />
-  </label>
-  <label>Puntos
-    <input name="puntos" type="number" value={form.puntos} onChange={manejarCambio} />
-  </label>
+          <label>Equipo
+            <select name="equipo_id" value={form.equipo_id} onChange={manejarCambio} required>
+              <option value="">Seleccione un equipo</option>
+              {equipos.map((equipo) => (
+                <option key={equipo.id} value={equipo.id}>
+                  {equipo.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+          
+          <label>Torneo
+            <select name="torneo_id" value={form.torneo_id} onChange={manejarCambio} required>
+              <option value="">Seleccione un torneo</option>
+              {torneos.map((torneo) => (
+                <option key={torneo.id} value={torneo.id}>
+                  {torneo.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+          
+          <label>Partidos Jugados
+            <input name="partidos_jugados" type="number" value={form.partidos_jugados} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Partidos Ganados
+            <input name="partidos_ganados" type="number" value={form.partidos_ganados} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Partidos Empatados
+            <input name="partidos_empatados" type="number" value={form.partidos_empatados} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Partidos Perdidos
+            <input name="partidos_perdidos" type="number" value={form.partidos_perdidos} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Goles a Favor
+            <input name="goles_a_favor" type="number" value={form.goles_a_favor} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Goles en Contra
+            <input name="goles_en_contra" type="number" value={form.goles_en_contra} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Diferencia de Goles
+            <input name="diferencia_de_goles" type="number" value={form.diferencia_de_goles} onChange={manejarCambio} />
+          </label>
+          
+          <label>Puntos
+            <input name="puntos" type="number" value={form.puntos} onChange={manejarCambio} min="0" />
+          </label>
 
-  <button type="submit">{editandoId ? "Actualizar" : "Crear"}</button>
-</form>
-
+          <div className="botones-form">
+            <button type="submit">{editandoId ? "Actualizar" : "Crear"}</button>
+            {editandoId && (
+              <button type="button" onClick={resetForm}>Cancelar</button>
+            )}
+          </div>
+        </form>
 
         <h3>Estadísticas por Equipo</h3>
         <table className="tabla-estadisticas">

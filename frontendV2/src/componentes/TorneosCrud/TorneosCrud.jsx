@@ -5,10 +5,13 @@ import {
   updateTorneo,
   deleteTorneo,
 } from "../../api/TorneoService";
+// Importa la función para obtener sedes
+import { getSedes } from "../../api/SedeService";
 import "./TorneosCrud.css";
 
 const TorneosCrud = () => {
   const [torneos, setTorneos] = useState([]);
+  const [sedes, setSedes] = useState([]); // Estado para las sedes
   const [form, setForm] = useState({
     nombre: "",
     categoria: "",
@@ -17,7 +20,7 @@ const TorneosCrud = () => {
     modalidad: "",
     organizador: "",
     precio: "",
-    sedes: "",
+    sedes: "", // Mantenemos como string para el select
   });
   const [editingId, setEditingId] = useState(null);
 
@@ -27,9 +30,20 @@ const TorneosCrud = () => {
     setTorneos(res.data);
   };
 
-  // Efecto para cargar torneos al montar el componente
+  // Función para obtener sedes
+  const fetchSedes = async () => {
+    try {
+      const res = await getSedes();
+      setSedes(res.data);
+    } catch (error) {
+      console.error("Error al obtener sedes:", error);
+    }
+  };
+
+  // Efecto para cargar torneos y sedes al montar el componente
   useEffect(() => {
     fetchTorneos();
+    fetchSedes();
   }, []);
 
   // Manejar cambios en el formulario
@@ -61,11 +75,11 @@ const TorneosCrud = () => {
 
   // Manejar edición de torneo
   const handleEdit = (torneo) => {
-    // Convertir el array de sedes a string para el formulario
+    // Convertir el array de sedes a string para el select
     const torneoParaEditar = {
       ...torneo,
       sedes: Array.isArray(torneo.sedes) 
-        ? torneo.sedes.map(sede => sede.nombre || sede.name || 'Sede').join(', ')
+        ? torneo.sedes.map(sede => sede.id || sede).join(',')
         : torneo.sedes
     };
     setForm(torneoParaEditar);
@@ -173,14 +187,20 @@ const TorneosCrud = () => {
             required
           />
 
-          {/* Sedes */}
-          <input
+          {/* Sedes - Cambiado a select */}
+          <select
             name="sedes"
-            placeholder="Sedes (separadas por coma)"
             value={form.sedes}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Seleccione una sede</option>
+            {sedes.map((sede) => (
+              <option key={sede.id} value={sede.id}>
+                {sede.nombre || sede.name}
+              </option>
+            ))}
+          </select>
 
           <button type="submit">
             {editingId ? "Actualizar" : "Crear"}

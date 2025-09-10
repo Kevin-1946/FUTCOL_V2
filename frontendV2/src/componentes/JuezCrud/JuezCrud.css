@@ -96,3 +96,12 @@
 .juez-crud li button:last-of-type:hover {
   background-color: #c0392b;
 }
+
+.juez-crud select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  color: #333;
+}
