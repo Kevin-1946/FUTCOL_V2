@@ -40,7 +40,7 @@ class Jugador extends Authenticatable
         return $this->hasMany(Equipo::class, 'capitan_id');
     }
 
-    // ✅ Relación con el modelo User
+    // Relación con el modelo User
     public function user()
     {
         return $this->belongsTo(User::class);

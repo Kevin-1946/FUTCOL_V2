@@ -18,30 +18,49 @@ class TorneoController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            Torneo::with(['equipos', 'sedes', 'inscripciones', 'recibosDePago', 'encuentros'])->get()
-        );
+        try {
+            // Versión con relaciones que funciona
+            $torneos = Torneo::with(['equipos', 'sedes', 'inscripciones', 'recibosDePago', 'encuentros'])->get();
+            return response()->json($torneos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener torneos',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
+        }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/torneos",
-     *     summary="Crear un nuevo torneo",
-     *     tags={"Torneos"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"nombre", "categoria", "fecha_inicio", "fecha_fin"},
-     *             @OA\Property(property="nombre", type="string", example="Liga Clausura 2024"),
-     *             @OA\Property(property="categoria", type="string", example="Sub-18"),
-     *             @OA\Property(property="fecha_inicio", type="string", format="date", example="2024-09-01"),
-     *             @OA\Property(property="fecha_fin", type="string", format="date", example="2024-12-01")
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Torneo creado exitosamente"),
-     *     @OA\Response(response=422, description="Datos inválidos")
-     * )
-     */
+    // Nuevo método para probar con relaciones
+    public function indexWithRelations()
+    {
+        try {
+            $torneos = Torneo::with(['equipos', 'sedes', 'inscripciones', 'recibosDePago', 'encuentros'])->get();
+            return response()->json($torneos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener torneos con relaciones',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $torneo = Torneo::findOrFail($id);
+            return response()->json($torneo);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Torneo no encontrado',
+                'message' => $e->getMessage()
+            ], 404);
+        }
+    }
+
     public function store(Request $request)
     {
         $request->merge([
@@ -75,30 +94,8 @@ class TorneoController extends Controller
      *     @OA\Response(response=404, description="Torneo no encontrado")
      * )
      */
-    public function show($id)
-    {
-        $torneo = Torneo::with(['equipos', 'sedes', 'inscripciones', 'recibosDePago', 'encuentros'])->findOrFail($id);
-        return response()->json($torneo);
-    }
-
-    /**
-     * @OA\Put(
-     *     path="/api/torneos/{id}",
-     *     summary="Actualizar un torneo",
-     *     tags={"Torneos"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             @OA\Property(property="nombre", type="string"),
-     *             @OA\Property(property="categoria", type="string"),
-     *             @OA\Property(property="fecha_inicio", type="string", format="date"),
-     *             @OA\Property(property="fecha_fin", type="string", format="date")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Torneo actualizado exitosamente"),
-     *     @OA\Response(response=404, description="Torneo no encontrado")
-     * )
-     */
+    
+     
     public function update(Request $request, $id)   
     {
         $torneo = Torneo::findOrFail($id);
