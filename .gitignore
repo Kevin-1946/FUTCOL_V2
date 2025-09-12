@@ -1,0 +1,134 @@
+# =================================
+# MONOREPO FUTCOL - React + Laravel
+# =================================
+
+# =================================
+# BACKEND (Laravel) - backendV2/
+# =================================
+
+# Dependencias de Composer
+backendV2/vendor/
+
+# Archivos de entorno (CRÍTICO - nunca subir)
+backendV2/.env
+backendV2/.env.backup
+backendV2/.env.production
+backendV2/.env.local
+
+# Storage de Laravel
+backendV2/storage/*.key
+backendV2/storage/app/public/*
+backendV2/storage/framework/cache/data/*
+backendV2/storage/framework/sessions/*
+backendV2/storage/framework/testing/*
+backendV2/storage/framework/views/*
+backendV2/storage/logs/*
+backendV2/storage/pail
+
+# Archivos públicos generados
+backendV2/public/hot
+backendV2/public/storage
+backendV2/public/build
+
+# Testing y configuración
+backendV2/.phpunit.cache
+backendV2/.phpunit.result.cache
+backendV2/Homestead.json
+backendV2/Homestead.yaml
+backendV2/auth.json
+backendV2/.phpactor.json
+
+# =================================
+# FRONTEND (React) - frontendV2/
+# =================================
+
+# Dependencias de Node.js
+frontendV2/node_modules/
+
+# Archivos compilados
+frontendV2/build/
+frontendV2/dist/
+
+# Archivos de entorno
+frontendV2/.env
+frontendV2/.env.local
+frontendV2/.env.development.local
+frontendV2/.env.test.local
+frontendV2/.env.production.local
+
+# Logs de npm/yarn
+frontendV2/npm-debug.log*
+frontendV2/yarn-debug.log*
+frontendV2/yarn-error.log*
+frontendV2/.pnpm-debug.log*
+
+# =================================
+# AMBOS PROYECTOS - node_modules
+# =================================
+
+# Por si tienes node_modules en cualquier lado
+**/node_modules/
+
+# =================================
+# ARCHIVOS DE SISTEMA
+# =================================
+
+# Mac OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+
+# =================================
+# EDITORES/IDEs
+# =================================
+
+# Visual Studio Code
+.vscode/
+
+# PHPStorm/WebStorm/IntelliJ
+.idea/
+
+# Fleet, Nova, Zed
+.fleet/
+.nova/
+.zed/
+
+# =================================
+# LOGS Y TEMPORALES
+# =================================
+
+# Logs generales
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+*.backup
+*.bak
+
+# =================================
+# BASES DE DATOS
+# =================================
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+
+# =================================
+# ARCHIVOS SENSIBLES
+# =================================
+
+# Llaves y certificados
+*.key
+*.pem
+*.p12
+*.pfx

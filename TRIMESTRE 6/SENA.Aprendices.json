@@ -1,0 +1,143 @@
+[{
+  "_id": {
+    "$oid": "67b68741435d13bd964d7948"
+  },
+  "CC": 102383130,
+  "apellido": "Hernandez",
+  "nombre": "Kevin",
+  "direccion": "Bogotá",
+  "telefonos": {
+    "movil": "3134680197",
+    "fijo": "7165421"
+  },
+  "fechanacimiento": {
+    "$date": "1993-05-20T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b687f1435d13bd964d7949"
+  },
+  "CC": 102383130,
+  "apellido": "Gonzalez",
+  "nombre": "Camilo",
+  "direccion": "Bogotá",
+  "telefonos": {
+    "movil": "3236640323",
+    "fijo": "8383898"
+  },
+  "fechanacimiento": {
+    "$date": "2006-09-01T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b6885b435d13bd964d794a"
+  },
+  "CC": 102383130,
+  "apellido": "Rodriguez",
+  "nombre": "Diader",
+  "direccion": "Calle 123 #69-00",
+  "telefonos": {
+    "movil": "3112816297",
+    "fijo": "No tiene"
+  },
+  "fechanacimiento": {
+    "$date": "1997-09-27T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b688cc435d13bd964d794b"
+  },
+  "CC": 102383130,
+  "apellido": "Cuellar",
+  "nombre": "Estiben",
+  "direccion": "DG 41A #2-15",
+  "telefonos": {
+    "movil": "3215865860",
+    "fijo": "6012359"
+  },
+  "fechanacimiento": {
+    "$date": "1998-05-14T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b68949435d13bd964d794c"
+  },
+  "CC": 1023022595,
+  "apellido": "Lozano",
+  "nombre": "Carlos",
+  "direccion": "Usme",
+  "telefonos": {
+    "movil": "3118629578",
+    "fijo": "No tiene"
+  },
+  "fechanacimiento": {
+    "$date": "1997-08-17T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b689ef435d13bd964d794d"
+  },
+  "CC": 1014177091,
+  "apellido": "Baracaldo",
+  "nombre": "David",
+  "direccion": "Carrera 120 #64C-26",
+  "telefonos": {
+    "movil": "3502623156",
+    "fijo": "No tiene"
+  },
+  "fechanacimiento": {
+    "$date": "2004-04-16T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b68a58435d13bd964d794e"
+  },
+  "CC": 1023038554,
+  "apellido": "Gallo",
+  "nombre": "Octavio",
+  "direccion": "Usme",
+  "telefonos": {
+    "movil": "3154115164",
+    "fijo": "No tiene"
+  },
+  "fechanacimiento": {
+    "$date": "1999-10-01T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b68bac435d13bd964d7950"
+  },
+  "CC": 1000576804,
+  "apellido": "Beltran",
+  "nombre": "Brian",
+  "direccion": "Calle 4A #41A-88",
+  "telefonos": {
+    "fijo": "2062491"
+  },
+  "fechanacimiento": {
+    "$date": "2000-03-25T05:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67b68c23435d13bd964d7951"
+  },
+  "CC": 1024580909,
+  "apellido": "Casallas",
+  "nombre": "Edwim",
+  "direccion": "Bogotá",
+  "telefonos": {
+    "movil": "3102501802",
+    "fijo": "4593309"
+  },
+  "fechanacimiento": {
+    "$date": "1997-05-17T05:00:00.000Z"
+  }
+}]

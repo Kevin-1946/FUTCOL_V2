@@ -1,0 +1,422 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  position: relative;
+  height: 100vh; 
+}
+
+.background-opacity {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../imagenes/fondo_inicio.jpeg");
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
+  opacity: 0.5; 
+  z-index: -1; 
+}
+
+/* encabezado */
+header {
+  background-color: #0056b3;
+  color: white;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between; 
+  font-family: Arial, sans-serif;
+  align-items: center;
+  position: relative; 
+}
+
+.logo img {
+  width: 200px; 
+}
+
+nav {
+  display: flex;
+  gap: 20px; 
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 5px 10px;
+  transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #003d7a; 
+  border-radius: 5px;
+}
+
+/*título dentro del header */
+header h1 {
+  font-size: 3rem; 
+  color: white; 
+  position: absolute; 
+  bottom: 0; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  margin: 0;
+}
+
+main {
+  text-align: center;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1; 
+}
+
+main p {
+  font-size: 2.0rem;
+  color: rgb(0, 0, 0); 
+}
+
+
+#torneos {
+  padding: 20px;
+  background-image: url("../imagenes/fondo_torneos.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+#torneos h1 {
+  color: #ffffff;
+  text-align: center;
+  font-size: 3rem; 
+}
+
+
+.general {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; 
+  justify-content: space-between;
+  padding: 20px;
+}
+
+#login1 {
+  background-image: url("../imagenes/inicio-sesion.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+
+/*contenedor de torneo */
+#container-torneos1,
+#container-torneos2,
+#container-torneos3,
+#container-torneos4 {
+  background-color: rgba(0, 0, 0, 0.7); 
+  border-radius: 10px;
+  width: 280px; 
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); 
+  margin-bottom: 20px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/*las imágenes */
+#container-torneos1 img,
+#container-torneos2 img,
+#container-torneos3 img,
+#container-torneos4 img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#container-torneos1 p,
+#container-torneos2 p,
+#container-torneos3 p,
+#container-torneos4 p {
+  color: #ffffff; 
+  font-size: 1rem; 
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.btn1 {
+  background-color: #0056b3; 
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 0;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: background-color 0.3s ease; 
+  margin-top: 15px;
+}
+
+.btn1:hover {
+  background-color: #003d7a; 
+}
+
+/*inicio de sesión */
+.login-container {
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  padding: 30px;
+  margin: 80px auto; 
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.login-container h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #0056b3; 
+  font-size: 1.8rem; 
+}
+
+.form-group {
+  margin-bottom: 20px; 
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #333; 
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+  border-color: #0056b3; 
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+}
+
+input[type="submit"] {
+  width: 100%;
+  height: 50px;
+  background-color: #0056b3; 
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #003d7a; 
+  transform: scale(1.05); 
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-footer p {
+  font-size: 0.9rem;
+}
+
+.form-footer a {
+  color: #0056b3; 
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+/* la suscripción */
+.suscripcion {
+  background-color: #bbb7b7;
+  padding: 50px;
+  margin: 100px auto 0;
+  border-radius: 5px;
+  width: 400px;
+  color: rgb(0, 0, 0);
+}
+
+#suscripcion1 {
+  background-image: url("../imagenes/fondo_suscripcion.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.suscripcion h4 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  text-align: center;  
+}
+
+.control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #a8a8ac;
+  border-radius: 5px;
+  margin-bottom: 15px; 
+  box-sizing: border-box; 
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1rem; 
+  color: #333;
+}
+
+input[type="submit"] {
+  width: 100%;
+  background-color: #0056b3;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+  background-color: #003d7a;
+  transform: scale(1.05);
+}
+
+a {
+  color: #0056b3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* las cajas de información */
+#nosotros {
+  background-image: url("../imagenes/fondo_nosotros.png");
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1.titulo_nosotros {
+  color: white;
+  font-size: 3rem;
+}
+
+
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+main {
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+
+.general_nosotros {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  gap: 30px; 
+  position: relative;
+}
+
+/*info-box */
+.info-box {
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 10px;
+  padding: 15px;
+  width: 60%; 
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  position: relative; 
+  margin-bottom: 30px; 
+}
+
+.info-box h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.info-box p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/*las imágenes */
+.image-box {
+  max-width: 300px; 
+  width: 100%; 
+  height: auto; 
+  position: absolute;
+  top: 10px; 
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); 
+}
+
+
+.info-box:nth-child(1) img {
+  right: -320px; 
+}
+
+
+.info-box:nth-child(2) img {
+  left: -320px; 
+}
+
+
+.info-box:nth-child(3) img {
+  right: -320px;
+}

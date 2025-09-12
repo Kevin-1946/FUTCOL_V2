@@ -1,0 +1,55 @@
+.inscripciones-crud {
+  max-width: 700px;
+  margin: auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+}
+
+.inscripciones-crud h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.inscripciones-crud form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.inscripciones-crud input[type="text"],
+.inscripciones-crud input[type="number"],
+.inscripciones-crud input[type="date"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.inscripciones-crud button {
+  padding: 8px 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.inscripciones-crud button:hover {
+  background-color: #1259a2;
+}
+
+.inscripciones-crud ul {
+  list-style: none;
+  padding: 0;
+}
+
+.inscripciones-crud li {
+  margin-bottom: 1rem;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.inscripciones-crud li button {
+  margin-right: 10px;
+}
