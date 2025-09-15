@@ -12,6 +12,10 @@ class Encuentro extends Model
     protected $fillable = [
         'torneo_id',
         'sede_id',
+<<<<<<< HEAD
+=======
+        'modalidad',          // <-- añadido si lo usas en el form
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
         'fecha',
         'hora',
         'equipo_local_id',
@@ -20,25 +24,37 @@ class Encuentro extends Model
         'goles_visitante',
     ];
 
+<<<<<<< HEAD
     // Relación: Un encuentro pertenece a un torneo
+=======
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     public function torneo()
     {
         return $this->belongsTo(Torneo::class);
     }
 
+<<<<<<< HEAD
     // Relación: Un encuentro se juega en una sede
+=======
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     public function sede()
     {
         return $this->belongsTo(Sede::class);
     }
 
+<<<<<<< HEAD
     // Relación: Equipo local
+=======
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     public function equipoLocal()
     {
         return $this->belongsTo(Equipo::class, 'equipo_local_id');
     }
 
+<<<<<<< HEAD
     // Relación: Equipo visitante
+=======
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     public function equipoVisitante()
     {
         return $this->belongsTo(Equipo::class, 'equipo_visitante_id');

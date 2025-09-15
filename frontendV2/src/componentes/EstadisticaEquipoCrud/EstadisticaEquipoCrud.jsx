@@ -5,10 +5,19 @@ import {
   updateEstadistica,
   deleteEstadistica,
 } from "../../api/EstadisticaEquipoService";
+<<<<<<< HEAD
+=======
+import { getTorneos, getEquipos } from "../../api/EquipoService";
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
 import "./EstadisticaEquipoCrud.css";
 
 const EstadisticaEquipoCrud = () => {
   const [estadisticas, setEstadisticas] = useState([]);
+<<<<<<< HEAD
+=======
+  const [equipos, setEquipos] = useState([]);
+  const [torneos, setTorneos] = useState([]);
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
   const [form, setForm] = useState({
     equipo_id: "",
     torneo_id: "",
@@ -25,6 +34,11 @@ const EstadisticaEquipoCrud = () => {
 
   useEffect(() => {
     cargarEstadisticas();
+<<<<<<< HEAD
+=======
+    cargarEquipos();
+    cargarTorneos();
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
   }, []);
 
   const cargarEstadisticas = () => {
@@ -33,6 +47,21 @@ const EstadisticaEquipoCrud = () => {
       .catch((err) => console.error(err));
   };
 
+<<<<<<< HEAD
+=======
+  const cargarEquipos = () => {
+    getEquipos()
+      .then((res) => setEquipos(res.data))
+      .catch((err) => console.error("Error al cargar equipos:", err));
+  };
+
+  const cargarTorneos = () => {
+    getTorneos()
+      .then((res) => setTorneos(res.data))
+      .catch((err) => console.error("Error al cargar torneos:", err));
+  };
+
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: Number(value) || value });
@@ -57,7 +86,11 @@ const EstadisticaEquipoCrud = () => {
   };
 
   const eliminar = (id) => {
+<<<<<<< HEAD
     if (confirm("¿Eliminar estadística?")) {
+=======
+    if (window.confirm("¿Eliminar estadística?")) {
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
       deleteEstadistica(id)
         .then(() => cargarEstadisticas())
         .catch((err) => console.error(err));
@@ -86,6 +119,7 @@ const EstadisticaEquipoCrud = () => {
         <h2>{editandoId ? "Editar Estadística" : "Estadísticas"}</h2>
 
         <form onSubmit={manejarSubmit} className="formulario-estadistica">
+<<<<<<< HEAD
   <label>Equipo ID
     <input name="equipo_id" value={form.equipo_id} onChange={manejarCambio} required />
   </label>
@@ -120,6 +154,69 @@ const EstadisticaEquipoCrud = () => {
   <button type="submit">{editandoId ? "Actualizar" : "Crear"}</button>
 </form>
 
+=======
+          <label>Equipo
+            <select name="equipo_id" value={form.equipo_id} onChange={manejarCambio} required>
+              <option value="">Seleccione un equipo</option>
+              {equipos.map((equipo) => (
+                <option key={equipo.id} value={equipo.id}>
+                  {equipo.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+          
+          <label>Torneo
+            <select name="torneo_id" value={form.torneo_id} onChange={manejarCambio} required>
+              <option value="">Seleccione un torneo</option>
+              {torneos.map((torneo) => (
+                <option key={torneo.id} value={torneo.id}>
+                  {torneo.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+          
+          <label>Partidos Jugados
+            <input name="partidos_jugados" type="number" value={form.partidos_jugados} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Partidos Ganados
+            <input name="partidos_ganados" type="number" value={form.partidos_ganados} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Partidos Empatados
+            <input name="partidos_empatados" type="number" value={form.partidos_empatados} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Partidos Perdidos
+            <input name="partidos_perdidos" type="number" value={form.partidos_perdidos} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Goles a Favor
+            <input name="goles_a_favor" type="number" value={form.goles_a_favor} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Goles en Contra
+            <input name="goles_en_contra" type="number" value={form.goles_en_contra} onChange={manejarCambio} min="0" />
+          </label>
+          
+          <label>Diferencia de Goles
+            <input name="diferencia_de_goles" type="number" value={form.diferencia_de_goles} onChange={manejarCambio} />
+          </label>
+          
+          <label>Puntos
+            <input name="puntos" type="number" value={form.puntos} onChange={manejarCambio} min="0" />
+          </label>
+
+          <div className="botones-form">
+            <button type="submit">{editandoId ? "Actualizar" : "Crear"}</button>
+            {editandoId && (
+              <button type="button" onClick={resetForm}>Cancelar</button>
+            )}
+          </div>
+        </form>
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
 
         <h3>Estadísticas por Equipo</h3>
         <table className="tabla-estadisticas">
@@ -164,4 +261,8 @@ const EstadisticaEquipoCrud = () => {
   );
 };
 
+<<<<<<< HEAD
 export default EstadisticaEquipoCrud;
+=======
+export default EstadisticaEquipoCrud;
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c

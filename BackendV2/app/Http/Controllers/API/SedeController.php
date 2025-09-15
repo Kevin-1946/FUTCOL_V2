@@ -15,7 +15,11 @@ class SedeController extends Controller
      *     tags={"Sedes"},
      *     @OA\Response(
      *         response=200,
+<<<<<<< HEAD
      *         description="Lista de sedes con su torneo asociado"
+=======
+     *         description="Lista de sedes con su torneo asociado (si existe)"
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
      *     )
      * )
      */
@@ -32,10 +36,17 @@ class SedeController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
+<<<<<<< HEAD
      *             required={"nombre", "direccion", "torneo_id"},
      *             @OA\Property(property="nombre", type="string", example="Cancha el Dorado"),
      *             @OA\Property(property="direccion", type="string", example="Carrera 12 #45-67"),
      *             @OA\Property(property="torneo_id", type="integer", example=1)
+=======
+     *             required={"nombre", "direccion"},
+     *             @OA\Property(property="nombre", type="string", example="Cancha El Dorado"),
+     *             @OA\Property(property="direccion", type="string", example="Carrera 12 #45-67"),
+     *             @OA\Property(property="torneo_id", type="integer", nullable=true, example=null)
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
      *         )
      *     ),
      *     @OA\Response(response=201, description="Sede creada exitosamente"),
@@ -45,6 +56,7 @@ class SedeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+<<<<<<< HEAD
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'torneo_id' => 'required|exists:torneos,id',
@@ -52,6 +64,15 @@ class SedeController extends Controller
 
         $sede = Sede::create($validated);
         return response()->json($sede, 201);
+=======
+            'nombre'    => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'torneo_id' => 'nullable|exists:torneos,id', // ✅ opcional
+        ]);
+
+        $sede = Sede::create($validated);
+        return response()->json($sede->load('torneo'), 201);
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     }
 
     /**
@@ -92,7 +113,11 @@ class SedeController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="nombre", type="string", example="Nuevo nombre de sede"),
      *             @OA\Property(property="direccion", type="string", example="Nueva dirección"),
+<<<<<<< HEAD
      *             @OA\Property(property="torneo_id", type="integer", example=2)
+=======
+     *             @OA\Property(property="torneo_id", type="integer", nullable=true, example=null)
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
      *         )
      *     ),
      *     @OA\Response(response=200, description="Sede actualizada correctamente"),
@@ -104,6 +129,7 @@ class SedeController extends Controller
         $sede = Sede::findOrFail($id);
 
         $validated = $request->validate([
+<<<<<<< HEAD
             'nombre' => 'sometimes|required|string|max:255',
             'direccion' => 'sometimes|required|string|max:255',
             'torneo_id' => 'sometimes|required|exists:torneos,id',
@@ -111,6 +137,15 @@ class SedeController extends Controller
 
         $sede->update($validated);
         return response()->json($sede);
+=======
+            'nombre'    => 'sometimes|required|string|max:255',
+            'direccion' => 'sometimes|required|string|max:255',
+            'torneo_id' => 'sometimes|nullable|exists:torneos,id', // ✅ opcional si viene
+        ]);
+
+        $sede->update($validated);
+        return response()->json($sede->load('torneo'));
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     }
 
     /**
@@ -136,4 +171,8 @@ class SedeController extends Controller
 
         return response()->json(['message' => 'Sede eliminada con éxito.']);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c

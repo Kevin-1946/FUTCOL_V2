@@ -13,6 +13,10 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
+<<<<<<< HEAD
+=======
+        \Fruitcake\Cors\HandleCors::class,
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     ];
 
     protected $middlewareGroups = [
@@ -29,6 +33,10 @@ class Kernel extends HttpKernel
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+<<<<<<< HEAD
+=======
+            \Fruitcake\Cors\HandleCors::class,
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
         ],
     ];
 

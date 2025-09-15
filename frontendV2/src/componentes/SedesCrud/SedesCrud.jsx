@@ -5,17 +5,26 @@ import {
   updateSede,
   deleteSede,
 } from "../../api/SedeService";
+<<<<<<< HEAD
 // Importa el servicio para obtener torneos
 import { getTorneos } from "../../api/TorneoService";
+=======
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
 import "./SedesCrud.css";
 
 const SedesCrud = () => {
   const [sedes, setSedes] = useState([]);
+<<<<<<< HEAD
   const [torneos, setTorneos] = useState([]); // Estado para los torneos
   const [form, setForm] = useState({
     nombre: "",
     direccion: "",
     torneo_id: "",
+=======
+  const [form, setForm] = useState({
+    nombre: "",
+    direccion: "",
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -32,6 +41,7 @@ const SedesCrud = () => {
     }
   };
 
+<<<<<<< HEAD
   const fetchTorneos = async () => {
     try {
       const res = await getTorneos();
@@ -44,6 +54,10 @@ const SedesCrud = () => {
   useEffect(() => {
     fetchSedes();
     fetchTorneos(); // Cargar torneos al montar el componente
+=======
+  useEffect(() => {
+    fetchSedes();
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
   }, []);
 
   const handleChange = (e) => {
@@ -52,21 +66,36 @@ const SedesCrud = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     
     // Validación básica
     if (!form.nombre.trim() || !form.direccion.trim() || !form.torneo_id) {
       alert("Por favor, completa todos los campos");
+=======
+
+    // ✅ Validación solo de nombre y dirección
+    if (!form.nombre.trim() || !form.direccion.trim()) {
+      alert("Por favor, completa nombre y dirección");
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
       return;
     }
 
     try {
       setLoading(true);
       if (editingId) {
+<<<<<<< HEAD
         await updateSede(editingId, form);
       } else {
         await createSede(form);
       }
       setForm({ nombre: "", direccion: "", torneo_id: "" });
+=======
+        await updateSede(editingId, form); // envía solo nombre y dirección
+      } else {
+        await createSede(form); // envía solo nombre y dirección
+      }
+      setForm({ nombre: "", direccion: "" });
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
       setEditingId(null);
       await fetchSedes();
     } catch (error) {
@@ -79,9 +108,14 @@ const SedesCrud = () => {
 
   const handleEdit = (sede) => {
     setForm({
+<<<<<<< HEAD
       nombre: sede.nombre,
       direccion: sede.direccion,
       torneo_id: sede.torneo_id.toString(), // Asegurar que sea string para el select
+=======
+      nombre: sede.nombre || "",
+      direccion: sede.direccion || "",
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
     });
     setEditingId(sede.id);
   };
@@ -102,6 +136,7 @@ const SedesCrud = () => {
   };
 
   const handleCancel = () => {
+<<<<<<< HEAD
     setForm({ nombre: "", direccion: "", torneo_id: "" });
     setEditingId(null);
   };
@@ -112,11 +147,21 @@ const SedesCrud = () => {
     return torneo ? torneo.nombre : `Torneo ID: ${torneoId}`;
   };
 
+=======
+    setForm({ nombre: "", direccion: "" });
+    setEditingId(null);
+  };
+
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
   return (
     <div className="page-container">
       <div className="sede-crud">
         <h2>Gestión de Sedes</h2>
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -127,7 +172,11 @@ const SedesCrud = () => {
             required
             disabled={loading}
           />
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
           <input
             type="text"
             name="direccion"
@@ -137,6 +186,7 @@ const SedesCrud = () => {
             required
             disabled={loading}
           />
+<<<<<<< HEAD
           
           <select
             name="torneo_id"
@@ -157,6 +207,14 @@ const SedesCrud = () => {
           <div className="form-buttons">
             <button type="submit" disabled={loading}>
               {loading ? "Guardando..." : (editingId ? "Actualizar" : "Crear")}
+=======
+
+          {/* ✅ Sin select de torneo */}
+
+          <div className="form-buttons">
+            <button type="submit" disabled={loading}>
+              {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear"}
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
             </button>
             {editingId && (
               <button type="button" onClick={handleCancel} disabled={loading}>
@@ -179,19 +237,30 @@ const SedesCrud = () => {
                   <div className="sede-info">
                     <strong>{sede.nombre}</strong>
                     <span className="direccion">{sede.direccion}</span>
+<<<<<<< HEAD
                     <span className="torneo">
                       Torneo: {getTorneoNombre(sede.torneo_id)}
                     </span>
                   </div>
                   <div className="sede-actions">
                     <button 
+=======
+                    {/* ❌ Se quita el texto de torneo */}
+                  </div>
+                  <div className="sede-actions">
+                    <button
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
                       onClick={() => handleEdit(sede)}
                       disabled={loading}
                       className="btn-edit"
                     >
                       Editar
                     </button>
+<<<<<<< HEAD
                     <button 
+=======
+                    <button
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
                       onClick={() => handleDelete(sede.id)}
                       disabled={loading}
                       className="btn-delete"
@@ -209,4 +278,8 @@ const SedesCrud = () => {
   );
 };
 
+<<<<<<< HEAD
 export default SedesCrud;
+=======
+export default SedesCrud;
+>>>>>>> 0811bf220f286354eedfbe5dcd950a8cd31dba1c
