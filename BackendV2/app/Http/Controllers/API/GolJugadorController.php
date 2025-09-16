@@ -24,7 +24,8 @@ class GolJugadorController extends Controller
      */
     public function index()
     {
-        $goles = GolJugador::with(['jugador', 'encuentro'])->get();
+        // 👈 Eager load del equipo del jugador
+        $goles = GolJugador::with(['jugador.equipo', 'encuentro'])->get();
         return response()->json($goles);
     }
 
@@ -48,13 +49,16 @@ class GolJugadorController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'jugador_id' => 'required|exists:jugadores,id',
+        $validated = $request->validate([
+            'jugador_id'   => 'required|exists:jugadores,id',
             'encuentro_id' => 'required|exists:encuentros,id',
-            'cantidad' => 'required|integer|min:1',
+            'cantidad'     => 'required|integer|min:1',
         ]);
 
-        $gol = GolJugador::create($request->all());
+        $gol = GolJugador::create($validated);
+
+        // 👈 Devolvemos el recurso con relaciones
+        $gol->load(['jugador.equipo', 'encuentro']);
 
         return response()->json($gol, 201);
     }
@@ -77,7 +81,7 @@ class GolJugadorController extends Controller
      */
     public function show($id)
     {
-        $gol = GolJugador::with(['jugador', 'encuentro'])->findOrFail($id);
+        $gol = GolJugador::with(['jugador.equipo', 'encuentro'])->findOrFail($id);
         return response()->json($gol);
     }
 
@@ -108,13 +112,16 @@ class GolJugadorController extends Controller
     {
         $gol = GolJugador::findOrFail($id);
 
-        $request->validate([
-            'jugador_id' => 'sometimes|required|exists:jugadores,id',
+        $validated = $request->validate([
+            'jugador_id'   => 'sometimes|required|exists:jugadores,id',
             'encuentro_id' => 'sometimes|required|exists:encuentros,id',
-            'cantidad' => 'sometimes|required|integer|min:1',
+            'cantidad'     => 'sometimes|required|integer|min:1',
         ]);
 
-        $gol->update($request->all());
+        $gol->update($validated);
+
+        // 👈 Devolvemos actualizado con relaciones
+        $gol->load(['jugador.equipo', 'encuentro']);
 
         return response()->json($gol);
     }
