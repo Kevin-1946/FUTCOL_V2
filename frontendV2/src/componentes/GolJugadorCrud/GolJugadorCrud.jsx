@@ -36,11 +36,17 @@ const GolesCrud = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      jugador_id: Number(form.jugador_id),
+      encuentro_id: Number(form.encuentro_id),
+      cantidad: Number(form.cantidad),
+    };
+
     try {
       if (editingId) {
-        await updateGol(editingId, form);
+        await updateGol(editingId, payload);
       } else {
-        await createGol(form);
+        await createGol(payload);
       }
       setForm({ jugador_id: "", encuentro_id: "", cantidad: 1 });
       setEditingId(null);
@@ -71,9 +77,10 @@ const GolesCrud = () => {
   };
 
   return (
-    <div className="page-container"> 
+    <div className="page-container">
       <div className="goles-crud">
         <h2>Goles por Jugador</h2>
+
         <form onSubmit={handleSubmit}>
           <input
             name="jugador_id"
@@ -104,7 +111,10 @@ const GolesCrud = () => {
         <ul>
           {goles.map((gol) => (
             <li key={gol.id}>
-              Jugador: {gol.jugador?.nombre || gol.jugador_id} | Goles: {gol.cantidad}
+              {/* 👇 Ahora mostramos el equipo del jugador */}
+              Jugador: {gol.jugador?.nombre || gol.jugador_id}{" "}
+              | Equipo: {gol.jugador?.equipo?.nombre || "Sin equipo"}{" "}
+              | Goles: {gol.cantidad}
               <br />
               Encuentro: {gol.encuentro?.id || gol.encuentro_id}
               <div>
@@ -115,7 +125,7 @@ const GolesCrud = () => {
           ))}
         </ul>
       </div>
-    </div>  
+    </div>
   );
 };
 

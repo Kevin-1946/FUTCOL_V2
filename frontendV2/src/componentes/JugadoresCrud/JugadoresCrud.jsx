@@ -27,13 +27,10 @@ const JugadoresCrud = () => {
     try {
       setErrorMsg("");
       const res = await getJugadores();       // GET /api/jugadores
-      // Si el back devuelve colección vacía por rol, esto será []
       setJugadores(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       const data = err.response?.data;
-      setErrorMsg(
-        data?.message || "No se pudieron cargar los jugadores."
-      );
+      setErrorMsg(data?.message || "No se pudieron cargar los jugadores.");
       console.error("GET /jugadores failed:", data || err);
       setJugadores([]);
     }
@@ -81,9 +78,8 @@ const JugadoresCrud = () => {
         await createJugador(payload);
       }
 
-      // recarga lista y resetea formulario
-      await cargarJugadores();
-      setForm(EMPTY_FORM);
+      await cargarJugadores();     // recarga lista
+      setForm(EMPTY_FORM);         // resetea form
       setEditandoId(null);
     } catch (err) {
       const data = err.response?.data;
@@ -92,7 +88,6 @@ const JugadoresCrud = () => {
         : (data?.message || "Error al guardar el jugador.");
       setErrorMsg(msg);
       console.error("submit jugador error:", data || err);
-      // OJO: aquí NO resetees el form para que el usuario pueda corregir
     } finally {
       setCargando(false);
     }
@@ -119,9 +114,7 @@ const JugadoresCrud = () => {
       await cargarJugadores();
     } catch (err) {
       const data = err.response?.data;
-      setErrorMsg(
-        data?.message || "No se pudo eliminar el jugador."
-      );
+      setErrorMsg(data?.message || "No se pudo eliminar el jugador.");
       console.error("DELETE /jugadores error:", data || err);
     }
   };
@@ -205,6 +198,7 @@ const JugadoresCrud = () => {
         <table>
           <thead>
             <tr>
+              <th>ID</th>          {/* 👈 Mostrar ID en la tabla */}
               <th>Nombre</th>
               <th>Email</th>
               <th>Documento</th>
@@ -215,7 +209,7 @@ const JugadoresCrud = () => {
           <tbody>
             {jugadores.length === 0 ? (
               <tr>
-                <td colSpan="5" style={{ textAlign: "center" }}>
+                <td colSpan="6" style={{ textAlign: "center" }}>
                   {errorMsg
                     ? "No se pudo cargar la lista."
                     : "No hay jugadores para mostrar."}
@@ -224,10 +218,11 @@ const JugadoresCrud = () => {
             ) : (
               jugadores.map((j) => (
                 <tr key={j.id}>
+                  <td>{j.id}</td> {/* 👈 Aquí el ID del jugador */}
                   <td>{j.nombre}</td>
                   <td>{j.email}</td>
                   <td>{j.n_documento}</td>
-                  <td>{j.equipo?.nombre || "N/A"}{/* evita crash si null */}</td>
+                  <td>{j.equipo?.nombre || "N/A"}</td>
                   <td>
                     <button onClick={() => editarJugador(j)}>Editar</button>
                     <button onClick={() => eliminarJugador(j.id)}>Eliminar</button>

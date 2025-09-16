@@ -123,7 +123,11 @@ const EncuentrosCrud = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.equipo_local_id && form.equipo_visitante_id && String(form.equipo_local_id) === String(form.equipo_visitante_id)) {
+    if (
+      form.equipo_local_id &&
+      form.equipo_visitante_id &&
+      String(form.equipo_local_id) === String(form.equipo_visitante_id)
+    ) {
       alert("El equipo local y visitante no pueden ser el mismo");
       return;
     }
@@ -221,8 +225,22 @@ const EncuentrosCrud = () => {
             ))}
           </select>
 
-          <input type="number" name="goles_local" min="0" placeholder="Goles local" value={form.goles_local} onChange={handleChange} />
-          <input type="number" name="goles_visitante" min="0" placeholder="Goles visitante" value={form.goles_visitante} onChange={handleChange} />
+          <input
+            type="number"
+            name="goles_local"
+            min="0"
+            placeholder="Goles local"
+            value={form.goles_local}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="goles_visitante"
+            min="0"
+            placeholder="Goles visitante"
+            value={form.goles_visitante}
+            onChange={handleChange}
+          />
 
           <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
         </form>
@@ -234,10 +252,14 @@ const EncuentrosCrud = () => {
                 <strong>{getNombre(torneos, e.torneo_id)}</strong>
                 <span> — {e.fecha} {e.hora}</span>
               </div>
+
+              {/* Mostrar el ID del encuentro en la caja */}
+              <div>ID: {e.id}</div>
+
               <div>Sede: {getNombre(sedes, e.sede_id)}</div>
               <div>
                 {getNombre(equipos, e.equipo_local_id)} vs {getNombre(equipos, e.equipo_visitante_id)}
-                { (e.goles_local ?? e.goles_visitante) !== null && (
+                {(e.goles_local ?? e.goles_visitante) !== null && (
                   <> — {e.goles_local ?? 0} : {e.goles_visitante ?? 0}</>
                 )}
               </div>
