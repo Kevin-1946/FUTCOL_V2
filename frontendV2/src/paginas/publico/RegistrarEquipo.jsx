@@ -45,6 +45,16 @@ const RegistrarEquipo = () => {
     });
   }, []);
 
+  // ✅ useEffect para el modal (fuera del componente SuccessModal)
+  useEffect(() => {
+    if (showSuccessModal) {
+      const timer = setTimeout(() => {
+        setShowSuccessModal(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessModal]);
+
   const handleChange = (e, path = []) => {
     const updatedForm = { ...form };
     if (path.length === 0) {
@@ -108,7 +118,7 @@ const RegistrarEquipo = () => {
     }
 
     try {
-      console.log("Datos enviados:", form); // ✅ Para debug
+      console.log("Datos enviados:", form);
       
       const res = await axios.post("http://localhost:8000/api/registro-equipo", form);
       
@@ -116,41 +126,25 @@ const RegistrarEquipo = () => {
       setShowSuccessModal(true);
       console.log("Respuesta del servidor:", res.data);
       
-      // Opcional: Limpiar formulario o redirigir
-      
     } catch (error) {
       console.error("Error completo:", error);
       
       if (error.response) {
-        // Error del servidor
         console.error("Error del servidor:", error.response.data);
         const mensajeError = error.response.data?.message || "Error en el servidor";
         alert(`Error: ${mensajeError}`);
       } else if (error.request) {
-        // Error de conexión
         console.error("Error de conexión:", error.request);
         alert("Error de conexión con el servidor");
       } else {
-        // Otro error
         console.error("Error:", error.message);
         alert("Error desconocido");
       }
     }
   };
 
-  // ✅ MODAL DE ÉXITO
   const SuccessModal = () => {
     if (!showSuccessModal) return null;
-
-    // Auto-close después de 5 segundos
-    useEffect(() => {
-      if (showSuccessModal) {
-        const timer = setTimeout(() => {
-          setShowSuccessModal(false);
-        }, 5000);
-        return () => clearTimeout(timer);
-      }
-    }, []);
 
     return (
       <div className="modal-overlay" onClick={() => setShowSuccessModal(false)}>
@@ -390,7 +384,7 @@ const RegistrarEquipo = () => {
             {form.jugadores.length < 8 && (
               <button type="button" className="btn-add" onClick={() => setForm({
                 ...form,
-                jugadores: [...form.jugadores, crearJugadorVacio()] // ✅ CORREGIDO: usar función
+                jugadores: [...form.jugadores, crearJugadorVacio()]
               })}>
                 <span>+</span> Añadir jugador
               </button>

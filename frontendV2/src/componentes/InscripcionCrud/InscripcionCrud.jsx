@@ -18,11 +18,20 @@ const InscripcionesCrud = () => {
     correo_confirmado: false,
     total_pagado: 0,
   });
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     fetchInscripciones();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 5000);
+  };
 
   const fetchInscripciones = async () => {
     try {
@@ -30,6 +39,7 @@ const InscripcionesCrud = () => {
       setInscripciones(res.data);
     } catch (error) {
       console.error("Error al obtener inscripciones:", error);
+      showNotification("Error al cargar las inscripciones", "error");
     }
   };
 
@@ -46,8 +56,10 @@ const InscripcionesCrud = () => {
     try {
       if (editingId) {
         await updateInscripcion(editingId, form);
+        showNotification("Inscripción actualizada exitosamente", "success");
       } else {
         await createInscripcion(form);
+        showNotification("Inscripción registrada exitosamente", "success");
       }
       setForm({
         equipo_id: "",
@@ -62,6 +74,7 @@ const InscripcionesCrud = () => {
       fetchInscripciones();
     } catch (error) {
       console.error("Error al guardar inscripción:", error);
+      showNotification("Error al guardar la inscripción", "error");
     }
   };
 
@@ -71,12 +84,14 @@ const InscripcionesCrud = () => {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("¿Eliminar esta inscripción?")) {
+    if (window.confirm("¿Eliminar esta inscripción?")) {
       try {
         await deleteInscripcion(id);
+        showNotification("Inscripción eliminada exitosamente", "success");
         fetchInscripciones();
       } catch (error) {
         console.error("Error al eliminar inscripción:", error);
+        showNotification("Error al eliminar la inscripción", "error");
       }
     }
   };
@@ -84,7 +99,14 @@ const InscripcionesCrud = () => {
   return (
     <div className="page-container"> 
       <div className="inscripciones-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Inscripciones</h2>
+
         <form onSubmit={handleSubmit}>
           <input name="equipo_id" placeholder="ID Equipo" value={form.equipo_id} onChange={handleChange} />
           <input name="torneo_id" placeholder="ID Torneo" value={form.torneo_id} onChange={handleChange} />
@@ -125,4 +147,4 @@ const InscripcionesCrud = () => {
   );
 };
 
-export default InscripcionesCrud; 
+export default InscripcionesCrud;

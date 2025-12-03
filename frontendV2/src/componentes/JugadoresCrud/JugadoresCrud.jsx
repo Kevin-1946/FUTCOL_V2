@@ -20,13 +20,25 @@ const JugadoresCrud = () => {
   const [jugadores, setJugadores] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editandoId, setEditandoId] = useState(null);
-  const [cargando, setCargando] = useState(false);     // evita doble submit
-  const [errorMsg, setErrorMsg] = useState("");        // muestra errores 422
+  const [cargando, setCargando] = useState(false);
+
+  // Estado para notificaciones
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 10000);
+  };
 
   const cargarJugadores = async () => {
     try {
       setErrorMsg("");
-      const res = await getJugadores();       // GET /api/jugadores
+      const res = await getJugadores();
       setJugadores(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       const data = err.response?.data;
@@ -38,6 +50,7 @@ const JugadoresCrud = () => {
 
   useEffect(() => {
     cargarJugadores();
+    
   }, []);
 
   const manejarCambio = (e) => {
@@ -48,12 +61,10 @@ const JugadoresCrud = () => {
     const payload = {
       nombre: form.nombre,
       n_documento: form.n_documento,
-      fecha_nacimiento: form.fecha_nacimiento, // input type="date" -> YYYY-MM-DD
+      fecha_nacimiento: form.fecha_nacimiento,
       email: form.email,
     };
-    // password solo cuando se crea o cuando en edición lo cambiaron
     if (!editandoId || form.password) payload.password = form.password;
-    // equipo_id solo si lo enviaron
     if (form.equipo_id !== "") payload.equipo_id = Number(form.equipo_id);
     return payload;
   };
@@ -65,7 +76,8 @@ const JugadoresCrud = () => {
 
   const manejarSubmit = async (e) => {
     e.preventDefault();
-    if (cargando) return;   // anti doble click
+    if (cargando) return;
+
     setCargando(true);
     setErrorMsg("");
 
@@ -74,12 +86,14 @@ const JugadoresCrud = () => {
     try {
       if (editandoId) {
         await updateJugador(editandoId, payload);
+        showNotification("Jugador actualizado exitosamente", "success");
       } else {
         await createJugador(payload);
+        showNotification("Jugador creado exitosamente", "success");
       }
 
-      await cargarJugadores();     // recarga lista
-      setForm(EMPTY_FORM);         // resetea form
+      await cargarJugadores();
+      setForm(EMPTY_FORM);
       setEditandoId(null);
     } catch (err) {
       const data = err.response?.data;
@@ -87,6 +101,7 @@ const JugadoresCrud = () => {
         ? formErrorsToString(data.errors)
         : (data?.message || "Error al guardar el jugador.");
       setErrorMsg(msg);
+      showNotification("Error al guardar el jugador", "error");
       console.error("submit jugador error:", data || err);
     } finally {
       setCargando(false);
@@ -100,7 +115,7 @@ const JugadoresCrud = () => {
       n_documento: jugador.n_documento || "",
       fecha_nacimiento: jugador.fecha_nacimiento || "",
       email: jugador.email || "",
-      password: "", // vacío por seguridad
+      password: "",
       equipo_id: jugador.equipo_id ?? "",
     });
     setEditandoId(jugador.id);
@@ -111,9 +126,11 @@ const JugadoresCrud = () => {
     try {
       setErrorMsg("");
       await deleteJugador(id);
+      showNotification("Jugador eliminado exitosamente", "success");
       await cargarJugadores();
     } catch (err) {
       const data = err.response?.data;
+      showNotification("Error al eliminar el jugador", "error");
       setErrorMsg(data?.message || "No se pudo eliminar el jugador.");
       console.error("DELETE /jugadores error:", data || err);
     }
@@ -122,6 +139,13 @@ const JugadoresCrud = () => {
   return (
     <div className="page-container">
       <div className="jugadores-container">
+
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>{editandoId ? "Editar Jugador" : "Nuevo Jugador"}</h2>
 
         {errorMsg && (
@@ -198,7 +222,7 @@ const JugadoresCrud = () => {
         <table>
           <thead>
             <tr>
-              <th>ID</th>          {/* 👈 Mostrar ID en la tabla */}
+              <th>ID</th>
               <th>Nombre</th>
               <th>Email</th>
               <th>Documento</th>
@@ -218,7 +242,7 @@ const JugadoresCrud = () => {
             ) : (
               jugadores.map((j) => (
                 <tr key={j.id}>
-                  <td>{j.id}</td> {/* 👈 Aquí el ID del jugador */}
+                  <td>{j.id}</td>
                   <td>{j.nombre}</td>
                   <td>{j.email}</td>
                   <td>{j.n_documento}</td>

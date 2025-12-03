@@ -15,13 +15,16 @@ const EncuentrosCrud = () => {
   const [torneos, setTorneos] = useState([]);
   const [sedes, setSedes] = useState([]);
   const [equipos, setEquipos] = useState([]);
+  
+  // Estado para las notificaciones
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
 
   const [form, setForm] = useState({
-    torneo_id: "",           // opcional: si no lo mandas, el back lo infiere desde sede
+    torneo_id: "",
     sede_id: "",
-    modalidad: "",           // si NO guardas modalidad en DB, remueve este campo
+    modalidad: "",
     fecha: "",
-    hora: "",                // HH:MM
+    hora: "",
     equipo_local_id: "",
     equipo_visitante_id: "",
     goles_local: "",
@@ -29,6 +32,14 @@ const EncuentrosCrud = () => {
   });
 
   const [editingId, setEditingId] = useState(null);
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 10000);
+  };
 
   const fetchAll = async () => {
     const [encR, torR, sedR, eqR] = await Promise.all([
@@ -59,8 +70,6 @@ const EncuentrosCrud = () => {
   const getNombre = (arr, id) => {
     const x = arr.find((i) => String(i.id) === String(id));
     return x ? x.nombre : `ID: ${id}`;
-    // fallback si el API trae 'name' en lugar de 'nombre':
-    // return x ? (x.nombre || x.name || `ID: ${id}`) : `ID: ${id}`;
   };
 
   const handleChange = (e) => {
@@ -90,11 +99,10 @@ const EncuentrosCrud = () => {
 
   const buildPayload = () => {
     const payload = {
-      // torneo_id es opcional: si no lo mandamos, el back lo infiere desde sede
       sede_id: form.sede_id ? Number(form.sede_id) : undefined,
       modalidad: form.modalidad || undefined,
       fecha: form.fecha,
-      hora: form.hora, // HH:MM
+      hora: form.hora,
       equipo_local_id: form.equipo_local_id ? Number(form.equipo_local_id) : undefined,
       equipo_visitante_id: form.equipo_visitante_id ? Number(form.equipo_visitante_id) : undefined,
       goles_local: form.goles_local !== "" ? Number(form.goles_local) : undefined,
@@ -128,19 +136,26 @@ const EncuentrosCrud = () => {
       form.equipo_visitante_id &&
       String(form.equipo_local_id) === String(form.equipo_visitante_id)
     ) {
-      alert("El equipo local y visitante no pueden ser el mismo");
+      showNotification("El equipo local y visitante no pueden ser el mismo", "error");
       return;
     }
 
     const payload = buildPayload();
 
-    if (editingId) {
-      await updateEncuentro(editingId, payload);
-    } else {
-      await createEncuentro(payload);
+    try {
+      if (editingId) {
+        await updateEncuentro(editingId, payload);
+        showNotification("Encuentro actualizado exitosamente", "success");
+      } else {
+        await createEncuentro(payload);
+        showNotification("Encuentro creado exitosamente", "success");
+      }
+      resetForm();
+      fetchAll();
+    } catch (error) {
+      showNotification(error.message || "Error al guardar el encuentro", "error");
+      console.error("Error al guardar:", error);
     }
-    resetForm();
-    fetchAll();
   };
 
   const handleEdit = (enc) => {
@@ -160,18 +175,29 @@ const EncuentrosCrud = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("¿Está seguro de eliminar este encuentro?")) {
-      await deleteEncuentro(id);
-      fetchAll();
+      try {
+        await deleteEncuentro(id);
+        showNotification("Encuentro eliminado exitosamente", "success");
+        fetchAll();
+      } catch (error) {
+        showNotification(error.message || "Error al eliminar el encuentro", "error");
+        console.error("Error al eliminar:", error);
+      }
     }
   };
 
   return (
     <div className="page-container">
       <div className="encuentro-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Encuentros</h2>
 
         <form onSubmit={handleSubmit}>
-          {/* Torneo (opcional para enviar; requerido si quieres filtrar equipos por torneo) */}
           <select name="torneo_id" value={form.torneo_id} onChange={handleChange}>
             <option value="">Seleccionar Torneo</option>
             {torneos.map((t) => (
@@ -179,7 +205,6 @@ const EncuentrosCrud = () => {
             ))}
           </select>
 
-          {/* Sede */}
           <select name="sede_id" value={form.sede_id} onChange={handleChange} required>
             <option value="">Seleccionar Sede</option>
             {sedes.map((s) => (
@@ -187,7 +212,6 @@ const EncuentrosCrud = () => {
             ))}
           </select>
 
-          {/* Modalidad (si la usas) */}
           <select name="modalidad" value={form.modalidad} onChange={handleChange}>
             <option value="">Seleccione modalidad (opcional)</option>
             <option value="todos contra todos">Todos contra todos</option>
@@ -253,7 +277,6 @@ const EncuentrosCrud = () => {
                 <span> — {e.fecha} {e.hora}</span>
               </div>
 
-              {/* Mostrar el ID del encuentro en la caja */}
               <div>ID: {e.id}</div>
 
               <div>Sede: {getNombre(sedes, e.sede_id)}</div>

@@ -12,7 +12,6 @@ const TorneosCrud = () => {
   const [torneos, setTorneos] = useState([]);
   const [sedes, setSedes] = useState([]);
 
-  // NOTA: usamos 'sede_id' (singular) para alinear con backend
   const [form, setForm] = useState({
     nombre: "",
     categoria: "",
@@ -21,14 +20,27 @@ const TorneosCrud = () => {
     modalidad: "",
     organizador: "",
     precio: "",
-    sede_id: "", // <- ID de la sede seleccionada
+    sede_id: "",
   });
 
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [editingId, setEditingId] = useState(null);
 
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 5000);
+  };
+
   const fetchTorneos = async () => {
-    const res = await getTorneos();
-    setTorneos(res.data);
+    try {
+      const res = await getTorneos();
+      setTorneos(res.data);
+    } catch (error) {
+      console.error("Error al obtener torneos:", error);
+      showNotification("Error al cargar los torneos", "error");
+    }
   };
 
   const fetchSedes = async () => {
@@ -43,6 +55,7 @@ const TorneosCrud = () => {
   useEffect(() => {
     fetchTorneos();
     fetchSedes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (e) => {
@@ -51,23 +64,20 @@ const TorneosCrud = () => {
   };
 
   const buildPayload = () => {
-    // Aseguramos tipos correctos
     const payload = {
       nombre: form.nombre,
       categoria: form.categoria,
-      fecha_inicio: form.fecha_inicio, // <input type="date" /> ya devuelve YYYY-MM-DD
+      fecha_inicio: form.fecha_inicio,
       fecha_fin: form.fecha_fin,
       modalidad: form.modalidad,
       organizador: (form.organizador || "").trim(),
       precio: form.precio === "" ? "" : Number(form.precio),
     };
 
-    // Si hay sede seleccionada, mandamos 'sede_id'
     if (form.sede_id) {
       payload.sede_id = Number(form.sede_id);
     }
 
-    // Limpia vacíos
     Object.keys(payload).forEach((k) => {
       if (payload[k] === "" || payload[k] === null || payload[k] === undefined) {
         delete payload[k];
@@ -81,28 +91,34 @@ const TorneosCrud = () => {
     e.preventDefault();
     const payload = buildPayload();
 
-    if (editingId) {
-      await updateTorneo(editingId, payload);
-    } else {
-      await createTorneo(payload);
-    }
+    try {
+      if (editingId) {
+        await updateTorneo(editingId, payload);
+        showNotification("Torneo actualizado exitosamente", "success");
+      } else {
+        await createTorneo(payload);
+        showNotification("Torneo creado exitosamente", "success");
+      }
 
-    setForm({
-      nombre: "",
-      categoria: "",
-      fecha_inicio: "",
-      fecha_fin: "",
-      modalidad: "",
-      organizador: "",
-      precio: "",
-      sede_id: "",
-    });
-    setEditingId(null);
-    fetchTorneos();
+      setForm({
+        nombre: "",
+        categoria: "",
+        fecha_inicio: "",
+        fecha_fin: "",
+        modalidad: "",
+        organizador: "",
+        precio: "",
+        sede_id: "",
+      });
+      setEditingId(null);
+      fetchTorneos();
+    } catch (error) {
+      console.error("Error al guardar torneo:", error);
+      showNotification("Error al guardar el torneo", "error");
+    }
   };
 
   const handleEdit = (torneo) => {
-    // Si el torneo tiene sedes, tomamos la primera para el select (comportamiento actual)
     const primeraSedeId = Array.isArray(torneo.sedes) && torneo.sedes.length > 0
       ? torneo.sedes[0].id
       : "";
@@ -122,8 +138,14 @@ const TorneosCrud = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("¿Estás seguro de que quieres eliminar este torneo?")) {
-      await deleteTorneo(id);
-      fetchTorneos();
+      try {
+        await deleteTorneo(id);
+        showNotification("Torneo eliminado exitosamente", "success");
+        fetchTorneos();
+      } catch (error) {
+        console.error("Error al eliminar torneo:", error);
+        showNotification("Error al eliminar el torneo", "error");
+      }
     }
   };
 
@@ -137,6 +159,12 @@ const TorneosCrud = () => {
   return (
     <div className="page-container">
       <div className="torneo-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Gestión de Torneos</h2>
 
         <form onSubmit={handleSubmit}>
@@ -169,7 +197,6 @@ const TorneosCrud = () => {
 
           <input name="precio" type="number" step="0.01" placeholder="Precio" value={form.precio} onChange={handleChange} required />
 
-          {/* Select de Sede (envía sede_id) */}
           <select name="sede_id" value={form.sede_id} onChange={handleChange}>
             <option value="">Seleccione una sede</option>
             {sedes.map((sede) => (
