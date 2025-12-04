@@ -16,6 +16,16 @@ const SedesCrud = () => {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Estado para notificaciones
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 10000);
+  };
+
   const fetchSedes = async () => {
     try {
       setLoading(true);
@@ -23,6 +33,7 @@ const SedesCrud = () => {
       setSedes(res.data);
     } catch (error) {
       console.error("Error al cargar sedes:", error);
+      showNotification("⚠ Error al cargar las sedes", "error");
     } finally {
       setLoading(false);
     }
@@ -30,6 +41,7 @@ const SedesCrud = () => {
 
   useEffect(() => {
     fetchSedes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (e) => {
@@ -39,25 +51,28 @@ const SedesCrud = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Validación solo de nombre y dirección
     if (!form.nombre.trim() || !form.direccion.trim()) {
-      alert("Por favor, completa nombre y dirección");
+      showNotification("Por favor, completa nombre y dirección", "error");
       return;
     }
 
     try {
       setLoading(true);
+
       if (editingId) {
-        await updateSede(editingId, form); // envía solo nombre y dirección
+        await updateSede(editingId, form);
+        showNotification("Sede actualizada correctamente", "success");
       } else {
-        await createSede(form); // envía solo nombre y dirección
+        await createSede(form);
+        showNotification("Sede creada exitosamente", "success");
       }
+
       setForm({ nombre: "", direccion: "" });
       setEditingId(null);
       await fetchSedes();
     } catch (error) {
       console.error("Error al guardar sede:", error);
-      alert("Error al guardar la sede");
+      showNotification("❌ Error al guardar la sede", "error");
     } finally {
       setLoading(false);
     }
@@ -72,14 +87,15 @@ const SedesCrud = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar esta sede?")) {
+    if (window.confirm("¿Estás seguro de eliminar esta sede?")) {
       try {
         setLoading(true);
         await deleteSede(id);
         await fetchSedes();
+        showNotification("Sede eliminada con éxito 🗑️", "success");
       } catch (error) {
         console.error("Error al eliminar sede:", error);
-        alert("Error al eliminar la sede");
+        showNotification("⚠ No se pudo eliminar la sede", "error");
       } finally {
         setLoading(false);
       }
@@ -94,6 +110,13 @@ const SedesCrud = () => {
   return (
     <div className="page-container">
       <div className="sede-crud">
+
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Gestión de Sedes</h2>
 
         <form onSubmit={handleSubmit}>
@@ -116,8 +139,6 @@ const SedesCrud = () => {
             required
             disabled={loading}
           />
-
-          {/* ✅ Sin select de torneo */}
 
           <div className="form-buttons">
             <button type="submit" disabled={loading}>
@@ -144,21 +165,12 @@ const SedesCrud = () => {
                   <div className="sede-info">
                     <strong>{sede.nombre}</strong>
                     <span className="direccion">{sede.direccion}</span>
-                    {/* ❌ Se quita el texto de torneo */}
                   </div>
                   <div className="sede-actions">
-                    <button
-                      onClick={() => handleEdit(sede)}
-                      disabled={loading}
-                      className="btn-edit"
-                    >
+                    <button className="btn-edit" onClick={() => handleEdit(sede)} disabled={loading}>
                       Editar
                     </button>
-                    <button
-                      onClick={() => handleDelete(sede.id)}
-                      disabled={loading}
-                      className="btn-delete"
-                    >
+                    <button className="btn-delete" onClick={() => handleDelete(sede.id)} disabled={loading}>
                       Eliminar
                     </button>
                   </div>

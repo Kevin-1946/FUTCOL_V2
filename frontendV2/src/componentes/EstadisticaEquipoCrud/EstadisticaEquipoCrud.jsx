@@ -24,18 +24,30 @@ const EstadisticaEquipoCrud = () => {
     diferencia_de_goles: 0,
     puntos: 0,
   });
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [editandoId, setEditandoId] = useState(null);
 
   useEffect(() => {
     cargarEstadisticas();
     cargarEquipos();
     cargarTorneos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 5000);
+  };
 
   const cargarEstadisticas = () => {
     getEstadisticas()
       .then((res) => setEstadisticas(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        showNotification("Error al cargar las estadísticas", "error");
+      });
   };
 
   const cargarEquipos = () => {
@@ -64,8 +76,16 @@ const EstadisticaEquipoCrud = () => {
       .then(() => {
         cargarEstadisticas();
         resetForm();
+        if (editandoId) {
+          showNotification("Estadística actualizada exitosamente", "success");
+        } else {
+          showNotification("Estadística creada exitosamente", "success");
+        }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        showNotification("Error al guardar la estadística", "error");
+      });
   };
 
   const editar = (item) => {
@@ -76,8 +96,14 @@ const EstadisticaEquipoCrud = () => {
   const eliminar = (id) => {
     if (window.confirm("¿Eliminar estadística?")) {
       deleteEstadistica(id)
-        .then(() => cargarEstadisticas())
-        .catch((err) => console.error(err));
+        .then(() => {
+          cargarEstadisticas();
+          showNotification("Estadística eliminada exitosamente", "success");
+        })
+        .catch((err) => {
+          console.error(err);
+          showNotification("Error al eliminar la estadística", "error");
+        });
     }
   };
 
@@ -100,6 +126,12 @@ const EstadisticaEquipoCrud = () => {
   return (
     <div className="page-container"> 
       <div className="estadistica-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>{editandoId ? "Editar Estadística" : "Estadísticas"}</h2>
 
         <form onSubmit={manejarSubmit} className="formulario-estadistica">

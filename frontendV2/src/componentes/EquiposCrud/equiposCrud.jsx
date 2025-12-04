@@ -5,7 +5,7 @@ import {
   updateEquipo,
   deleteEquipo,
 } from "../../api/EquipoService";
-import axios from "../../axios.js"; // Usar tu configuración de axios
+import axios from "../../axios.js";
 import "./EquiposCrud.css";
 
 const EquiposCrud = () => {
@@ -18,7 +18,16 @@ const EquiposCrud = () => {
     capitan_id: "" 
   });
   const [editingId, setEditingId] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [loading, setLoading] = useState(false);
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 3000);
+  };
 
   // Función para obtener equipos
   const fetchEquipos = async () => {
@@ -28,6 +37,7 @@ const EquiposCrud = () => {
       setEquipos(res.data);
     } catch (error) {
       console.error("Error al obtener equipos:", error);
+      showNotification("Error al cargar los equipos", "error");
     } finally {
       setLoading(false);
     }
@@ -57,6 +67,7 @@ const EquiposCrud = () => {
     fetchEquipos();
     fetchTorneos();
     fetchJugadores();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (e) => {
@@ -66,16 +77,14 @@ const EquiposCrud = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validación básica
     if (!form.nombre || !form.torneo_id) {
-      alert("El nombre y el torneo son obligatorios");
+      showNotification("El nombre y el torneo son obligatorios", "error");
       return;
     }
 
     try {
       setLoading(true);
       
-      // Preparar datos para enviar
       const dataToSend = {
         nombre: form.nombre.trim(),
         torneo_id: parseInt(form.torneo_id),
@@ -83,11 +92,11 @@ const EquiposCrud = () => {
       };
 
       if (editingId) {
-        const response = await updateEquipo(editingId, dataToSend);
-        alert("Equipo actualizado correctamente");
+        await updateEquipo(editingId, dataToSend);
+        showNotification("Equipo actualizado exitosamente", "success");
       } else {
-        const response = await createEquipo(dataToSend);
-        alert("Equipo creado correctamente");
+        await createEquipo(dataToSend);
+        showNotification("Equipo creado exitosamente", "success");
       }
       
       setForm({ nombre: "", torneo_id: "", capitan_id: "" });
@@ -96,19 +105,18 @@ const EquiposCrud = () => {
     } catch (error) {
       console.error("Error al guardar equipo:", error);
       
-      // Manejo específico de errores
       if (error.response?.status === 422) {
         const errors = error.response.data.errors;
         if (errors) {
-          const errorMessages = Object.values(errors).flat().join('\n');
-          alert(`Errores de validación:\n${errorMessages}`);
+          const errorMessages = Object.values(errors).flat().join(', ');
+          showNotification(`Errores de validación: ${errorMessages}`, "error");
         } else {
-          alert(error.response.data.message || "Error de validación");
+          showNotification(error.response.data.message || "Error de validación", "error");
         }
       } else if (error.response?.status === 403) {
-        alert("No tienes permisos para realizar esta acción");
+        showNotification("No tienes permisos para realizar esta acción", "error");
       } else {
-        alert("Error al guardar el equipo. Intenta nuevamente.");
+        showNotification("Error al guardar el equipo", "error");
       }
     } finally {
       setLoading(false);
@@ -129,17 +137,17 @@ const EquiposCrud = () => {
       try {
         setLoading(true);
         await deleteEquipo(id);
-        alert("Equipo eliminado correctamente");
+        showNotification("Equipo eliminado exitosamente", "success");
         fetchEquipos();
       } catch (error) {
         console.error("Error al eliminar equipo:", error);
         
         if (error.response?.status === 403) {
-          alert("No tienes permisos para eliminar equipos");
+          showNotification("No tienes permisos para eliminar equipos", "error");
         } else if (error.response?.status === 404) {
-          alert("El equipo no existe o ya fue eliminado");
+          showNotification("El equipo no existe o ya fue eliminado", "error");
         } else {
-          alert("Error al eliminar el equipo. Puede que tenga datos asociados.");
+          showNotification("Error al eliminar el equipo", "error");
         }
       } finally {
         setLoading(false);
@@ -167,10 +175,8 @@ const EquiposCrud = () => {
   // Filtrar jugadores disponibles (sin equipo o del equipo actual si está editando)
   const getJugadoresDisponibles = () => {
     if (editingId) {
-      // En modo edición, mostrar todos los jugadores
       return jugadores;
     }
-    // En modo creación, mostrar solo jugadores sin equipo
     return jugadores.filter(jugador => !jugador.equipo_id);
   };
 
@@ -181,6 +187,12 @@ const EquiposCrud = () => {
   return (
     <div className="page-container">
       <div className="equipo-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Gestión de Equipos</h2>
         
         <form onSubmit={handleSubmit} className="equipo-form">
