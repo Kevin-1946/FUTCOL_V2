@@ -5,13 +5,13 @@ import {
   updateTorneo,
   deleteTorneo,
 } from "../../api/TorneoService";
-// Importa la función para obtener sedes
 import { getSedes } from "../../api/SedeService";
 import "./TorneosCrud.css";
 
 const TorneosCrud = () => {
   const [torneos, setTorneos] = useState([]);
-  const [sedes, setSedes] = useState([]); // Estado para las sedes
+  const [sedes, setSedes] = useState([]);
+
   const [form, setForm] = useState({
     nombre: "",
     categoria: "",
@@ -20,17 +20,29 @@ const TorneosCrud = () => {
     modalidad: "",
     organizador: "",
     precio: "",
-    sedes: "", // Mantenemos como string para el select
+    sede_id: "",
   });
+
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // Función para obtener torneos
-  const fetchTorneos = async () => {
-    const res = await getTorneos();
-    setTorneos(res.data);
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 5000);
   };
 
-  // Función para obtener sedes
+  const fetchTorneos = async () => {
+    try {
+      const res = await getTorneos();
+      setTorneos(res.data);
+    } catch (error) {
+      console.error("Error al obtener torneos:", error);
+      showNotification("Error al cargar los torneos", "error");
+    }
+  };
+
   const fetchSedes = async () => {
     try {
       const res = await getSedes();
@@ -40,82 +52,123 @@ const TorneosCrud = () => {
     }
   };
 
-  // Efecto para cargar torneos y sedes al montar el componente
   useEffect(() => {
     fetchTorneos();
     fetchSedes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Manejar cambios en el formulario
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Manejar envío del formulario
+  const buildPayload = () => {
+    const payload = {
+      nombre: form.nombre,
+      categoria: form.categoria,
+      fecha_inicio: form.fecha_inicio,
+      fecha_fin: form.fecha_fin,
+      modalidad: form.modalidad,
+      organizador: (form.organizador || "").trim(),
+      precio: form.precio === "" ? "" : Number(form.precio),
+    };
+
+    if (form.sede_id) {
+      payload.sede_id = Number(form.sede_id);
+    }
+
+    Object.keys(payload).forEach((k) => {
+      if (payload[k] === "" || payload[k] === null || payload[k] === undefined) {
+        delete payload[k];
+      }
+    });
+
+    return payload;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingId) {
-      await updateTorneo(editingId, form);
-    } else {
-      await createTorneo(form);
+    const payload = buildPayload();
+
+    try {
+      if (editingId) {
+        await updateTorneo(editingId, payload);
+        showNotification("Torneo actualizado exitosamente", "success");
+      } else {
+        await createTorneo(payload);
+        showNotification("Torneo creado exitosamente", "success");
+      }
+
+      setForm({
+        nombre: "",
+        categoria: "",
+        fecha_inicio: "",
+        fecha_fin: "",
+        modalidad: "",
+        organizador: "",
+        precio: "",
+        sede_id: "",
+      });
+      setEditingId(null);
+      fetchTorneos();
+    } catch (error) {
+      console.error("Error al guardar torneo:", error);
+      showNotification("Error al guardar el torneo", "error");
     }
-    setForm({
-      nombre: "",
-      categoria: "",
-      fecha_inicio: "",
-      fecha_fin: "",
-      modalidad: "",
-      organizador: "",
-      precio: "",
-      sedes: "",
-    });
-    setEditingId(null);
-    fetchTorneos();
   };
 
-  // Manejar edición de torneo
   const handleEdit = (torneo) => {
-    // Convertir el array de sedes a string para el select
-    const torneoParaEditar = {
-      ...torneo,
-      sedes: Array.isArray(torneo.sedes) 
-        ? torneo.sedes.map(sede => sede.id || sede).join(',')
-        : torneo.sedes
-    };
-    setForm(torneoParaEditar);
+    const primeraSedeId = Array.isArray(torneo.sedes) && torneo.sedes.length > 0
+      ? torneo.sedes[0].id
+      : "";
+
+    setForm({
+      nombre: torneo.nombre || "",
+      categoria: torneo.categoria || "",
+      fecha_inicio: torneo.fecha_inicio || "",
+      fecha_fin: torneo.fecha_fin || "",
+      modalidad: torneo.modalidad || "",
+      organizador: torneo.organizador || "",
+      precio: torneo.precio ?? "",
+      sede_id: primeraSedeId || "",
+    });
     setEditingId(torneo.id);
   };
 
-  // Manejar eliminación de torneo
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este torneo?')) {
-      await deleteTorneo(id);
-      fetchTorneos();
+    if (window.confirm("¿Estás seguro de que quieres eliminar este torneo?")) {
+      try {
+        await deleteTorneo(id);
+        showNotification("Torneo eliminado exitosamente", "success");
+        fetchTorneos();
+      } catch (error) {
+        console.error("Error al eliminar torneo:", error);
+        showNotification("Error al eliminar el torneo", "error");
+      }
     }
   };
 
-  // Función para renderizar las sedes
-  const renderSedes = (sedes) => {
-    if (Array.isArray(sedes)) {
-      return sedes.map(sede => sede.nombre || sede.name || 'Sede').join(', ');
+  const renderSedes = (lista) => {
+    if (Array.isArray(lista) && lista.length) {
+      return lista.map((s) => s.nombre || s.name || `Sede #${s.id}`).join(", ");
     }
-    return sedes || 'Sin sedes';
+    return "Sin sedes";
   };
 
   return (
     <div className="page-container">
       <div className="torneo-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Gestión de Torneos</h2>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit}>
-          {/* Nombre del torneo */}
-          <select 
-            name="nombre" 
-            value={form.nombre} 
-            onChange={handleChange}
-            required
-          >
+          <select name="nombre" value={form.nombre} onChange={handleChange} required>
             <option value="">Seleccione un tipo de torneo</option>
             <option value="Liga">Liga</option>
             <option value="Relampago">Relámpago</option>
@@ -123,43 +176,16 @@ const TorneosCrud = () => {
             <option value="Mixto">Mixto</option>
           </select>
 
-          {/* Categoría */}
-          <select 
-            name="categoria" 
-            value={form.categoria} 
-            onChange={handleChange}
-            required
-          >
+          <select name="categoria" value={form.categoria} onChange={handleChange} required>
             <option value="">Seleccione una categoría</option>
             <option value="Juvenil">Juvenil</option>
             <option value="Senior">Senior</option>
           </select>
 
-          {/* Fecha de inicio */}
-          <input
-            type="date"
-            name="fecha_inicio"
-            value={form.fecha_inicio}
-            onChange={handleChange}
-            required
-          />
+          <input type="date" name="fecha_inicio" value={form.fecha_inicio} onChange={handleChange} required />
+          <input type="date" name="fecha_fin" value={form.fecha_fin} onChange={handleChange} required />
 
-          {/* Fecha de fin */}
-          <input
-            type="date"
-            name="fecha_fin"
-            value={form.fecha_fin}
-            onChange={handleChange}
-            required
-          />
-
-          {/* Modalidad */}
-          <select 
-            name="modalidad" 
-            value={form.modalidad} 
-            onChange={handleChange}
-            required
-          >
+          <select name="modalidad" value={form.modalidad} onChange={handleChange} required>
             <option value="">Seleccione una modalidad</option>
             <option value="todos contra todos">Todos contra todos</option>
             <option value="mixto">Mixto</option>
@@ -167,33 +193,11 @@ const TorneosCrud = () => {
             <option value="uno contra uno">Uno contra uno</option>
           </select>
 
-          {/* Organizador */}
-          <input
-            name="organizador"
-            placeholder="Organizador"
-            value={form.organizador}
-            onChange={handleChange}
-            required
-          />
+          <input name="organizador" placeholder="Organizador" value={form.organizador} onChange={handleChange} required />
 
-          {/* Precio */}
-          <input
-            name="precio"
-            type="number"
-            step="0.01"
-            placeholder="Precio"
-            value={form.precio}
-            onChange={handleChange}
-            required
-          />
+          <input name="precio" type="number" step="0.01" placeholder="Precio" value={form.precio} onChange={handleChange} required />
 
-          {/* Sedes - Cambiado a select */}
-          <select
-            name="sedes"
-            value={form.sedes}
-            onChange={handleChange}
-            required
-          >
+          <select name="sede_id" value={form.sede_id} onChange={handleChange}>
             <option value="">Seleccione una sede</option>
             {sedes.map((sede) => (
               <option key={sede.id} value={sede.id}>
@@ -202,13 +206,11 @@ const TorneosCrud = () => {
             ))}
           </select>
 
-          <button type="submit">
-            {editingId ? "Actualizar" : "Crear"}
-          </button>
-          
+          <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
+
           {editingId && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => {
                 setEditingId(null);
                 setForm({
@@ -219,7 +221,7 @@ const TorneosCrud = () => {
                   modalidad: "",
                   organizador: "",
                   precio: "",
-                  sedes: "",
+                  sede_id: "",
                 });
               }}
             >
@@ -228,7 +230,6 @@ const TorneosCrud = () => {
           )}
         </form>
 
-        {/* Lista de torneos */}
         <h2>Torneos Disponibles</h2>
         <div className="torneos-grid">
           {torneos.length > 0 ? (

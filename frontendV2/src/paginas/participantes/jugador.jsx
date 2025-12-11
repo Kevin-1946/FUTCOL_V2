@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../axios";
 import "../../estilos/jugador.css";
 
 const Jugador = () => {
@@ -18,22 +18,7 @@ const Jugador = () => {
   }, []);
 
   const cargarJugadores = () => {
-    // Obtener el token del localStorage
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      console.error('No hay token de autenticación');
-      setLoading(false);
-      return;
-    }
-
-    // Petición a /api/mi-equipo con autenticación
-    axios.get("/api/mi-equipo", {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-      }
-    })
+    axios.get("/mi-equipo")
       .then((response) => {
         console.log("Respuesta mi-equipo:", response.data);
         if (response.data.success && Array.isArray(response.data.data)) {
@@ -79,26 +64,13 @@ const Jugador = () => {
   };
 
   const guardarCambios = async (jugadorId) => {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      alert('No hay token de autenticación');
-      return;
-    }
-
     try {
-      const response = await axios.put(`/api/jugadores/${jugadorId}`, formData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.put(`/jugadores/${jugadorId}`, formData);
 
       if (response.data.success) {
         alert('Jugador actualizado correctamente');
         setEditandoJugador(null);
-        cargarJugadores(); // Recargar la lista
+        cargarJugadores();
       } else {
         alert('Error al actualizar el jugador');
       }

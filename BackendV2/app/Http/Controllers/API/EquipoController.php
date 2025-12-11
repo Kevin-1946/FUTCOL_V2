@@ -152,51 +152,48 @@ class EquipoController extends Controller
     // Reemplaza el método miEquipo existente en tu EquipoController con este:
 
     public function miEquipo(Request $request)
-    {
-        try {
-            // Obtener el usuario autenticado
-            $user = $request->user();
-            
-            // Buscar el jugador asociado al usuario
-            $jugador = \App\Models\Jugador::where('user_id', $user->id)->first();
-            
-            if (!$jugador) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No se encontró el perfil de jugador asociado al usuario'
-                ], 404);
-            }
-            
-            // 🔧 CORRECCIÓN: Buscar el equipo donde este jugador es capitán
-            $equipo = \App\Models\Equipo::where('capitan_id', $jugador->id)
-                ->with(['jugadores', 'torneo', 'capitan'])
-                ->first();
-            
-            if (!$equipo) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No tienes un equipo registrado como capitán'
-                ], 404);
-            }
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'equipo' => $equipo,
-                    'jugadores' => $equipo->jugadores,
-                    'torneo' => $equipo->torneo,
-                    'capitan' => $equipo->capitan
-                ]
-            ]);
-            
-        } catch (\Exception $e) {
+{
+    try {
+        // Obtener el usuario autenticado
+        $user = $request->user();
+        
+        // Buscar el jugador asociado al usuario
+        $jugador = \App\Models\Jugador::where('user_id', $user->id)->first();
+        
+        if (!$jugador) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener el equipo',
-                'error' => $e->getMessage()
-            ], 500);
+                'message' => 'No se encontró el perfil de jugador asociado al usuario'
+            ], 404);
         }
+        
+        // Buscar el equipo donde este jugador es capitán
+        $equipo = \App\Models\Equipo::where('capitan_id', $jugador->id)
+            ->with(['jugadores', 'torneo', 'capitan'])
+            ->first();
+        
+        if (!$equipo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes un equipo registrado como capitán',
+                'data' => []
+            ], 200);
+        }
+        
+        // ✅ DEVOLVER SOLO EL ARRAY DE JUGADORES
+        return response()->json([
+            'success' => true,
+            'data' => $equipo->jugadores
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener el equipo',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     // Agregar jugador al equipo
     public function agregarJugador(Request $request, $equipoId)

@@ -14,11 +14,20 @@ const GolesCrud = () => {
     encuentro_id: "",
     cantidad: 1,
   });
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     fetchGoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 5000);
+  };
 
   const fetchGoles = async () => {
     try {
@@ -26,6 +35,7 @@ const GolesCrud = () => {
       setGoles(res.data);
     } catch (error) {
       console.error("Error al obtener goles:", error);
+      showNotification("Error al cargar los goles", "error");
     }
   };
 
@@ -36,17 +46,26 @@ const GolesCrud = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      jugador_id: Number(form.jugador_id),
+      encuentro_id: Number(form.encuentro_id),
+      cantidad: Number(form.cantidad),
+    };
+
     try {
       if (editingId) {
-        await updateGol(editingId, form);
+        await updateGol(editingId, payload);
+        showNotification("Gol actualizado exitosamente", "success");
       } else {
-        await createGol(form);
+        await createGol(payload);
+        showNotification("Gol registrado exitosamente", "success");
       }
       setForm({ jugador_id: "", encuentro_id: "", cantidad: 1 });
       setEditingId(null);
       fetchGoles();
     } catch (error) {
       console.error("Error al guardar gol:", error);
+      showNotification("Error al guardar el gol", "error");
     }
   };
 
@@ -60,20 +79,29 @@ const GolesCrud = () => {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("¿Eliminar este gol?")) {
+    if (window.confirm("¿Eliminar este gol?")) {
       try {
         await deleteGol(id);
+        showNotification("Gol eliminado exitosamente", "success");
         fetchGoles();
       } catch (error) {
         console.error("Error al eliminar gol:", error);
+        showNotification("Error al eliminar el gol", "error");
       }
     }
   };
 
   return (
-    <div className="page-container"> 
+    <div className="page-container">
       <div className="goles-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Goles por Jugador</h2>
+
         <form onSubmit={handleSubmit}>
           <input
             name="jugador_id"
@@ -104,7 +132,9 @@ const GolesCrud = () => {
         <ul>
           {goles.map((gol) => (
             <li key={gol.id}>
-              Jugador: {gol.jugador?.nombre || gol.jugador_id} | Goles: {gol.cantidad}
+              Jugador: {gol.jugador?.nombre || gol.jugador_id}{" "}
+              | Equipo: {gol.jugador?.equipo?.nombre || "Sin equipo"}{" "}
+              | Goles: {gol.cantidad}
               <br />
               Encuentro: {gol.encuentro?.id || gol.encuentro_id}
               <div>
@@ -115,7 +145,7 @@ const GolesCrud = () => {
           ))}
         </ul>
       </div>
-    </div>  
+    </div>
   );
 };
 

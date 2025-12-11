@@ -11,13 +11,26 @@ import "./JuezCrud.css";
 const JuezCrud = () => {
   const [jueces, setJueces] = useState([]);
   const [sedes, setSedes] = useState([]);
+
+  // Estado para las notificaciones
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
   const [form, setForm] = useState({
     nombre: "",
     numero_de_contacto: "",
     correo: "",
     sede_asignada: "",
   });
+
   const [editingId, setEditingId] = useState(null);
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 10000);
+  };
 
   const fetchJueces = async () => {
     const res = await getJueces();
@@ -36,6 +49,7 @@ const JuezCrud = () => {
   useEffect(() => {
     fetchJueces();
     fetchSedes();
+    
   }, []);
 
   const handleChange = (e) => {
@@ -44,19 +58,26 @@ const JuezCrud = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingId) {
-      await updateJuez(editingId, form);
-    } else {
-      await createJuez(form);
+    try {
+      if (editingId) {
+        await updateJuez(editingId, form);
+        showNotification("Juez actualizado exitosamente", "success");
+      } else {
+        await createJuez(form);
+        showNotification("Juez creado exitosamente", "success");
+      }
+      setForm({
+        nombre: "",
+        numero_de_contacto: "",
+        correo: "",
+        sede_asignada: "",
+      });
+      setEditingId(null);
+      fetchJueces();
+    } catch (error) {
+      showNotification(error.message || "Error al guardar el juez", "error");
+      console.error("Error al guardar juez:", error);
     }
-    setForm({
-      nombre: "",
-      numero_de_contacto: "",
-      correo: "",
-      sede_asignada: "",
-    });
-    setEditingId(null);
-    fetchJueces();
   };
 
   const handleEdit = (juez) => {
@@ -65,11 +86,18 @@ const JuezCrud = () => {
   };
 
   const handleDelete = async (id) => {
-    await deleteJuez(id);
-    fetchJueces();
+    if (window.confirm("¿Está seguro de eliminar este juez?")) {
+      try {
+        await deleteJuez(id);
+        showNotification("Juez eliminado exitosamente", "success");
+        fetchJueces();
+      } catch (error) {
+        showNotification(error.message || "Error al eliminar el juez", "error");
+        console.error("Error al eliminar juez:", error);
+      }
+    }
   };
 
-  // Función para mostrar el nombre de la sede
   const renderSedeNombre = (sedeId) => {
     const sede = sedes.find(s => s.id == sedeId);
     return sede ? sede.nombre || sede.name : sedeId;
@@ -77,7 +105,14 @@ const JuezCrud = () => {
 
   return (
     <div className="page-container">
-       <div className="juez-crud">
+      <div className="juez-crud">
+
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Jueces</h2>
         <form onSubmit={handleSubmit}>
           <input
@@ -132,7 +167,7 @@ const JuezCrud = () => {
         </ul>
       </div>
     </div>
-    );
+  );
 };
 
 export default JuezCrud;

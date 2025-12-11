@@ -15,13 +15,24 @@ class GolJugador extends Model
         'cantidad',
     ];
 
+    // Asegura tipos correctos en la salida JSON
+    protected $casts = [
+        'jugador_id'   => 'int',
+        'encuentro_id' => 'int',
+        'cantidad'     => 'int',
+    ];
+
+    // 👇 Eager-load automático: jugador->equipo y encuentro
+    protected $with = ['jugador.equipo', 'encuentro'];
+
     public function jugador(): BelongsTo
     {
-        return $this->belongsTo(Jugador::class);
+        // clave explícita por claridad
+        return $this->belongsTo(Jugador::class, 'jugador_id');
     }
 
     public function encuentro(): BelongsTo
     {
-        return $this->belongsTo(Encuentro::class);
+        return $this->belongsTo(Encuentro::class, 'encuentro_id');
     }
 }

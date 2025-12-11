@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 
 class Jugador extends Authenticatable
 {
@@ -19,28 +18,23 @@ class Jugador extends Authenticatable
         'genero',
         'edad',
         'email',
-        'password',
-        'equipo_id',
+        'password',   // se guarda hasheado
+        'equipo_id',  // nullable
         'user_id',
     ];
 
-    protected $hidden = [
-        'password',
-    ];
+    protected $hidden = ['password'];
 
-    // Relación: Un jugador pertenece a un equipo
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);
     }
 
-    // Relación inversa: Un jugador puede ser capitán de uno o más equipos
     public function equiposCapitaneados()
     {
         return $this->hasMany(Equipo::class, 'capitan_id');
     }
 
-    // Relación con el modelo User
     public function user()
     {
         return $this->belongsTo(User::class);

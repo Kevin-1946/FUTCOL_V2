@@ -17,45 +17,57 @@ class CheckCapitan
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next, $access_type = null)
-    {
-        // 1. Verificar autenticación
-        if (!Auth::check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No autenticado',
-                'error_code' => 'UNAUTHENTICATED'
-            ], 401);
-        }
-
-        $user = Auth::user();
-
-        // 2. Verificar que sea capitán
-        if ($user->role !== 'capitan') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Solo los capitanes pueden acceder a este recurso',
-                'error_code' => 'CAPTAIN_REQUIRED'
-            ], 403);
-        }
-
-        // 3. Si es acceso de solo lectura, verificar que solo haga GET
-        if ($access_type === 'read-only' && !$request->isMethod('GET')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Los capitanes solo pueden consultar esta información, no modificarla.',
-                'error_code' => 'READ_ONLY_ACCESS',
-                'allowed_methods' => ['GET'],
-                'attempted_method' => $request->method()
-            ], 403);
-        }
-
-        // 4. Agregar información útil al request
-        $request->merge([
-            'authenticated_user' => $user,
-            'user_role' => $user->role,
-            'is_read_only' => ($access_type === 'read-only')
-        ]);
-
-        return $next($request);
+{
+    if (!Auth::check()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No autenticado',
+            'error_code' => 'UNAUTHENTICATED'
+        ], 401);
     }
+
+    $user = Auth::user();
+    $user->load('role');
+
+    \Log::info('Usuario autenticado:', [
+        'user_id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'role_id' => $user->role_id,
+        'role_object' => $user->role,
+        'role_nombre' => $user->role ? $user->role->nombre : 'NO TIENE ROLE'
+    ]);
+
+    if (!$user->role || strtolower($user->role->nombre) !== 'capitan') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Solo los capitanes pueden acceder a este recurso',
+            'error_code' => 'CAPTAIN_REQUIRED',
+            'debug' => [
+                'user_id' => $user->id,
+                'role_id' => $user->role_id,
+                'role_nombre' => $user->role ? $user->role->nombre : null,
+                'expected' => 'capitan'
+            ]
+        ], 403);
+    }
+
+    if ($access_type === 'read-only' && !$request->isMethod('GET')) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Los capitanes solo pueden consultar esta información, no modificarla.',
+            'error_code' => 'READ_ONLY_ACCESS',
+            'allowed_methods' => ['GET'],
+            'attempted_method' => $request->method()
+        ], 403);
+    }
+
+    $request->merge([
+        'authenticated_user' => $user,
+        'user_role' => $user->role->nombre ?? null,
+        'is_read_only' => ($access_type === 'read-only')
+    ]);
+
+    return $next($request);
+}
 }

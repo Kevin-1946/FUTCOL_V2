@@ -1,6 +1,6 @@
 import axios from "../axios.js";
 
-// Obtener todos los registros de goles
+// Obtener todos los registros de goles (incluye jugador.equipo y encuentro)
 export const getGoles = () => axios.get("/goles-jugadores");
 
 // Crear un gol

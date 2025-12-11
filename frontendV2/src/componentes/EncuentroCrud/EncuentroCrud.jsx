@@ -5,7 +5,6 @@ import {
   updateEncuentro,
   deleteEncuentro,
 } from "../../api/EncuentroService";
-// ✅ AGREGADO - Importar servicios necesarios
 import { getTorneos } from "../../api/TorneoService";
 import { getSedes } from "../../api/SedeService";
 import { getEquipos } from "../../api/EquipoService";
@@ -13,182 +12,176 @@ import "./EncuentroCrud.css";
 
 const EncuentrosCrud = () => {
   const [encuentros, setEncuentros] = useState([]);
-  // ✅ AGREGADO - Estados para los datos relacionados
   const [torneos, setTorneos] = useState([]);
   const [sedes, setSedes] = useState([]);
   const [equipos, setEquipos] = useState([]);
   
+  // Estado para las notificaciones
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
   const [form, setForm] = useState({
     torneo_id: "",
     sede_id: "",
+    modalidad: "",
     fecha: "",
-    hora: "", // ✅ AGREGADO - Campo hora del modelo
+    hora: "",
     equipo_local_id: "",
     equipo_visitante_id: "",
-    goles_local: "", // ✅ CORREGIDO - Nombres según el modelo
-    goles_visitante: "", // ✅ CORREGIDO - Nombres según el modelo
+    goles_local: "",
+    goles_visitante: "",
   });
+
   const [editingId, setEditingId] = useState(null);
 
-  const fetchEncuentros = async () => {
-    try {
-      const res = await getEncuentros();
-      setEncuentros(res.data);
-    } catch (error) {
-      console.error("Error fetching encuentros:", error);
-    }
+  // Función para mostrar notificaciones
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 10000);
   };
 
-  // ✅ AGREGADO - Funciones para obtener datos relacionados
-  const fetchTorneos = async () => {
-    try {
-      const res = await getTorneos();
-      setTorneos(res.data);
-    } catch (error) {
-      console.error("Error fetching torneos:", error);
-    }
+  const fetchAll = async () => {
+    const [encR, torR, sedR, eqR] = await Promise.all([
+      getEncuentros(),
+      getTorneos(),
+      getSedes(),
+      getEquipos(),
+    ]);
+    setEncuentros(encR.data);
+    setTorneos(torR.data);
+    setSedes(sedR.data);
+    setEquipos(eqR.data);
   };
 
-  const fetchSedes = async () => {
-    try {
-      const res = await getSedes();
-      setSedes(res.data);
-    } catch (error) {
-      console.error("Error fetching sedes:", error);
-    }
+  useEffect(() => { fetchAll(); }, []);
+
+  const equiposDelTorneo = () => {
+    if (!form.torneo_id) return [];
+    return equipos.filter((e) => String(e.torneo_id) === String(form.torneo_id));
   };
 
-  const fetchEquipos = async () => {
-    try {
-      const res = await getEquipos();
-      setEquipos(res.data);
-    } catch (error) {
-      console.error("Error fetching equipos:", error);
-    }
+  const equiposVisitantes = () => {
+    const lista = equiposDelTorneo();
+    if (!form.equipo_local_id) return lista;
+    return lista.filter((e) => String(e.id) !== String(form.equipo_local_id));
   };
 
-  useEffect(() => {
-    fetchEncuentros();
-    fetchTorneos();
-    fetchSedes();
-    fetchEquipos();
-  }, []);
-
-  // ✅ AGREGADO - Función para obtener equipos del torneo seleccionado
-  const getEquiposDelTorneo = () => {
-    if (!form.torneo_id) {
-      return [];
-    }
-    // Filtrar equipos que pertenezcan al torneo seleccionado
-    return equipos.filter(equipo => equipo.torneo_id == form.torneo_id);
-  };
-
-  // ✅ AGREGADO - Función para obtener equipos visitantes (excluyendo el local)
-  const getEquiposVisitantes = () => {
-    const equiposDelTorneo = getEquiposDelTorneo();
-    if (!form.equipo_local_id) {
-      return equiposDelTorneo;
-    }
-    // Excluir el equipo local de las opciones de visitante
-    return equiposDelTorneo.filter(equipo => equipo.id != form.equipo_local_id);
-  };
-
-  // ✅ MEJORADO - Función para obtener nombres
-  const getTorneoNombre = (torneoId) => {
-    const torneo = torneos.find(t => t.id === torneoId);
-    return torneo ? torneo.nombre : `ID: ${torneoId}`;
-  };
-
-  const getSedeNombre = (sedeId) => {
-    const sede = sedes.find(s => s.id === sedeId);
-    return sede ? sede.nombre : `ID: ${sedeId}`;
-  };
-
-  const getEquipoNombre = (equipoId) => {
-    const equipo = equipos.find(e => e.id === equipoId);
-    return equipo ? equipo.nombre : `ID: ${equipoId}`;
+  const getNombre = (arr, id) => {
+    const x = arr.find((i) => String(i.id) === String(id));
+    return x ? x.nombre : `ID: ${id}`;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // ✅ NUEVO - Limpiar selecciones cuando cambie el torneo
-    if (name === 'torneo_id') {
-      setForm({
-        ...form,
-        [name]: value,
-        equipo_local_id: "", // Limpiar equipo local
-        equipo_visitante_id: "", // Limpiar equipo visitante
-      });
+
+    if (name === "torneo_id") {
+      setForm((prev) => ({
+        ...prev,
+        torneo_id: value,
+        equipo_local_id: "",
+        equipo_visitante_id: "",
+      }));
+      return;
     }
-    // ✅ NUEVO - Limpiar equipo visitante cuando cambie el local
-    else if (name === 'equipo_local_id') {
-      setForm({
-        ...form,
-        [name]: value,
-        equipo_visitante_id: "", // Limpiar equipo visitante
-      });
+
+    if (name === "equipo_local_id") {
+      setForm((prev) => ({
+        ...prev,
+        equipo_local_id: value,
+        equipo_visitante_id: "",
+      }));
+      return;
     }
-    else {
-      setForm({ ...form, [name]: value });
-    }
+
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const buildPayload = () => {
+    const payload = {
+      sede_id: form.sede_id ? Number(form.sede_id) : undefined,
+      modalidad: form.modalidad || undefined,
+      fecha: form.fecha,
+      hora: form.hora,
+      equipo_local_id: form.equipo_local_id ? Number(form.equipo_local_id) : undefined,
+      equipo_visitante_id: form.equipo_visitante_id ? Number(form.equipo_visitante_id) : undefined,
+      goles_local: form.goles_local !== "" ? Number(form.goles_local) : undefined,
+      goles_visitante: form.goles_visitante !== "" ? Number(form.goles_visitante) : undefined,
+    };
+    if (form.torneo_id) payload.torneo_id = Number(form.torneo_id);
+    Object.keys(payload).forEach((k) => payload[k] === undefined && delete payload[k]);
+    return payload;
+  };
+
+  const resetForm = () => {
+    setForm({
+      torneo_id: "",
+      sede_id: "",
+      modalidad: "",
+      fecha: "",
+      hora: "",
+      equipo_local_id: "",
+      equipo_visitante_id: "",
+      goles_local: "",
+      goles_visitante: "",
+    });
+    setEditingId(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // ✅ AGREGADO - Validaciones básicas
-    if (form.equipo_local_id === form.equipo_visitante_id) {
-      alert("El equipo local y visitante no pueden ser el mismo");
+
+    if (
+      form.equipo_local_id &&
+      form.equipo_visitante_id &&
+      String(form.equipo_local_id) === String(form.equipo_visitante_id)
+    ) {
+      showNotification("El equipo local y visitante no pueden ser el mismo", "error");
       return;
     }
-    
+
+    const payload = buildPayload();
+
     try {
       if (editingId) {
-        await updateEncuentro(editingId, form);
+        await updateEncuentro(editingId, payload);
+        showNotification("Encuentro actualizado exitosamente", "success");
       } else {
-        await createEncuentro(form);
+        await createEncuentro(payload);
+        showNotification("Encuentro creado exitosamente", "success");
       }
-      setForm({
-        torneo_id: "",
-        sede_id: "",
-        fecha: "",
-        hora: "",
-        equipo_local_id: "",
-        equipo_visitante_id: "",
-        goles_local: "",
-        goles_visitante: "",
-      });
-      setEditingId(null);
-      fetchEncuentros();
+      resetForm();
+      fetchAll();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Error al guardar el encuentro");
+      showNotification(error.message || "Error al guardar el encuentro", "error");
+      console.error("Error al guardar:", error);
     }
   };
 
-  const handleEdit = (encuentro) => {
+  const handleEdit = (enc) => {
+    setEditingId(enc.id);
     setForm({
-      torneo_id: encuentro.torneo_id || "",
-      sede_id: encuentro.sede_id || "",
-      fecha: encuentro.fecha || "",
-      hora: encuentro.hora || "",
-      equipo_local_id: encuentro.equipo_local_id || "",
-      equipo_visitante_id: encuentro.equipo_visitante_id || "",
-      goles_local: encuentro.goles_local || "",
-      goles_visitante: encuentro.goles_visitante || "",
+      torneo_id: enc.torneo_id || "",
+      sede_id: enc.sede_id || "",
+      modalidad: enc.modalidad || "",
+      fecha: enc.fecha || "",
+      hora: enc.hora || "",
+      equipo_local_id: enc.equipo_local_id || "",
+      equipo_visitante_id: enc.equipo_visitante_id || "",
+      goles_local: enc.goles_local ?? "",
+      goles_visitante: enc.goles_visitante ?? "",
     });
-    setEditingId(encuentro.id);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("¿Está seguro de eliminar este encuentro?")) {
       try {
         await deleteEncuentro(id);
-        fetchEncuentros();
+        showNotification("Encuentro eliminado exitosamente", "success");
+        fetchAll();
       } catch (error) {
-        console.error("Error deleting encuentro:", error);
-        alert("Error al eliminar el encuentro");
+        showNotification(error.message || "Error al eliminar el encuentro", "error");
+        console.error("Error al eliminar:", error);
       }
     }
   };
@@ -196,57 +189,40 @@ const EncuentrosCrud = () => {
   return (
     <div className="page-container">
       <div className="encuentro-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Encuentros</h2>
+
         <form onSubmit={handleSubmit}>
-          {/* ✅ MEJORADO - Selector de Torneo */}
-          <select
-            name="torneo_id"
-            value={form.torneo_id}
-            onChange={handleChange}
-            required
-          >
+          <select name="torneo_id" value={form.torneo_id} onChange={handleChange}>
             <option value="">Seleccionar Torneo</option>
-            {torneos.map((torneo) => (
-              <option key={torneo.id} value={torneo.id}>
-                {torneo.nombre}
-              </option>
+            {torneos.map((t) => (
+              <option key={t.id} value={t.id}>{t.nombre}</option>
             ))}
           </select>
 
-          {/* ✅ MEJORADO - Selector de Sede */}
-          <select
-            name="sede_id"
-            value={form.sede_id}
-            onChange={handleChange}
-            required
-          >
+          <select name="sede_id" value={form.sede_id} onChange={handleChange} required>
             <option value="">Seleccionar Sede</option>
-            {sedes.map((sede) => (
-              <option key={sede.id} value={sede.id}>
-                {sede.nombre}
-              </option>
+            {sedes.map((s) => (
+              <option key={s.id} value={s.id}>{s.nombre}</option>
             ))}
           </select>
 
-          {/* ✅ MEJORADO - Campo de fecha */}
-          <input
-            name="fecha"
-            type="date"
-            value={form.fecha}
-            onChange={handleChange}
-            required
-          />
+          <select name="modalidad" value={form.modalidad} onChange={handleChange}>
+            <option value="">Seleccione modalidad (opcional)</option>
+            <option value="todos contra todos">Todos contra todos</option>
+            <option value="mixto">Mixto</option>
+            <option value="competencia rapida">Competencia rápida</option>
+            <option value="uno contra uno">Uno contra uno</option>
+          </select>
 
-          {/* ✅ AGREGADO - Campo de hora */}
-          <input
-            name="hora"
-            type="time"
-            value={form.hora}
-            onChange={handleChange}
-            required
-          />
+          <input type="date" name="fecha" value={form.fecha} onChange={handleChange} required />
+          <input type="time" name="hora" value={form.hora} onChange={handleChange} required />
 
-          {/* ✅ MEJORADO - Selector de Equipo Local */}
           <select
             name="equipo_local_id"
             value={form.equipo_local_id}
@@ -254,17 +230,12 @@ const EncuentrosCrud = () => {
             required
             disabled={!form.torneo_id}
           >
-            <option value="">
-              {form.torneo_id ? "Seleccionar Equipo Local" : "Primero seleccione un torneo"}
-            </option>
-            {getEquiposDelTorneo().map((equipo) => (
-              <option key={equipo.id} value={equipo.id}>
-                {equipo.nombre}
-              </option>
+            <option value="">{form.torneo_id ? "Equipo local" : "Seleccione un torneo"}</option>
+            {equiposDelTorneo().map((e) => (
+              <option key={e.id} value={e.id}>{e.nombre}</option>
             ))}
           </select>
 
-          {/* ✅ MEJORADO - Selector de Equipo Visitante */}
           <select
             name="equipo_visitante_id"
             value={form.equipo_visitante_id}
@@ -272,66 +243,49 @@ const EncuentrosCrud = () => {
             required
             disabled={!form.equipo_local_id}
           >
-            <option value="">
-              {form.equipo_local_id ? "Seleccionar Equipo Visitante" : "Primero seleccione el equipo local"}
-            </option>
-            {getEquiposVisitantes().map((equipo) => (
-              <option key={equipo.id} value={equipo.id}>
-                {equipo.nombre}
-              </option>
+            <option value="">{form.equipo_local_id ? "Equipo visitante" : "Seleccione el equipo local"}</option>
+            {equiposVisitantes().map((e) => (
+              <option key={e.id} value={e.id}>{e.nombre}</option>
             ))}
           </select>
 
-          {/* ✅ MEJORADO - Campos de goles */}
           <input
-            name="goles_local"
             type="number"
+            name="goles_local"
             min="0"
-            placeholder="Goles Equipo Local"
+            placeholder="Goles local"
             value={form.goles_local}
             onChange={handleChange}
           />
-
           <input
-            name="goles_visitante"
             type="number"
+            name="goles_visitante"
             min="0"
-            placeholder="Goles Equipo Visitante"
+            placeholder="Goles visitante"
             value={form.goles_visitante}
             onChange={handleChange}
           />
 
-          <button type="submit">
-            {editingId ? "Actualizar" : "Crear"}
-          </button>
+          <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
         </form>
 
         <ul>
           {encuentros.map((e) => (
             <li key={e.id}>
               <div className="encuentro-header">
-                <strong>{getTorneoNombre(e.torneo_id)}</strong>
-                <span className="fecha-hora">{e.fecha} - {e.hora}</span>
+                <strong>{getNombre(torneos, e.torneo_id)}</strong>
+                <span> — {e.fecha} {e.hora}</span>
               </div>
-              
-              <div className="encuentro-info">
-                <div className="equipos">
-                  <div className="equipo-local">
-                    <strong>Local:</strong> {getEquipoNombre(e.equipo_local_id)}
-                    {e.goles_local !== null && <span className="goles"> - {e.goles_local} goles</span>}
-                  </div>
-                  <div className="vs">VS</div>
-                  <div className="equipo-visitante">
-                    <strong>Visitante:</strong> {getEquipoNombre(e.equipo_visitante_id)}
-                    {e.goles_visitante !== null && <span className="goles"> - {e.goles_visitante} goles</span>}
-                  </div>
-                </div>
-                
-                <div className="sede">
-                  <strong>Sede:</strong> {getSedeNombre(e.sede_id)}
-                </div>
+
+              <div>ID: {e.id}</div>
+
+              <div>Sede: {getNombre(sedes, e.sede_id)}</div>
+              <div>
+                {getNombre(equipos, e.equipo_local_id)} vs {getNombre(equipos, e.equipo_visitante_id)}
+                {(e.goles_local ?? e.goles_visitante) !== null && (
+                  <> — {e.goles_local ?? 0} : {e.goles_visitante ?? 0}</>
+                )}
               </div>
-              
               <div className="acciones">
                 <button onClick={() => handleEdit(e)}>Editar</button>
                 <button onClick={() => handleDelete(e.id)}>Eliminar</button>

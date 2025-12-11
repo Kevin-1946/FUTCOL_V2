@@ -5,20 +5,26 @@ import {
   updateSede,
   deleteSede,
 } from "../../api/SedeService";
-// Importa el servicio para obtener torneos
-import { getTorneos } from "../../api/TorneoService";
 import "./SedesCrud.css";
 
 const SedesCrud = () => {
   const [sedes, setSedes] = useState([]);
-  const [torneos, setTorneos] = useState([]); // Estado para los torneos
   const [form, setForm] = useState({
     nombre: "",
     direccion: "",
-    torneo_id: "",
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Estado para notificaciones
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 10000);
+  };
 
   const fetchSedes = async () => {
     try {
@@ -27,23 +33,15 @@ const SedesCrud = () => {
       setSedes(res.data);
     } catch (error) {
       console.error("Error al cargar sedes:", error);
+      showNotification("⚠ Error al cargar las sedes", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchTorneos = async () => {
-    try {
-      const res = await getTorneos();
-      setTorneos(res.data); // Como tu service ya devuelve la respuesta de axios, res.data contiene los datos
-    } catch (error) {
-      console.error("Error al cargar torneos:", error);
-    }
-  };
-
   useEffect(() => {
     fetchSedes();
-    fetchTorneos(); // Cargar torneos al montar el componente
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (e) => {
@@ -52,26 +50,29 @@ const SedesCrud = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validación básica
-    if (!form.nombre.trim() || !form.direccion.trim() || !form.torneo_id) {
-      alert("Por favor, completa todos los campos");
+
+    if (!form.nombre.trim() || !form.direccion.trim()) {
+      showNotification("Por favor, completa nombre y dirección", "error");
       return;
     }
 
     try {
       setLoading(true);
+
       if (editingId) {
         await updateSede(editingId, form);
+        showNotification("Sede actualizada correctamente", "success");
       } else {
         await createSede(form);
+        showNotification("Sede creada exitosamente", "success");
       }
-      setForm({ nombre: "", direccion: "", torneo_id: "" });
+
+      setForm({ nombre: "", direccion: "" });
       setEditingId(null);
       await fetchSedes();
     } catch (error) {
       console.error("Error al guardar sede:", error);
-      alert("Error al guardar la sede");
+      showNotification("❌ Error al guardar la sede", "error");
     } finally {
       setLoading(false);
     }
@@ -79,22 +80,22 @@ const SedesCrud = () => {
 
   const handleEdit = (sede) => {
     setForm({
-      nombre: sede.nombre,
-      direccion: sede.direccion,
-      torneo_id: sede.torneo_id.toString(), // Asegurar que sea string para el select
+      nombre: sede.nombre || "",
+      direccion: sede.direccion || "",
     });
     setEditingId(sede.id);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar esta sede?")) {
+    if (window.confirm("¿Estás seguro de eliminar esta sede?")) {
       try {
         setLoading(true);
         await deleteSede(id);
         await fetchSedes();
+        showNotification("Sede eliminada con éxito 🗑️", "success");
       } catch (error) {
         console.error("Error al eliminar sede:", error);
-        alert("Error al eliminar la sede");
+        showNotification("⚠ No se pudo eliminar la sede", "error");
       } finally {
         setLoading(false);
       }
@@ -102,21 +103,22 @@ const SedesCrud = () => {
   };
 
   const handleCancel = () => {
-    setForm({ nombre: "", direccion: "", torneo_id: "" });
+    setForm({ nombre: "", direccion: "" });
     setEditingId(null);
-  };
-
-  // Función para obtener el nombre del torneo por ID
-  const getTorneoNombre = (torneoId) => {
-    const torneo = torneos.find(t => t.id === torneoId);
-    return torneo ? torneo.nombre : `Torneo ID: ${torneoId}`;
   };
 
   return (
     <div className="page-container">
       <div className="sede-crud">
+
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Gestión de Sedes</h2>
-        
+
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -127,7 +129,7 @@ const SedesCrud = () => {
             required
             disabled={loading}
           />
-          
+
           <input
             type="text"
             name="direccion"
@@ -137,26 +139,10 @@ const SedesCrud = () => {
             required
             disabled={loading}
           />
-          
-          <select
-            name="torneo_id"
-            value={form.torneo_id}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            className="select-torneo"
-          >
-            <option value="">Selecciona un torneo</option>
-            {torneos.map((torneo) => (
-              <option key={torneo.id} value={torneo.id}>
-                {torneo.nombre}
-              </option>
-            ))}
-          </select>
 
           <div className="form-buttons">
             <button type="submit" disabled={loading}>
-              {loading ? "Guardando..." : (editingId ? "Actualizar" : "Crear")}
+              {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear"}
             </button>
             {editingId && (
               <button type="button" onClick={handleCancel} disabled={loading}>
@@ -179,23 +165,12 @@ const SedesCrud = () => {
                   <div className="sede-info">
                     <strong>{sede.nombre}</strong>
                     <span className="direccion">{sede.direccion}</span>
-                    <span className="torneo">
-                      Torneo: {getTorneoNombre(sede.torneo_id)}
-                    </span>
                   </div>
                   <div className="sede-actions">
-                    <button 
-                      onClick={() => handleEdit(sede)}
-                      disabled={loading}
-                      className="btn-edit"
-                    >
+                    <button className="btn-edit" onClick={() => handleEdit(sede)} disabled={loading}>
                       Editar
                     </button>
-                    <button 
-                      onClick={() => handleDelete(sede.id)}
-                      disabled={loading}
-                      className="btn-delete"
-                    >
+                    <button className="btn-delete" onClick={() => handleDelete(sede.id)} disabled={loading}>
                       Eliminar
                     </button>
                   </div>

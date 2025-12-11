@@ -77,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
 // =====================================
 // RUTAS SOLO CAPITÁN
 // =====================================
+// NOTA: Se quita el update de jugadores aquí para evitar middleware inexistente
+// y porque el Capitán no debe cambiar equipo por seguridad.
 Route::middleware(['auth:sanctum', 'check.capitan'])->group(function () {
     // GESTIONAR SU EQUIPO
     Route::get('/mi-equipo', [EquipoController::class, 'miEquipo']);
@@ -86,17 +88,17 @@ Route::middleware(['auth:sanctum', 'check.capitan'])->group(function () {
     Route::post('/equipos/{equipo}/agregar-jugador', [EquipoController::class, 'agregarJugador']);
     Route::delete('/equipos/{equipo}/jugadores/{jugador}', [EquipoController::class, 'removerJugador']);
     Route::put('/equipos/{equipo}/cambiar-capitan', [EquipoController::class, 'cambiarCapitan']);
-    
-    // EDITAR SOLO SUS JUGADORES (de su equipo)
-    Route::put('/jugadores/{jugador}', [JugadorController::class, 'update'])
-        ->middleware('check.jugador.equipo');
+
+    // Si en el futuro registras los middlewares, podrías permitir edición limitada:
+    // Route::put('/jugadores/{jugador}', [JugadorController::class, 'update'])
+    //     ->middleware('check.jugador.equipo');
 });
 
 // =====================================
 // RUTAS SOLO ADMINISTRADOR
 // =====================================
 Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::class])->group(function () {
-    
+
     // CRUD COMPLETO DE TORNEOS (Solo Admin)
     Route::post('/torneos', [TorneoController::class, 'store']);
     Route::put('/torneos/{torneo}', [TorneoController::class, 'update']);
@@ -109,6 +111,7 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\CheckAdministrador::clas
     
     // CRUD COMPLETO DE JUGADORES (Solo Admin)
     Route::post('/jugadores', [JugadorController::class, 'store']);
+    Route::put('/jugadores/{jugador}', [JugadorController::class, 'update']); // <-- MOVIDO AQUÍ
     Route::delete('/jugadores/{jugador}', [JugadorController::class, 'destroy']);
     
     // CRUD COMPLETO DE ENCUENTROS (Solo Admin)

@@ -5,10 +5,9 @@ import {
   updateAmonestacion,
   deleteAmonestacion,
 } from "../../api/AmonestacionService";
-// Importa los servicios para obtener jugadores, equipos y encuentros
-import { getJugadores } from "../../api/JugadorService"; // Asume que tienes este servicio
-import { getEquipos } from "../../api/EquipoService"; // Asume que tienes este servicio
-import { getEncuentros } from "../../api/EncuentroService"; // Asume que tienes este servicio
+import { getJugadores } from "../../api/JugadorService";
+import { getEquipos } from "../../api/EquipoService";
+import { getEncuentros } from "../../api/EncuentroService";
 import "./AmonestacionCrud.css";
 
 const AmonestacionesCrud = () => {
@@ -26,13 +25,23 @@ const AmonestacionesCrud = () => {
     tarjeta_azul: false,
   });
   const [editingId, setEditingId] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
+  // Función para mostrar notificaciones
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 3000);
+  };
 
   useEffect(() => {
     fetchAmonestaciones();
     fetchJugadores();
     fetchEquipos();
     fetchEncuentros();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   const fetchAmonestaciones = async () => {
     try {
@@ -40,6 +49,7 @@ const AmonestacionesCrud = () => {
       setAmonestaciones(res.data);
     } catch (error) {
       console.error("Error fetching amonestaciones:", error);
+      showNotification("Error al cargar las amonestaciones", "error");
     }
   };
 
@@ -73,16 +83,14 @@ const AmonestacionesCrud = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     
-    // ✅ NUEVO - Limpiar jugador_id cuando cambie el encuentro
     if (name === 'encuentro_id') {
       setForm({
         ...form,
         [name]: type === "checkbox" ? checked : value,
-        jugador_id: "", // Limpiar selección de jugador
-        equipo_id: "", // Limpiar selección de equipo
+        jugador_id: "",
+        equipo_id: "",
       });
     }
-    // ✅ NUEVO - Auto-completar equipo cuando se seleccione jugador
     else if (name === 'jugador_id' && value) {
       const jugadorSeleccionado = jugadores.find(j => j.id == value);
       setForm({
@@ -104,8 +112,10 @@ const AmonestacionesCrud = () => {
     try {
       if (editingId) {
         await updateAmonestacion(editingId, form);
+        showNotification("Amonestación actualizada exitosamente", "success");
       } else {
         await createAmonestacion(form);
+        showNotification("Amonestación creada exitosamente", "success");
       }
       setForm({
         jugador_id: "",
@@ -120,6 +130,7 @@ const AmonestacionesCrud = () => {
       fetchAmonestaciones();
     } catch (error) {
       console.error("Error submitting form:", error);
+      showNotification("Error al guardar la amonestación", "error");
     }
   };
 
@@ -137,24 +148,26 @@ const AmonestacionesCrud = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      await deleteAmonestacion(id);
-      fetchAmonestaciones();
-    } catch (error) {
-      console.error("Error deleting amonestacion:", error);
+    if (window.confirm("¿Está seguro de eliminar esta amonestación?")) {
+      try {
+        await deleteAmonestacion(id);
+        showNotification("Amonestación eliminada exitosamente", "success");
+        fetchAmonestaciones();
+      } catch (error) {
+        console.error("Error deleting amonestacion:", error);
+        showNotification("Error al eliminar la amonestación", "error");
+      }
     }
   };
 
-  // ✅ CORREGIDO - Función para obtener el nombre del jugador por ID
   const getJugadorNombre = (jugadorId) => {
     const jugador = jugadores.find(j => j.id === jugadorId);
     return jugador ? jugador.nombre : `ID: ${jugadorId}`;
   };
 
-  // ✅ NUEVO - Función para obtener jugadores del encuentro seleccionado
   const getJugadoresDelEncuentro = () => {
     if (!form.encuentro_id) {
-      return []; // Si no hay encuentro seleccionado, no mostrar jugadores
+      return [];
     }
 
     const encuentroSeleccionado = encuentros.find(e => e.id == form.encuentro_id);
@@ -162,41 +175,33 @@ const AmonestacionesCrud = () => {
       return [];
     }
 
-    // Obtener IDs de los equipos del encuentro
     let equipoLocalId, equipoVisitanteId;
     
-    // Si tiene las relaciones cargadas
     if (encuentroSeleccionado.equipoLocal && encuentroSeleccionado.equipoVisitante) {
       equipoLocalId = encuentroSeleccionado.equipoLocal.id;
       equipoVisitanteId = encuentroSeleccionado.equipoVisitante.id;
     }
-    // Si solo tiene los IDs
     else {
       equipoLocalId = encuentroSeleccionado.equipo_local_id;
       equipoVisitanteId = encuentroSeleccionado.equipo_visitante_id;
     }
 
-    // Filtrar jugadores que pertenezcan a cualquiera de los dos equipos
     return jugadores.filter(jugador => 
       jugador.equipo_id === equipoLocalId || jugador.equipo_id === equipoVisitanteId
     );
   };
 
-  // ✅ CORREGIDO - Función para obtener el nombre del equipo por ID
   const getEquipoNombre = (equipoId) => {
     const equipo = equipos.find(e => e.id === equipoId);
     return equipo ? equipo.nombre : `ID: ${equipoId}`;
   };
 
-  // ✅ CORREGIDO - Función para obtener información del encuentro por ID
   const getEncuentroInfo = (encuentroId) => {
     const encuentro = encuentros.find(e => e.id === encuentroId);
     if (encuentro) {
-      // Si tiene las relaciones cargadas
       if (encuentro.equipoLocal && encuentro.equipoVisitante) {
         return `${encuentro.equipoLocal.nombre} vs ${encuentro.equipoVisitante.nombre}`;
       }
-      // Si solo tiene los IDs
       else {
         const equipoLocal = equipos.find(eq => eq.id === encuentro.equipo_local_id);
         const equipoVisitante = equipos.find(eq => eq.id === encuentro.equipo_visitante_id);
@@ -211,9 +216,15 @@ const AmonestacionesCrud = () => {
   return (
     <div className="page-container">
       <div className="amonestacion-crud">
+        {notification.show && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <h2>Amonestaciones</h2>
+        
         <form onSubmit={handleSubmit}>
-          {/* ✅ REORDENADO - Primero seleccionar el encuentro */}
           <select
             name="encuentro_id"
             value={form.encuentro_id}
@@ -223,19 +234,17 @@ const AmonestacionesCrud = () => {
             <option value="">Seleccionar Encuentro</option>
             {encuentros.map((encuentro) => (
               <option key={encuentro.id} value={encuentro.id}>
-                {/* ✅ CORREGIDO - Usar la función que maneja ambos casos */}
                 {getEncuentroInfo(encuentro.id)} - {encuentro.fecha}
               </option>
             ))}
           </select>
 
-          {/* ✅ MODIFICADO - Selector de Jugador (solo del encuentro seleccionado) */}
           <select
             name="jugador_id"
             value={form.jugador_id}
             onChange={handleChange}
             required
-            disabled={!form.encuentro_id} // Deshabilitado hasta que se seleccione encuentro
+            disabled={!form.encuentro_id}
           >
             <option value="">
               {form.encuentro_id ? "Seleccionar Jugador" : "Primero seleccione un encuentro"}
@@ -247,18 +256,16 @@ const AmonestacionesCrud = () => {
             ))}
           </select>
 
-          {/* ✅ MODIFICADO - Auto-completar equipo basado en el jugador seleccionado */}
           <select
             name="equipo_id"
             value={form.equipo_id}
             onChange={handleChange}
             required
-            disabled={!form.jugador_id} // Deshabilitado hasta que se seleccione jugador
+            disabled={!form.jugador_id}
           >
             <option value="">Equipo del jugador</option>
             {equipos
               .filter(equipo => {
-                // Solo mostrar el equipo del jugador seleccionado
                 const jugadorSeleccionado = jugadores.find(j => j.id == form.jugador_id);
                 return jugadorSeleccionado ? equipo.id === jugadorSeleccionado.equipo_id : true;
               })
@@ -270,7 +277,6 @@ const AmonestacionesCrud = () => {
             }
           </select>
 
-          {/* Campo de número de camiseta */}
           <input
             type="number"
             name="numero_camiseta"
@@ -280,7 +286,6 @@ const AmonestacionesCrud = () => {
             required
           />
 
-          {/* Checkboxes para tarjetas */}
           <label>
             <input
               type="checkbox"
@@ -321,7 +326,6 @@ const AmonestacionesCrud = () => {
                 <br />
                 <strong>Equipo:</strong> {getEquipoNombre(a.equipo_id)}
                 <br />
-                {/* ✅ CORREGIDO - Usar la función corregida */}
                 <strong>Encuentro:</strong> {getEncuentroInfo(a.encuentro_id)}
                 <br />
                 <strong>Tarjetas:</strong>{" "}
