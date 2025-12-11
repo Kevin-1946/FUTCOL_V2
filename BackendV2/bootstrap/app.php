@@ -14,9 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Registrar tus middlewares personalizados
         $middleware->alias([
-            'admin' => \App\Http\Middleware\IsAdmin::class,
-            'capitan' => \App\Http\Middleware\IsCapitan::class,
-            'participante' => \App\Http\Middleware\IsParticipante::class,
+            'check.capitan' => \App\Http\Middleware\CheckCapitan::class,
+            'check.administrador' => \App\Http\Middleware\CheckAdministrador::class,
+            'check.participante' => \App\Http\Middleware\CheckParticipante::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
+            'team.owner' => \App\Http\Middleware\CheckTeamOwner::class,
+            'jugador.owner' => \App\Http\Middleware\CheckJugadorOwner::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
